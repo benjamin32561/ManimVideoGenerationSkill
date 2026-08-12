@@ -1,0 +1,90 @@
+# Craft defaults: reference/craft-laws.md (abstract laws for EVERY video).
+#
+# Pauses (baked into audio via tts_chunk + pause_after):
+#   after naming:     0.55–0.75
+#   after questions:  0.9–1.3   ← thinking beat; end the question in its own chunk
+#   after heavy morph: 0.7–1.0
+# Manim soft-idles / finishes morphs in that gap — never naked wait() on continuous speech.
+# Formula beats: show: must say BUILD_UP / MORPH stages; VO explains each piece.
+# Run: python scripts/lint_script.py demos/<slug>/script.yaml  before TTS.
+slug: example-slug
+title: "Short human title"
+thesis: "One sentence visual thesis (what the viewer should leave understanding)."
+pattern: "Wrong → Right"  # see reference/narrative-patterns.md
+audience: graduate  # high-school | undergrad | graduate | industry
+domain: machine-learning
+tone: curious_hook_documentary_explain
+
+beats:
+  - id: hook_net
+    emotional_beat: curiosity
+    tts_chunk: A0
+    pause_after: 0.65
+    say: >-
+      [curious] Suppose you have a system that classifies inputs.
+    bookmarks: [classifies]
+    show: "Draw the FULL system. Soft-idle in the baked pause."
+    latex: null
+
+  - id: hook_question
+    emotional_beat: curiosity
+    tts_chunk: A1
+    pause_after: 1.1
+    say: >-
+      How would you even measure that?
+    bookmarks: [measure]
+    show: >-
+      ask_about referents while the question is spoken; soft-idle through
+      the long pause_after before the answer beat.
+    latex: null
+
+  - id: misconception
+    emotional_beat: productive_confusion
+    tts_chunk: B
+    pause_after: 0.7
+    say: >-
+      A fixed cutoff looks easy... until you scale every bar.
+      More units cross the line, same shape. Loudness lied about concentration.
+    bookmarks: [cutoff, scale, shape]
+    show: "MORPH inflate; cutoff; count jumps; ghost of original shape stays."
+    latex: null
+
+  - id: definition
+    emotional_beat: aha
+    tts_chunk: C0
+    pause_after: 0.75
+    say: >-
+      Lock a set fraction. The number is the share of absolute mass in that set.
+      Selected over total. Uniform mass would give exactly that fraction.
+    bookmarks: [Lock, share, Uniform]
+    show: >-
+      STAGED selection: show quota → rank cascade → keep/cut → lock stamp.
+      BUILD_UP formula: write numerator meaning → morph in denominator → full line.
+      Indicate each MathTex part while speaking it.
+    latex: >
+      \mathrm{on\text{-}mass}
+      =\frac{\sum_{j\in S}| \mu_j |}{\sum_j |\mu_j|}
+
+  - id: settle
+    emotional_beat: settle
+    tts_chunk: C1
+    pause_after: 0.5
+    say: >-
+      Always report the fraction with the number.
+      Nearby metrics answer different questions.
+    bookmarks: [report, Nearby]
+    show: "Morph back to comparison visual; takeaway caption."
+    latex: null
+
+tts:
+  provider: openrouter  # the only provider — see reference/vo-tips.md
+  model: x-ai/grok-voice-tts-1.0
+  voice: leo
+  chunk_by: tts_chunk
+  speed: 0.95
+  head_silence: 1.5
+  inter_chunk_silence: 0.45
+  response_format: mp3
+
+stt:
+  model: openai/whisper-large-v3

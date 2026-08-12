@@ -1,0 +1,2696 @@
+{
+  "audio": "audio/narration.mp3",
+  "duration": 210.3261,
+  "stt_model": "openai/whisper-large-v3",
+  "stt_mode": "chunked",
+  "transcript": "Take one layer of a trained network and one class of inputs. Feed every example of that class through, and each unit in the layer answers, some strongly, some barely at all. So who is carrying this class? A handful of strong units or the whole layer sharing the work? Collapse each unit down to one number, its average response over the inputs of that class. That is the class mean for unit j, one bar per unit, and together they are this class's response distribution. Some of those means point down. For this question, the direction does not matter. A strongly negative unit is still an engaged unit. So take the size of each mean and flip it up. Now the tempting move. Pick a fixed value, draw a line there, and call every unit above it on. Count them, and you have a number. Nine units on. But turn the gain up on the whole layer. Every response grows by the same factor, and the shape of the distribution is untouched. Yet five more bars cross the line, and the count jumps. The threshold was reading loudness, not concentration. The fix is to stop naming a fixed number at all. Rank the units instead. Sort them by size. Biggest first. Then choose a set fraction, 10% say. Keep that fraction of the units from the top of the ranking. Those are the strongest responders for this class. Call that set S sub C. So how many units are on now? That question just died. The size of the set is fixed by construction. 10% in, 10% out. Counting can no longer tell you anything. So measure mass instead of membership. Add up the heights of the gold bars, then add up the heights of every bar in the layer. On mass is the ratio of those two totals, the mass inside the top set over the total mass in the layer, the share of the pi that the strongest units hold. Now read it. If every unit carried an equal share, the top 10% would hold exactly 10% of the mass. So the flat case is the baseline, and the baseline is the fraction itself. Peekier layers sit far above it. Here, two units out of 20 hold about a quarter of everything. And now turn the volume back up. Every bar climbs, the gold bars climb with them, and the number does not budge. The trap that broke the threshold cannot touch a ratio. Two nearby questions are not this one. How strong is the top set, that is the average magnitude inside the set, in raw units, and it does rise when everything gets louder. And selectivity asks something else entirely, whether a unit prefers this class over the others. Concentration and preference can move in opposite directions without contradiction. So, en masse answers one question. How much of a class's response is concentrated in its strongest few units? It is a share, not a strength, and it only means anything next to the fraction you chose. Report the pair together and sweep the fraction before you believe the story.",
+  "words": [
+    {
+      "word": "Take",
+      "start": 1.600125,
+      "end": 1.8403749999999999
+    },
+    {
+      "word": "one",
+      "start": 2.12075,
+      "end": 2.220875
+    },
+    {
+      "word": "layer",
+      "start": 2.301,
+      "end": 2.621375
+    },
+    {
+      "word": "of",
+      "start": 2.7415624999999997,
+      "end": 2.7815624999999997
+    },
+    {
+      "word": "a",
+      "start": 2.801625,
+      "end": 2.8816875
+    },
+    {
+      "word": "trained",
+      "start": 2.9818125,
+      "end": 3.3423125000000002
+    },
+    {
+      "word": "network",
+      "start": 3.4624375,
+      "end": 3.903
+    },
+    {
+      "word": "and",
+      "start": 4.403625,
+      "end": 4.483750000000001
+    },
+    {
+      "word": "one",
+      "start": 4.684,
+      "end": 4.804125
+    },
+    {
+      "word": "class",
+      "start": 4.88425,
+      "end": 5.1846250000000005
+    },
+    {
+      "word": "of",
+      "start": 5.2446874999999995,
+      "end": 5.3448125
+    },
+    {
+      "word": "inputs.",
+      "start": 5.4048750000000005,
+      "end": 5.8254375
+    },
+    {
+      "word": "Feed",
+      "start": 6.386125,
+      "end": 6.6264375
+    },
+    {
+      "word": "every",
+      "start": 6.9068125,
+      "end": 7.167125
+    },
+    {
+      "word": "example",
+      "start": 7.3273125,
+      "end": 7.787875
+    },
+    {
+      "word": "of",
+      "start": 7.8279375,
+      "end": 7.9080625
+    },
+    {
+      "word": "that",
+      "start": 7.9280625,
+      "end": 8.08825
+    },
+    {
+      "word": "class",
+      "start": 8.168375000000001,
+      "end": 8.46875
+    },
+    {
+      "word": "through,",
+      "start": 8.568875,
+      "end": 8.9093125
+    },
+    {
+      "word": "and",
+      "start": 9.3298125,
+      "end": 9.4099375
+    },
+    {
+      "word": "each",
+      "start": 9.5901875,
+      "end": 9.770375
+    },
+    {
+      "word": "unit",
+      "start": 9.9906875,
+      "end": 10.231
+    },
+    {
+      "word": "in",
+      "start": 10.371125,
+      "end": 10.4111875
+    },
+    {
+      "word": "the",
+      "start": 10.47125,
+      "end": 10.571375
+    },
+    {
+      "word": "layer",
+      "start": 10.5914375,
+      "end": 10.87175
+    },
+    {
+      "word": "answers,",
+      "start": 11.052,
+      "end": 11.4124375
+    },
+    {
+      "word": "some",
+      "start": 11.8730625,
+      "end": 12.0733125
+    },
+    {
+      "word": "strongly,",
+      "start": 12.153375,
+      "end": 12.6940625
+    },
+    {
+      "word": "some",
+      "start": 13.0145,
+      "end": 13.21475
+    },
+    {
+      "word": "barely",
+      "start": 13.2748125,
+      "end": 13.5951875
+    },
+    {
+      "word": "at",
+      "start": 13.6553125,
+      "end": 13.715375
+    },
+    {
+      "word": "all.",
+      "start": 13.8555625,
+      "end": 13.9556875
+    },
+    {
+      "word": "So",
+      "start": 15.0261875,
+      "end": 15.1463125
+    },
+    {
+      "word": "who",
+      "start": 15.2665,
+      "end": 15.406625
+    },
+    {
+      "word": "is",
+      "start": 15.50675,
+      "end": 15.586875
+    },
+    {
+      "word": "carrying",
+      "start": 15.6469375,
+      "end": 16.1075
+    },
+    {
+      "word": "this",
+      "start": 16.1275625,
+      "end": 16.30775
+    },
+    {
+      "word": "class?",
+      "start": 16.387875,
+      "end": 16.7483125
+    },
+    {
+      "word": "A",
+      "start": 17.2889375,
+      "end": 17.329
+    },
+    {
+      "word": "handful",
+      "start": 17.3890625,
+      "end": 17.7495
+    },
+    {
+      "word": "of",
+      "start": 17.809625,
+      "end": 17.8896875
+    },
+    {
+      "word": "strong",
+      "start": 17.92975,
+      "end": 18.1900625
+    },
+    {
+      "word": "units",
+      "start": 18.3703125,
+      "end": 18.7106875
+    },
+    {
+      "word": "or",
+      "start": 19.13125,
+      "end": 19.17125
+    },
+    {
+      "word": "the",
+      "start": 19.2313125,
+      "end": 19.3114375
+    },
+    {
+      "word": "whole",
+      "start": 19.3715,
+      "end": 19.6118125
+    },
+    {
+      "word": "layer",
+      "start": 19.671875,
+      "end": 19.95225
+    },
+    {
+      "word": "sharing",
+      "start": 20.1925,
+      "end": 20.5129375
+    },
+    {
+      "word": "the",
+      "start": 20.5329375,
+      "end": 20.6330625
+    },
+    {
+      "word": "work?",
+      "start": 20.693125000000002,
+      "end": 20.9334375
+    },
+    {
+      "word": "Collapse",
+      "start": 22.6540625,
+      "end": 23.054499999999997
+    },
+    {
+      "word": "each",
+      "start": 23.2346875,
+      "end": 23.394875
+    },
+    {
+      "word": "unit",
+      "start": 23.5550625,
+      "end": 23.7753125
+    },
+    {
+      "word": "down",
+      "start": 23.8954375,
+      "end": 24.075687499999997
+    },
+    {
+      "word": "to",
+      "start": 24.135749999999998,
+      "end": 24.2158125
+    },
+    {
+      "word": "one",
+      "start": 24.4160625,
+      "end": 24.536187499999997
+    },
+    {
+      "word": "number,",
+      "start": 24.6363125,
+      "end": 24.936625
+    },
+    {
+      "word": "its",
+      "start": 25.477249999999998,
+      "end": 25.577374999999996
+    },
+    {
+      "word": "average",
+      "start": 25.7375625,
+      "end": 26.037875
+    },
+    {
+      "word": "response",
+      "start": 26.097937499999997,
+      "end": 26.538437499999997
+    },
+    {
+      "word": "over",
+      "start": 26.698625,
+      "end": 26.838812499999996
+    },
+    {
+      "word": "the",
+      "start": 26.8788125,
+      "end": 26.999
+    },
+    {
+      "word": "inputs",
+      "start": 27.0790625,
+      "end": 27.4395
+    },
+    {
+      "word": "of",
+      "start": 27.499562499999996,
+      "end": 27.5395625
+    },
+    {
+      "word": "that",
+      "start": 27.599687499999998,
+      "end": 27.7398125
+    },
+    {
+      "word": "class.",
+      "start": 27.839937499999998,
+      "end": 28.2003125
+    },
+    {
+      "word": "That",
+      "start": 28.881124999999997,
+      "end": 29.0813125
+    },
+    {
+      "word": "is",
+      "start": 29.2415,
+      "end": 29.3015625
+    },
+    {
+      "word": "the",
+      "start": 29.361624999999997,
+      "end": 29.44175
+    },
+    {
+      "word": "class",
+      "start": 29.5018125,
+      "end": 29.842187499999998
+    },
+    {
+      "word": "mean",
+      "start": 29.9423125,
+      "end": 30.1625625
+    },
+    {
+      "word": "for",
+      "start": 30.282687499999998,
+      "end": 30.3828125
+    },
+    {
+      "word": "unit",
+      "start": 30.543,
+      "end": 30.76325
+    },
+    {
+      "word": "j,",
+      "start": 30.843312499999996,
+      "end": 30.863374999999998
+    },
+    {
+      "word": "one",
+      "start": 31.764374999999998,
+      "end": 31.8645
+    },
+    {
+      "word": "bar",
+      "start": 31.964624999999998,
+      "end": 32.1648125
+    },
+    {
+      "word": "per",
+      "start": 32.2849375,
+      "end": 32.425124999999994
+    },
+    {
+      "word": "unit,",
+      "start": 32.5853125,
+      "end": 32.845625
+    },
+    {
+      "word": "and",
+      "start": 33.3461875,
+      "end": 33.426249999999996
+    },
+    {
+      "word": "together",
+      "start": 33.4663125,
+      "end": 33.966875
+    },
+    {
+      "word": "they",
+      "start": 34.2271875,
+      "end": 34.3473125
+    },
+    {
+      "word": "are",
+      "start": 34.427375,
+      "end": 34.5475
+    },
+    {
+      "word": "this",
+      "start": 34.567562499999994,
+      "end": 34.72775
+    },
+    {
+      "word": "class's",
+      "start": 34.8278125,
+      "end": 35.2483125
+    },
+    {
+      "word": "response",
+      "start": 35.308375,
+      "end": 35.728875
+    },
+    {
+      "word": "distribution.",
+      "start": 35.8089375,
+      "end": 36.389624999999995
+    },
+    {
+      "word": "Some",
+      "start": 37.620062499999996,
+      "end": 37.80018749999999
+    },
+    {
+      "word": "of",
+      "start": 37.86024999999999,
+      "end": 37.920312499999994
+    },
+    {
+      "word": "those",
+      "start": 37.96031249999999,
+      "end": 38.16043749999999
+    },
+    {
+      "word": "means",
+      "start": 38.280562499999995,
+      "end": 38.620749999999994
+    },
+    {
+      "word": "point",
+      "start": 38.720812499999994,
+      "end": 38.980999999999995
+    },
+    {
+      "word": "down.",
+      "start": 39.12112499999999,
+      "end": 39.48137499999999
+    },
+    {
+      "word": "For",
+      "start": 39.901687499999994,
+      "end": 39.98168749999999
+    },
+    {
+      "word": "this",
+      "start": 40.02175,
+      "end": 40.161812499999996
+    },
+    {
+      "word": "question,",
+      "start": 40.24187499999999,
+      "end": 40.602124999999994
+    },
+    {
+      "word": "the",
+      "start": 40.64218749999999,
+      "end": 40.762249999999995
+    },
+    {
+      "word": "direction",
+      "start": 40.802249999999994,
+      "end": 41.20256249999999
+    },
+    {
+      "word": "does",
+      "start": 41.282624999999996,
+      "end": 41.422687499999995
+    },
+    {
+      "word": "not",
+      "start": 41.482749999999996,
+      "end": 41.60281249999999
+    },
+    {
+      "word": "matter.",
+      "start": 41.682874999999996,
+      "end": 41.983124999999994
+    },
+    {
+      "word": "A",
+      "start": 42.483437499999994,
+      "end": 42.50343749999999
+    },
+    {
+      "word": "strongly",
+      "start": 42.583499999999994,
+      "end": 43.063874999999996
+    },
+    {
+      "word": "negative",
+      "start": 43.12387499999999,
+      "end": 43.5241875
+    },
+    {
+      "word": "unit",
+      "start": 43.664249999999996,
+      "end": 43.864374999999995
+    },
+    {
+      "word": "is",
+      "start": 44.064562499999994,
+      "end": 44.124562499999996
+    },
+    {
+      "word": "still",
+      "start": 44.224624999999996,
+      "end": 44.50481249999999
+    },
+    {
+      "word": "an",
+      "start": 44.6449375,
+      "end": 44.6849375
+    },
+    {
+      "word": "engaged",
+      "start": 44.76499999999999,
+      "end": 45.245374999999996
+    },
+    {
+      "word": "unit.",
+      "start": 45.40543749999999,
+      "end": 45.62562499999999
+    },
+    {
+      "word": "So",
+      "start": 46.105937499999996,
+      "end": 46.205999999999996
+    },
+    {
+      "word": "take",
+      "start": 46.306062499999996,
+      "end": 46.52624999999999
+    },
+    {
+      "word": "the",
+      "start": 46.58624999999999,
+      "end": 46.66631249999999
+    },
+    {
+      "word": "size",
+      "start": 46.74637499999999,
+      "end": 47.006562499999994
+    },
+    {
+      "word": "of",
+      "start": 47.066624999999995,
+      "end": 47.166687499999995
+    },
+    {
+      "word": "each",
+      "start": 47.266749999999995,
+      "end": 47.426874999999995
+    },
+    {
+      "word": "mean",
+      "start": 47.54693749999999,
+      "end": 47.76712499999999
+    },
+    {
+      "word": "and",
+      "start": 48.027249999999995,
+      "end": 48.10731249999999
+    },
+    {
+      "word": "flip",
+      "start": 48.22743749999999,
+      "end": 48.42756249999999
+    },
+    {
+      "word": "it",
+      "start": 48.50762499999999,
+      "end": 48.547625
+    },
+    {
+      "word": "up.",
+      "start": 48.66775,
+      "end": 48.72774999999999
+    },
+    {
+      "word": "Now",
+      "start": 49.90806249999999,
+      "end": 50.06818749999999
+    },
+    {
+      "word": "the",
+      "start": 50.16824999999999,
+      "end": 50.26831249999999
+    },
+    {
+      "word": "tempting",
+      "start": 50.348375,
+      "end": 50.788687499999995
+    },
+    {
+      "word": "move.",
+      "start": 50.888749999999995,
+      "end": 51.188937499999994
+    },
+    {
+      "word": "Pick",
+      "start": 51.849374999999995,
+      "end": 52.02949999999999
+    },
+    {
+      "word": "a",
+      "start": 52.2296875,
+      "end": 52.24968749999999
+    },
+    {
+      "word": "fixed",
+      "start": 52.38974999999999,
+      "end": 52.69
+    },
+    {
+      "word": "value,",
+      "start": 52.7900625,
+      "end": 53.270374999999994
+    },
+    {
+      "word": "draw",
+      "start": 53.71068749999999,
+      "end": 53.930812499999995
+    },
+    {
+      "word": "a",
+      "start": 53.990874999999996,
+      "end": 54.07093749999999
+    },
+    {
+      "word": "line",
+      "start": 54.130937499999995,
+      "end": 54.37112499999999
+    },
+    {
+      "word": "there,",
+      "start": 54.451187499999996,
+      "end": 54.651312499999996
+    },
+    {
+      "word": "and",
+      "start": 55.03156249999999,
+      "end": 55.111625
+    },
+    {
+      "word": "call",
+      "start": 55.1716875,
+      "end": 55.3718125
+    },
+    {
+      "word": "every",
+      "start": 55.651999999999994,
+      "end": 55.9321875
+    },
+    {
+      "word": "unit",
+      "start": 56.052249999999994,
+      "end": 56.272375
+    },
+    {
+      "word": "above",
+      "start": 56.4325,
+      "end": 56.712687499999994
+    },
+    {
+      "word": "it",
+      "start": 56.772749999999995,
+      "end": 56.89281249999999
+    },
+    {
+      "word": "on.",
+      "start": 57.193,
+      "end": 57.25306249999999
+    },
+    {
+      "word": "Count",
+      "start": 57.97356249999999,
+      "end": 58.23374999999999
+    },
+    {
+      "word": "them,",
+      "start": 58.293749999999996,
+      "end": 58.41387499999999
+    },
+    {
+      "word": "and",
+      "start": 58.81412499999999,
+      "end": 58.894187499999994
+    },
+    {
+      "word": "you",
+      "start": 58.93418749999999,
+      "end": 59.01425
+    },
+    {
+      "word": "have",
+      "start": 59.07431249999999,
+      "end": 59.2344375
+    },
+    {
+      "word": "a",
+      "start": 59.254437499999995,
+      "end": 59.294437499999994
+    },
+    {
+      "word": "number.",
+      "start": 59.354499999999994,
+      "end": 59.6346875
+    },
+    {
+      "word": "Nine",
+      "start": 60.215062499999995,
+      "end": 60.515249999999995
+    },
+    {
+      "word": "units",
+      "start": 60.695375,
+      "end": 60.975562499999995
+    },
+    {
+      "word": "on.",
+      "start": 61.235749999999996,
+      "end": 61.2958125
+    },
+    {
+      "word": "But",
+      "start": 62.47612499999999,
+      "end": 62.57618749999999
+    },
+    {
+      "word": "turn",
+      "start": 62.69631249999999,
+      "end": 62.936562499999994
+    },
+    {
+      "word": "the",
+      "start": 63.03668749999999,
+      "end": 63.11674999999999
+    },
+    {
+      "word": "gain",
+      "start": 63.19687499999999,
+      "end": 63.45712499999999
+    },
+    {
+      "word": "up",
+      "start": 63.57724999999999,
+      "end": 63.63731249999999
+    },
+    {
+      "word": "on",
+      "start": 63.79749999999999,
+      "end": 63.83749999999999
+    },
+    {
+      "word": "the",
+      "start": 63.87756249999999,
+      "end": 63.97762499999999
+    },
+    {
+      "word": "whole",
+      "start": 64.05774999999998,
+      "end": 64.2579375
+    },
+    {
+      "word": "layer.",
+      "start": 64.318,
+      "end": 64.61831249999999
+    },
+    {
+      "word": "Every",
+      "start": 65.23893749999999,
+      "end": 65.45918749999998
+    },
+    {
+      "word": "response",
+      "start": 65.51924999999999,
+      "end": 66.01974999999999
+    },
+    {
+      "word": "grows",
+      "start": 66.119875,
+      "end": 66.4201875
+    },
+    {
+      "word": "by",
+      "start": 66.50025,
+      "end": 66.58031249999999
+    },
+    {
+      "word": "the",
+      "start": 66.620375,
+      "end": 66.7605
+    },
+    {
+      "word": "same",
+      "start": 66.8005625,
+      "end": 67.04081249999999
+    },
+    {
+      "word": "factor,",
+      "start": 67.16093749999999,
+      "end": 67.54131249999999
+    },
+    {
+      "word": "and",
+      "start": 67.94174999999998,
+      "end": 68.04181249999999
+    },
+    {
+      "word": "the",
+      "start": 68.06187499999999,
+      "end": 68.1619375
+    },
+    {
+      "word": "shape",
+      "start": 68.202,
+      "end": 68.46225
+    },
+    {
+      "word": "of",
+      "start": 68.50231249999999,
+      "end": 68.58237499999998
+    },
+    {
+      "word": "the",
+      "start": 68.58237499999998,
+      "end": 68.70249999999999
+    },
+    {
+      "word": "distribution",
+      "start": 68.7225,
+      "end": 69.34318749999998
+    },
+    {
+      "word": "is",
+      "start": 69.50331249999999,
+      "end": 69.543375
+    },
+    {
+      "word": "untouched.",
+      "start": 69.76362499999999,
+      "end": 70.36418749999999
+    },
+    {
+      "word": "Yet",
+      "start": 70.80468749999999,
+      "end": 70.9448125
+    },
+    {
+      "word": "five",
+      "start": 71.145,
+      "end": 71.42531249999999
+    },
+    {
+      "word": "more",
+      "start": 71.50537499999999,
+      "end": 71.68556249999999
+    },
+    {
+      "word": "bars",
+      "start": 71.74562499999999,
+      "end": 72.00587499999999
+    },
+    {
+      "word": "cross",
+      "start": 72.12599999999999,
+      "end": 72.34625
+    },
+    {
+      "word": "the",
+      "start": 72.4263125,
+      "end": 72.50643749999999
+    },
+    {
+      "word": "line,",
+      "start": 72.5464375,
+      "end": 72.80675
+    },
+    {
+      "word": "and",
+      "start": 73.167125,
+      "end": 73.2471875
+    },
+    {
+      "word": "the",
+      "start": 73.28718749999999,
+      "end": 73.3873125
+    },
+    {
+      "word": "count",
+      "start": 73.447375,
+      "end": 73.72768749999999
+    },
+    {
+      "word": "jumps.",
+      "start": 73.86781249999999,
+      "end": 74.2081875
+    },
+    {
+      "word": "The",
+      "start": 74.80874999999999,
+      "end": 74.88887499999998
+    },
+    {
+      "word": "threshold",
+      "start": 74.94893749999999,
+      "end": 75.38937499999999
+    },
+    {
+      "word": "was",
+      "start": 75.44943749999999,
+      "end": 75.5495625
+    },
+    {
+      "word": "reading",
+      "start": 75.609625,
+      "end": 75.90993749999998
+    },
+    {
+      "word": "loudness,",
+      "start": 75.97,
+      "end": 76.47049999999999
+    },
+    {
+      "word": "not",
+      "start": 76.75075,
+      "end": 76.89093749999999
+    },
+    {
+      "word": "concentration.",
+      "start": 76.97099999999999,
+      "end": 77.67174999999999
+    },
+    {
+      "word": "The",
+      "start": 78.9621875,
+      "end": 79.0223125
+    },
+    {
+      "word": "fix",
+      "start": 79.1425625,
+      "end": 79.3229375
+    },
+    {
+      "word": "is",
+      "start": 79.6035,
+      "end": 79.663625
+    },
+    {
+      "word": "to",
+      "start": 79.72375,
+      "end": 79.783875
+    },
+    {
+      "word": "stop",
+      "start": 79.884125,
+      "end": 80.14462499999999
+    },
+    {
+      "word": "naming",
+      "start": 80.2849375,
+      "end": 80.625625
+    },
+    {
+      "word": "a",
+      "start": 80.68575,
+      "end": 80.7058125
+    },
+    {
+      "word": "fixed",
+      "start": 80.8060625,
+      "end": 81.06656249999999
+    },
+    {
+      "word": "number",
+      "start": 81.12668749999999,
+      "end": 81.38725
+    },
+    {
+      "word": "at",
+      "start": 81.46743749999999,
+      "end": 81.5075
+    },
+    {
+      "word": "all.",
+      "start": 81.6678125,
+      "end": 81.80812499999999
+    },
+    {
+      "word": "Rank",
+      "start": 82.36931249999999,
+      "end": 82.54968749999999
+    },
+    {
+      "word": "the",
+      "start": 82.69,
+      "end": 82.770125
+    },
+    {
+      "word": "units",
+      "start": 82.89037499999999,
+      "end": 83.1509375
+    },
+    {
+      "word": "instead.",
+      "start": 83.23112499999999,
+      "end": 83.611875
+    },
+    {
+      "word": "Sort",
+      "start": 84.05281249999999,
+      "end": 84.2933125
+    },
+    {
+      "word": "them",
+      "start": 84.313375,
+      "end": 84.43362499999999
+    },
+    {
+      "word": "by",
+      "start": 84.49374999999999,
+      "end": 84.61399999999999
+    },
+    {
+      "word": "size.",
+      "start": 84.73424999999999,
+      "end": 85.0549375
+    },
+    {
+      "word": "Biggest",
+      "start": 85.45575,
+      "end": 85.7764375
+    },
+    {
+      "word": "first.",
+      "start": 85.8966875,
+      "end": 86.237375
+    },
+    {
+      "word": "Then",
+      "start": 87.3380625,
+      "end": 87.498125
+    },
+    {
+      "word": "choose",
+      "start": 87.67825,
+      "end": 87.99843750000001
+    },
+    {
+      "word": "a",
+      "start": 88.11856250000001,
+      "end": 88.1385625
+    },
+    {
+      "word": "set",
+      "start": 88.278625,
+      "end": 88.49875
+    },
+    {
+      "word": "fraction,",
+      "start": 88.65887500000001,
+      "end": 89.099125
+    },
+    {
+      "word": "10%",
+      "start": 89.5394375,
+      "end": 89.71956250000001
+    },
+    {
+      "word": "say.",
+      "start": 90.3399375,
+      "end": 90.5400625
+    },
+    {
+      "word": "Keep",
+      "start": 91.2004375,
+      "end": 91.3805625
+    },
+    {
+      "word": "that",
+      "start": 91.480625,
+      "end": 91.64075
+    },
+    {
+      "word": "fraction",
+      "start": 91.7408125,
+      "end": 92.12106250000001
+    },
+    {
+      "word": "of",
+      "start": 92.18106250000001,
+      "end": 92.221125
+    },
+    {
+      "word": "the",
+      "start": 92.24112500000001,
+      "end": 92.38118750000001
+    },
+    {
+      "word": "units",
+      "start": 92.46125,
+      "end": 92.72143750000001
+    },
+    {
+      "word": "from",
+      "start": 92.78143750000001,
+      "end": 92.9015
+    },
+    {
+      "word": "the",
+      "start": 92.9415625,
+      "end": 93.04162500000001
+    },
+    {
+      "word": "top",
+      "start": 93.101625,
+      "end": 93.32181250000001
+    },
+    {
+      "word": "of",
+      "start": 93.4018125,
+      "end": 93.461875
+    },
+    {
+      "word": "the",
+      "start": 93.481875,
+      "end": 93.58193750000001
+    },
+    {
+      "word": "ranking.",
+      "start": 93.64200000000001,
+      "end": 94.04225000000001
+    },
+    {
+      "word": "Those",
+      "start": 94.602625,
+      "end": 94.86275
+    },
+    {
+      "word": "are",
+      "start": 94.9628125,
+      "end": 95.04287500000001
+    },
+    {
+      "word": "the",
+      "start": 95.082875,
+      "end": 95.1629375
+    },
+    {
+      "word": "strongest",
+      "start": 95.223,
+      "end": 95.70331250000001
+    },
+    {
+      "word": "responders",
+      "start": 95.78331250000001,
+      "end": 96.30368750000001
+    },
+    {
+      "word": "for",
+      "start": 96.3636875,
+      "end": 96.44375000000001
+    },
+    {
+      "word": "this",
+      "start": 96.50381250000001,
+      "end": 96.64387500000001
+    },
+    {
+      "word": "class.",
+      "start": 96.7239375,
+      "end": 97.10418750000001
+    },
+    {
+      "word": "Call",
+      "start": 97.5644375,
+      "end": 97.76456250000001
+    },
+    {
+      "word": "that",
+      "start": 97.84462500000001,
+      "end": 97.9846875
+    },
+    {
+      "word": "set",
+      "start": 98.10481250000001,
+      "end": 98.30493750000001
+    },
+    {
+      "word": "S",
+      "start": 98.70518750000001,
+      "end": 98.7251875
+    },
+    {
+      "word": "sub",
+      "start": 98.9853125,
+      "end": 99.1854375
+    },
+    {
+      "word": "C.",
+      "start": 99.425625,
+      "end": 99.445625
+    },
+    {
+      "word": "So",
+      "start": 100.88606250000001,
+      "end": 100.9861875
+    },
+    {
+      "word": "how",
+      "start": 101.1063125,
+      "end": 101.2464375
+    },
+    {
+      "word": "many",
+      "start": 101.3065,
+      "end": 101.5466875
+    },
+    {
+      "word": "units",
+      "start": 101.686875,
+      "end": 102.0071875
+    },
+    {
+      "word": "are",
+      "start": 102.1273125,
+      "end": 102.207375
+    },
+    {
+      "word": "on",
+      "start": 102.2874375,
+      "end": 102.3275
+    },
+    {
+      "word": "now?",
+      "start": 102.447625,
+      "end": 102.6678125
+    },
+    {
+      "word": "That",
+      "start": 103.248375,
+      "end": 103.4285625
+    },
+    {
+      "word": "question",
+      "start": 103.488625,
+      "end": 103.849
+    },
+    {
+      "word": "just",
+      "start": 103.9290625,
+      "end": 104.10925
+    },
+    {
+      "word": "died.",
+      "start": 104.2093125,
+      "end": 104.5696875
+    },
+    {
+      "word": "The",
+      "start": 104.89,
+      "end": 104.9700625
+    },
+    {
+      "word": "size",
+      "start": 105.0501875,
+      "end": 105.3304375
+    },
+    {
+      "word": "of",
+      "start": 105.3705,
+      "end": 105.4505625
+    },
+    {
+      "word": "the",
+      "start": 105.4505625,
+      "end": 105.5506875
+    },
+    {
+      "word": "set",
+      "start": 105.6106875,
+      "end": 105.8309375
+    },
+    {
+      "word": "is",
+      "start": 105.9910625,
+      "end": 106.051125
+    },
+    {
+      "word": "fixed",
+      "start": 106.2313125,
+      "end": 106.551625
+    },
+    {
+      "word": "by",
+      "start": 106.65175,
+      "end": 106.771875
+    },
+    {
+      "word": "construction.",
+      "start": 106.8519375,
+      "end": 107.4525
+    },
+    {
+      "word": "10%",
+      "start": 107.9730625,
+      "end": 108.1131875
+    },
+    {
+      "word": "in,",
+      "start": 108.6536875,
+      "end": 108.71375
+    },
+    {
+      "word": "10%",
+      "start": 109.1341875,
+      "end": 109.6346875
+    },
+    {
+      "word": "out.",
+      "start": 109.8949375,
+      "end": 110.0150625
+    },
+    {
+      "word": "Counting",
+      "start": 110.6556875,
+      "end": 111.076125
+    },
+    {
+      "word": "can",
+      "start": 111.136125,
+      "end": 111.23625
+    },
+    {
+      "word": "no",
+      "start": 111.356375,
+      "end": 111.4565
+    },
+    {
+      "word": "longer",
+      "start": 111.5565625,
+      "end": 111.8168125
+    },
+    {
+      "word": "tell",
+      "start": 111.896875,
+      "end": 112.097125
+    },
+    {
+      "word": "you",
+      "start": 112.117125,
+      "end": 112.1971875
+    },
+    {
+      "word": "anything.",
+      "start": 112.2973125,
+      "end": 112.637625
+    },
+    {
+      "word": "So",
+      "start": 114.28825000000002,
+      "end": 114.50868750000001
+    },
+    {
+      "word": "measure",
+      "start": 114.62893750000002,
+      "end": 114.94956250000001
+    },
+    {
+      "word": "mass",
+      "start": 115.08981250000001,
+      "end": 115.45050000000002
+    },
+    {
+      "word": "instead",
+      "start": 115.71100000000001,
+      "end": 116.01156250000001
+    },
+    {
+      "word": "of",
+      "start": 116.05162500000002,
+      "end": 116.15181250000002
+    },
+    {
+      "word": "membership.",
+      "start": 116.19193750000001,
+      "end": 116.69287500000002
+    },
+    {
+      "word": "Add",
+      "start": 117.31406250000002,
+      "end": 117.41425000000001
+    },
+    {
+      "word": "up",
+      "start": 117.51443750000001,
+      "end": 117.57456250000001
+    },
+    {
+      "word": "the",
+      "start": 117.65468750000001,
+      "end": 117.77493750000002
+    },
+    {
+      "word": "heights",
+      "start": 117.83506250000002,
+      "end": 118.15568750000001
+    },
+    {
+      "word": "of",
+      "start": 118.23581250000001,
+      "end": 118.27587500000001
+    },
+    {
+      "word": "the",
+      "start": 118.31600000000002,
+      "end": 118.45625000000001
+    },
+    {
+      "word": "gold",
+      "start": 118.47625000000002,
+      "end": 118.71675000000002
+    },
+    {
+      "word": "bars,",
+      "start": 118.81693750000001,
+      "end": 119.19762500000002
+    },
+    {
+      "word": "then",
+      "start": 119.63850000000002,
+      "end": 119.75875000000002
+    },
+    {
+      "word": "add",
+      "start": 119.93906250000002,
+      "end": 120.03925000000001
+    },
+    {
+      "word": "up",
+      "start": 120.11943750000002,
+      "end": 120.17950000000002
+    },
+    {
+      "word": "the",
+      "start": 120.25968750000001,
+      "end": 120.35987500000002
+    },
+    {
+      "word": "heights",
+      "start": 120.39993750000002,
+      "end": 120.68050000000001
+    },
+    {
+      "word": "of",
+      "start": 120.76062500000002,
+      "end": 120.86081250000001
+    },
+    {
+      "word": "every",
+      "start": 121.08125000000001,
+      "end": 121.34175000000002
+    },
+    {
+      "word": "bar",
+      "start": 121.44193750000001,
+      "end": 121.68237500000001
+    },
+    {
+      "word": "in",
+      "start": 121.80262500000002,
+      "end": 121.84268750000001
+    },
+    {
+      "word": "the",
+      "start": 121.90281250000001,
+      "end": 121.98300000000002
+    },
+    {
+      "word": "layer.",
+      "start": 122.04306250000002,
+      "end": 122.28356250000002
+    },
+    {
+      "word": "On",
+      "start": 123.43431250000002,
+      "end": 123.51443750000001
+    },
+    {
+      "word": "mass",
+      "start": 123.67475000000002,
+      "end": 123.97531250000002
+    },
+    {
+      "word": "is",
+      "start": 124.21575000000001,
+      "end": 124.27581250000001
+    },
+    {
+      "word": "the",
+      "start": 124.33593750000001,
+      "end": 124.41612500000002
+    },
+    {
+      "word": "ratio",
+      "start": 124.49625000000002,
+      "end": 124.95706250000002
+    },
+    {
+      "word": "of",
+      "start": 125.13743750000002,
+      "end": 125.17750000000002
+    },
+    {
+      "word": "those",
+      "start": 125.25762500000002,
+      "end": 125.49806250000002
+    },
+    {
+      "word": "two",
+      "start": 125.53812500000002,
+      "end": 125.69843750000003
+    },
+    {
+      "word": "totals,",
+      "start": 125.81868750000002,
+      "end": 126.29956250000002
+    },
+    {
+      "word": "the",
+      "start": 126.76037500000002,
+      "end": 126.86056250000001
+    },
+    {
+      "word": "mass",
+      "start": 126.92068750000001,
+      "end": 127.14106250000002
+    },
+    {
+      "word": "inside",
+      "start": 127.24125000000002,
+      "end": 127.58187500000003
+    },
+    {
+      "word": "the",
+      "start": 127.60193750000002,
+      "end": 127.70212500000002
+    },
+    {
+      "word": "top",
+      "start": 127.78225000000002,
+      "end": 127.98262500000001
+    },
+    {
+      "word": "set",
+      "start": 128.102875,
+      "end": 128.32325000000003
+    },
+    {
+      "word": "over",
+      "start": 128.84418750000003,
+      "end": 129.0045
+    },
+    {
+      "word": "the",
+      "start": 129.08462500000002,
+      "end": 129.1648125
+    },
+    {
+      "word": "total",
+      "start": 129.24493750000002,
+      "end": 129.60562500000003
+    },
+    {
+      "word": "mass",
+      "start": 129.7058125,
+      "end": 129.94625000000002
+    },
+    {
+      "word": "in",
+      "start": 130.04643750000002,
+      "end": 130.08650000000003
+    },
+    {
+      "word": "the",
+      "start": 130.14656250000002,
+      "end": 130.22675
+    },
+    {
+      "word": "layer,",
+      "start": 130.26681250000001,
+      "end": 130.52731250000002
+    },
+    {
+      "word": "the",
+      "start": 131.18850000000003,
+      "end": 131.26862500000001
+    },
+    {
+      "word": "share",
+      "start": 131.3488125,
+      "end": 131.58925000000002
+    },
+    {
+      "word": "of",
+      "start": 131.66937500000003,
+      "end": 131.7094375
+    },
+    {
+      "word": "the",
+      "start": 131.72950000000003,
+      "end": 131.86975
+    },
+    {
+      "word": "pi",
+      "start": 131.90981250000002,
+      "end": 132.17031250000002
+    },
+    {
+      "word": "that",
+      "start": 132.3305625,
+      "end": 132.43075000000002
+    },
+    {
+      "word": "the",
+      "start": 132.49087500000002,
+      "end": 132.59106250000002
+    },
+    {
+      "word": "strongest",
+      "start": 132.67118750000003,
+      "end": 133.13206250000002
+    },
+    {
+      "word": "units",
+      "start": 133.29237500000002,
+      "end": 133.55281250000002
+    },
+    {
+      "word": "hold.",
+      "start": 133.633,
+      "end": 133.87343750000002
+    },
+    {
+      "word": "Now",
+      "start": 135.334125,
+      "end": 135.5343125
+    },
+    {
+      "word": "read",
+      "start": 135.6945,
+      "end": 135.9146875
+    },
+    {
+      "word": "it.",
+      "start": 136.03481250000002,
+      "end": 136.1349375
+    },
+    {
+      "word": "If",
+      "start": 136.7555625,
+      "end": 136.795625
+    },
+    {
+      "word": "every",
+      "start": 137.035875,
+      "end": 137.29612500000002
+    },
+    {
+      "word": "unit",
+      "start": 137.43625,
+      "end": 137.6765
+    },
+    {
+      "word": "carried",
+      "start": 137.776625,
+      "end": 138.13693750000002
+    },
+    {
+      "word": "an",
+      "start": 138.197,
+      "end": 138.2370625
+    },
+    {
+      "word": "equal",
+      "start": 138.43725,
+      "end": 138.69750000000002
+    },
+    {
+      "word": "share,",
+      "start": 138.797625,
+      "end": 139.057875
+    },
+    {
+      "word": "the",
+      "start": 139.4983125,
+      "end": 139.5784375
+    },
+    {
+      "word": "top",
+      "start": 139.6585,
+      "end": 139.8586875
+    },
+    {
+      "word": "10%",
+      "start": 139.9788125,
+      "end": 140.519375
+    },
+    {
+      "word": "would",
+      "start": 140.6595,
+      "end": 140.79962500000002
+    },
+    {
+      "word": "hold",
+      "start": 140.8396875,
+      "end": 141.019875
+    },
+    {
+      "word": "exactly",
+      "start": 141.0999375,
+      "end": 141.58043750000002
+    },
+    {
+      "word": "10%",
+      "start": 141.6605,
+      "end": 142.2010625
+    },
+    {
+      "word": "of",
+      "start": 142.3011875,
+      "end": 142.36125
+    },
+    {
+      "word": "the",
+      "start": 142.36125,
+      "end": 142.481375
+    },
+    {
+      "word": "mass.",
+      "start": 142.521375,
+      "end": 142.78162500000002
+    },
+    {
+      "word": "So",
+      "start": 143.36225000000002,
+      "end": 143.4423125
+    },
+    {
+      "word": "the",
+      "start": 143.522375,
+      "end": 143.60250000000002
+    },
+    {
+      "word": "flat",
+      "start": 143.68256250000002,
+      "end": 143.9428125
+    },
+    {
+      "word": "case",
+      "start": 144.0229375,
+      "end": 144.32318750000002
+    },
+    {
+      "word": "is",
+      "start": 144.463375,
+      "end": 144.5234375
+    },
+    {
+      "word": "the",
+      "start": 144.58350000000002,
+      "end": 144.6435625
+    },
+    {
+      "word": "baseline,",
+      "start": 144.70362500000002,
+      "end": 145.22412500000002
+    },
+    {
+      "word": "and",
+      "start": 145.66456250000002,
+      "end": 145.744625
+    },
+    {
+      "word": "the",
+      "start": 145.78468750000002,
+      "end": 145.8848125
+    },
+    {
+      "word": "baseline",
+      "start": 145.90481250000002,
+      "end": 146.445375
+    },
+    {
+      "word": "is",
+      "start": 146.56550000000001,
+      "end": 146.6255625
+    },
+    {
+      "word": "the",
+      "start": 146.68562500000002,
+      "end": 146.7456875
+    },
+    {
+      "word": "fraction",
+      "start": 146.82575,
+      "end": 147.20612500000001
+    },
+    {
+      "word": "itself.",
+      "start": 147.2661875,
+      "end": 147.64656250000002
+    },
+    {
+      "word": "Peekier",
+      "start": 148.40731250000002,
+      "end": 148.82775
+    },
+    {
+      "word": "layers",
+      "start": 148.8878125,
+      "end": 149.188125
+    },
+    {
+      "word": "sit",
+      "start": 149.2681875,
+      "end": 149.448375
+    },
+    {
+      "word": "far",
+      "start": 149.6085625,
+      "end": 149.82875
+    },
+    {
+      "word": "above",
+      "start": 149.94887500000002,
+      "end": 150.169125
+    },
+    {
+      "word": "it.",
+      "start": 150.2491875,
+      "end": 150.30925000000002
+    },
+    {
+      "word": "Here,",
+      "start": 150.929875,
+      "end": 151.2501875
+    },
+    {
+      "word": "two",
+      "start": 151.670625,
+      "end": 151.8308125
+    },
+    {
+      "word": "units",
+      "start": 152.011,
+      "end": 152.3313125
+    },
+    {
+      "word": "out",
+      "start": 152.431375,
+      "end": 152.5315
+    },
+    {
+      "word": "of",
+      "start": 152.6115625,
+      "end": 152.671625
+    },
+    {
+      "word": "20",
+      "start": 152.7116875,
+      "end": 153.1120625
+    },
+    {
+      "word": "hold",
+      "start": 153.2321875,
+      "end": 153.4324375
+    },
+    {
+      "word": "about",
+      "start": 153.4925,
+      "end": 153.7326875
+    },
+    {
+      "word": "a",
+      "start": 153.75275,
+      "end": 153.8128125
+    },
+    {
+      "word": "quarter",
+      "start": 153.87287500000002,
+      "end": 154.23325
+    },
+    {
+      "word": "of",
+      "start": 154.27325000000002,
+      "end": 154.35331250000002
+    },
+    {
+      "word": "everything.",
+      "start": 154.393375,
+      "end": 154.75375
+    },
+    {
+      "word": "And",
+      "start": 155.9941875,
+      "end": 156.07431250000002
+    },
+    {
+      "word": "now",
+      "start": 156.15443750000003,
+      "end": 156.35481250000004
+    },
+    {
+      "word": "turn",
+      "start": 156.394875,
+      "end": 156.73543750000002
+    },
+    {
+      "word": "the",
+      "start": 156.81556250000003,
+      "end": 156.89575000000002
+    },
+    {
+      "word": "volume",
+      "start": 156.93581250000003,
+      "end": 157.25637500000002
+    },
+    {
+      "word": "back",
+      "start": 157.33650000000003,
+      "end": 157.53681250000002
+    },
+    {
+      "word": "up.",
+      "start": 157.69712500000003,
+      "end": 157.75718750000001
+    },
+    {
+      "word": "Every",
+      "start": 158.51850000000002,
+      "end": 158.75893750000003
+    },
+    {
+      "word": "bar",
+      "start": 158.8390625,
+      "end": 159.05943750000003
+    },
+    {
+      "word": "climbs,",
+      "start": 159.1996875,
+      "end": 159.70056250000002
+    },
+    {
+      "word": "the",
+      "start": 159.900875,
+      "end": 159.98100000000002
+    },
+    {
+      "word": "gold",
+      "start": 160.06118750000002,
+      "end": 160.30156250000002
+    },
+    {
+      "word": "bars",
+      "start": 160.38168750000003,
+      "end": 160.66218750000002
+    },
+    {
+      "word": "climb",
+      "start": 160.76237500000002,
+      "end": 161.04287500000004
+    },
+    {
+      "word": "with",
+      "start": 161.12300000000002,
+      "end": 161.24318750000003
+    },
+    {
+      "word": "them,",
+      "start": 161.32331250000001,
+      "end": 161.4435625
+    },
+    {
+      "word": "and",
+      "start": 161.92437500000003,
+      "end": 162.00450000000004
+    },
+    {
+      "word": "the",
+      "start": 162.0445625,
+      "end": 162.1046875
+    },
+    {
+      "word": "number",
+      "start": 162.20487500000002,
+      "end": 162.48531250000002
+    },
+    {
+      "word": "does",
+      "start": 162.58550000000002,
+      "end": 162.74575000000002
+    },
+    {
+      "word": "not",
+      "start": 162.866,
+      "end": 163.106375
+    },
+    {
+      "word": "budge.",
+      "start": 163.1665,
+      "end": 163.467
+    },
+    {
+      "word": "The",
+      "start": 164.06806250000002,
+      "end": 164.14818750000003
+    },
+    {
+      "word": "trap",
+      "start": 164.248375,
+      "end": 164.50881250000003
+    },
+    {
+      "word": "that",
+      "start": 164.60900000000004,
+      "end": 164.72918750000002
+    },
+    {
+      "word": "broke",
+      "start": 164.80931250000003,
+      "end": 165.06975000000003
+    },
+    {
+      "word": "the",
+      "start": 165.12987500000003,
+      "end": 165.21000000000004
+    },
+    {
+      "word": "threshold",
+      "start": 165.2500625,
+      "end": 165.75093750000002
+    },
+    {
+      "word": "cannot",
+      "start": 165.89118750000003,
+      "end": 166.25181250000003
+    },
+    {
+      "word": "touch",
+      "start": 166.29187500000003,
+      "end": 166.53231250000002
+    },
+    {
+      "word": "a",
+      "start": 166.6725,
+      "end": 166.69256250000004
+    },
+    {
+      "word": "ratio.",
+      "start": 166.75268750000004,
+      "end": 167.13331250000002
+    },
+    {
+      "word": "Two",
+      "start": 168.464,
+      "end": 168.664125
+    },
+    {
+      "word": "nearby",
+      "start": 168.8241875,
+      "end": 169.2244375
+    },
+    {
+      "word": "questions",
+      "start": 169.3645,
+      "end": 169.88475
+    },
+    {
+      "word": "are",
+      "start": 169.9848125,
+      "end": 170.064875
+    },
+    {
+      "word": "not",
+      "start": 170.1649375,
+      "end": 170.385
+    },
+    {
+      "word": "this",
+      "start": 170.4050625,
+      "end": 170.565125
+    },
+    {
+      "word": "one.",
+      "start": 170.7051875,
+      "end": 170.80525
+    },
+    {
+      "word": "How",
+      "start": 171.4255625,
+      "end": 171.545625
+    },
+    {
+      "word": "strong",
+      "start": 171.6656875,
+      "end": 171.94581250000002
+    },
+    {
+      "word": "is",
+      "start": 172.025875,
+      "end": 172.065875
+    },
+    {
+      "word": "the",
+      "start": 172.1059375,
+      "end": 172.20600000000002
+    },
+    {
+      "word": "top",
+      "start": 172.246,
+      "end": 172.446125
+    },
+    {
+      "word": "set,",
+      "start": 172.54612500000002,
+      "end": 172.78625
+    },
+    {
+      "word": "that",
+      "start": 173.1665,
+      "end": 173.3065625
+    },
+    {
+      "word": "is",
+      "start": 173.406625,
+      "end": 173.466625
+    },
+    {
+      "word": "the",
+      "start": 173.54668750000002,
+      "end": 173.64675
+    },
+    {
+      "word": "average",
+      "start": 173.82681250000002,
+      "end": 174.127
+    },
+    {
+      "word": "magnitude",
+      "start": 174.227,
+      "end": 174.8273125
+    },
+    {
+      "word": "inside",
+      "start": 174.947375,
+      "end": 175.367625
+    },
+    {
+      "word": "the",
+      "start": 175.427625,
+      "end": 175.5076875
+    },
+    {
+      "word": "set,",
+      "start": 175.56775000000002,
+      "end": 175.807875
+    },
+    {
+      "word": "in",
+      "start": 176.12800000000001,
+      "end": 176.1880625
+    },
+    {
+      "word": "raw",
+      "start": 176.328125,
+      "end": 176.52825
+    },
+    {
+      "word": "units,",
+      "start": 176.72831250000002,
+      "end": 177.0285
+    },
+    {
+      "word": "and",
+      "start": 177.48875,
+      "end": 177.56875
+    },
+    {
+      "word": "it",
+      "start": 177.6288125,
+      "end": 177.708875
+    },
+    {
+      "word": "does",
+      "start": 177.748875,
+      "end": 177.92893750000002
+    },
+    {
+      "word": "rise",
+      "start": 178.029,
+      "end": 178.32918750000002
+    },
+    {
+      "word": "when",
+      "start": 178.3891875,
+      "end": 178.48925
+    },
+    {
+      "word": "everything",
+      "start": 178.60931250000002,
+      "end": 178.9495
+    },
+    {
+      "word": "gets",
+      "start": 178.9895,
+      "end": 179.169625
+    },
+    {
+      "word": "louder.",
+      "start": 179.2696875,
+      "end": 179.5898125
+    },
+    {
+      "word": "And",
+      "start": 180.3301875,
+      "end": 180.41025000000002
+    },
+    {
+      "word": "selectivity",
+      "start": 180.4703125,
+      "end": 181.2506875
+    },
+    {
+      "word": "asks",
+      "start": 181.39075,
+      "end": 181.590875
+    },
+    {
+      "word": "something",
+      "start": 181.650875,
+      "end": 181.97106250000002
+    },
+    {
+      "word": "else",
+      "start": 182.1511875,
+      "end": 182.33125
+    },
+    {
+      "word": "entirely,",
+      "start": 182.4913125,
+      "end": 183.051625
+    },
+    {
+      "word": "whether",
+      "start": 183.571875,
+      "end": 183.792
+    },
+    {
+      "word": "a",
+      "start": 183.85206250000002,
+      "end": 183.8720625
+    },
+    {
+      "word": "unit",
+      "start": 184.012125,
+      "end": 184.21225
+    },
+    {
+      "word": "prefers",
+      "start": 184.31231250000002,
+      "end": 184.73250000000002
+    },
+    {
+      "word": "this",
+      "start": 184.8525625,
+      "end": 185.0126875
+    },
+    {
+      "word": "class",
+      "start": 185.13275000000002,
+      "end": 185.432875
+    },
+    {
+      "word": "over",
+      "start": 185.65300000000002,
+      "end": 185.79306250000002
+    },
+    {
+      "word": "the",
+      "start": 185.8330625,
+      "end": 185.913125
+    },
+    {
+      "word": "others.",
+      "start": 186.01318750000002,
+      "end": 186.2533125
+    },
+    {
+      "word": "Concentration",
+      "start": 186.89362500000001,
+      "end": 187.594
+    },
+    {
+      "word": "and",
+      "start": 187.6540625,
+      "end": 187.7140625
+    },
+    {
+      "word": "preference",
+      "start": 187.794125,
+      "end": 188.254375
+    },
+    {
+      "word": "can",
+      "start": 188.314375,
+      "end": 188.41443750000002
+    },
+    {
+      "word": "move",
+      "start": 188.49450000000002,
+      "end": 188.6545625
+    },
+    {
+      "word": "in",
+      "start": 188.7145625,
+      "end": 188.814625
+    },
+    {
+      "word": "opposite",
+      "start": 188.9146875,
+      "end": 189.274875
+    },
+    {
+      "word": "directions",
+      "start": 189.314875,
+      "end": 189.8551875
+    },
+    {
+      "word": "without",
+      "start": 190.195375,
+      "end": 190.4755
+    },
+    {
+      "word": "contradiction.",
+      "start": 190.5755625,
+      "end": 191.135875
+    },
+    {
+      "word": "So,",
+      "start": 192.326125,
+      "end": 192.44625
+    },
+    {
+      "word": "en",
+      "start": 192.50631249999998,
+      "end": 192.8466875
+    },
+    {
+      "word": "masse",
+      "start": 192.96681249999997,
+      "end": 193.267125
+    },
+    {
+      "word": "answers",
+      "start": 193.46737499999998,
+      "end": 193.86781249999999
+    },
+    {
+      "word": "one",
+      "start": 194.048,
+      "end": 194.20818749999998
+    },
+    {
+      "word": "question.",
+      "start": 194.26825,
+      "end": 194.6886875
+    },
+    {
+      "word": "How",
+      "start": 195.309375,
+      "end": 195.4695625
+    },
+    {
+      "word": "much",
+      "start": 195.5696875,
+      "end": 195.8099375
+    },
+    {
+      "word": "of",
+      "start": 195.8099375,
+      "end": 195.85
+    },
+    {
+      "word": "a",
+      "start": 195.86999999999998,
+      "end": 195.95012499999999
+    },
+    {
+      "word": "class's",
+      "start": 196.0101875,
+      "end": 196.430625
+    },
+    {
+      "word": "response",
+      "start": 196.49068749999998,
+      "end": 196.9511875
+    },
+    {
+      "word": "is",
+      "start": 197.091375,
+      "end": 197.1714375
+    },
+    {
+      "word": "concentrated",
+      "start": 197.2915625,
+      "end": 198.0524375
+    },
+    {
+      "word": "in",
+      "start": 198.07243749999998,
+      "end": 198.252625
+    },
+    {
+      "word": "its",
+      "start": 198.33274999999998,
+      "end": 198.45287499999998
+    },
+    {
+      "word": "strongest",
+      "start": 198.5129375,
+      "end": 198.9934375
+    },
+    {
+      "word": "few",
+      "start": 199.0935625,
+      "end": 199.27374999999998
+    },
+    {
+      "word": "units?",
+      "start": 199.474,
+      "end": 199.7543125
+    },
+    {
+      "word": "It",
+      "start": 200.35493749999998,
+      "end": 200.415
+    },
+    {
+      "word": "is",
+      "start": 200.475125,
+      "end": 200.59525
+    },
+    {
+      "word": "a",
+      "start": 200.61525,
+      "end": 200.63524999999998
+    },
+    {
+      "word": "share,",
+      "start": 200.755375,
+      "end": 201.05575
+    },
+    {
+      "word": "not",
+      "start": 201.35606249999998,
+      "end": 201.59631249999998
+    },
+    {
+      "word": "a",
+      "start": 201.61637499999998,
+      "end": 201.636375
+    },
+    {
+      "word": "strength,",
+      "start": 201.6964375,
+      "end": 202.11693749999998
+    },
+    {
+      "word": "and",
+      "start": 202.6575,
+      "end": 202.7375625
+    },
+    {
+      "word": "it",
+      "start": 202.757625,
+      "end": 202.8376875
+    },
+    {
+      "word": "only",
+      "start": 202.9578125,
+      "end": 203.1580625
+    },
+    {
+      "word": "means",
+      "start": 203.19812499999998,
+      "end": 203.43837499999998
+    },
+    {
+      "word": "anything",
+      "start": 203.5785,
+      "end": 203.9589375
+    },
+    {
+      "word": "next",
+      "start": 204.01899999999998,
+      "end": 204.1991875
+    },
+    {
+      "word": "to",
+      "start": 204.21925,
+      "end": 204.29931249999998
+    },
+    {
+      "word": "the",
+      "start": 204.29931249999998,
+      "end": 204.43949999999998
+    },
+    {
+      "word": "fraction",
+      "start": 204.4995625,
+      "end": 204.87993749999998
+    },
+    {
+      "word": "you",
+      "start": 204.94,
+      "end": 205.040125
+    },
+    {
+      "word": "chose.",
+      "start": 205.12025,
+      "end": 205.460625
+    },
+    {
+      "word": "Report",
+      "start": 206.10131249999998,
+      "end": 206.46168749999998
+    },
+    {
+      "word": "the",
+      "start": 206.50175,
+      "end": 206.60187499999998
+    },
+    {
+      "word": "pair",
+      "start": 206.6619375,
+      "end": 206.8821875
+    },
+    {
+      "word": "together",
+      "start": 206.94225,
+      "end": 207.38275
+    },
+    {
+      "word": "and",
+      "start": 207.72312499999998,
+      "end": 207.80318749999998
+    },
+    {
+      "word": "sweep",
+      "start": 207.9033125,
+      "end": 208.1435625
+    },
+    {
+      "word": "the",
+      "start": 208.223625,
+      "end": 208.30374999999998
+    },
+    {
+      "word": "fraction",
+      "start": 208.34375,
+      "end": 208.7241875
+    },
+    {
+      "word": "before",
+      "start": 208.80431249999998,
+      "end": 209.084625
+    },
+    {
+      "word": "you",
+      "start": 209.12462499999998,
+      "end": 209.20475
+    },
+    {
+      "word": "believe",
+      "start": 209.26481249999998,
+      "end": 209.54512499999998
+    },
+    {
+      "word": "the",
+      "start": 209.565125,
+      "end": 209.68525
+    },
+    {
+      "word": "story.",
+      "start": 209.7253125,
+      "end": 210.08568749999998
+    }
+  ],
+  "bookmarks": {
+    "layer": 2.301,
+    "class": 4.88425,
+    "unit": 9.9906875,
+    "strongly": 12.153375,
+    "carrying": 15.6469375,
+    "handful": 17.3890625,
+    "sharing": 20.1925,
+    "Collapse": 22.6540625,
+    "average": 25.7375625,
+    "mean": 29.9423125,
+    "distribution": 35.8089375,
+    "down": 39.12112499999999,
+    "direction": 40.802249999999994,
+    "size": 46.74637499999999,
+    "flip": 48.22743749999999,
+    "fixed": 52.38974999999999,
+    "line": 54.130937499999995,
+    "Count": 57.97356249999999,
+    "nine": 60.215062499999995,
+    "gain": 63.19687499999999,
+    "grows": 66.119875,
+    "shape": 68.202,
+    "cross": 72.12599999999999,
+    "jumps": 73.86781249999999,
+    "loudness": 75.97,
+    "stop": 79.884125,
+    "Rank": 82.36931249999999,
+    "sort": 84.05281249999999,
+    "biggest": 85.45575,
+    "fraction": 88.65887500000001,
+    "percent": 89.5394375,
+    "Keep": 91.2004375,
+    "strongest": 95.223,
+    "set": 98.10481250000001,
+    "died": 104.2093125,
+    "fixed#2": 106.2313125,
+    "construction": 106.8519375,
+    "Counting": 110.6556875,
+    "mass": 115.08981250000001,
+    "heights": 117.83506250000002,
+    "gold": 118.47625000000002,
+    "every": 121.08125000000001,
+    "ratio": 124.49625000000002,
+    "inside": 127.24125000000002,
+    "total": 129.24493750000002,
+    "share": 131.3488125,
+    "read": 135.6945,
+    "equal": 138.43725,
+    "baseline": 144.70362500000002,
+    "Peakier": 148.40731250000002,
+    "quarter": 153.87287500000002,
+    "volume": 156.93581250000003,
+    "climbs": 159.1996875,
+    "budge": 163.1665,
+    "trap": 164.248375,
+    "nearby": 168.8241875,
+    "magnitude": 174.227,
+    "louder": 179.2696875,
+    "selectivity": 180.4703125,
+    "prefers": 184.31231250000002,
+    "opposite": 188.9146875,
+    "concentrated": 197.2915625,
+    "strength": 201.6964375,
+    "chose": 205.12025,
+    "sweep": 207.9033125
+  }
+}

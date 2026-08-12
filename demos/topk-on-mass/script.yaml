@@ -1,0 +1,279 @@
+# Top-k on-mass — Wrong → Right (fixed cutoff → relative ranking → share of mass)
+# Craft: motivate → compute → name; BUILD_UP formulas; questions get ≥0.9 pause.
+slug: topk-on-mass
+title: "Top-k on-mass"
+thesis: >-
+  On-mass asks how much of a class's total response magnitude is concentrated in
+  its strongest few units — a share of the mass at a stated set fraction, not a
+  count of units above a threshold, not the strength of the top set, and not
+  class preference.
+pattern: "Wrong → Right"
+audience: graduate
+domain: machine-learning
+tone: curious_hook_documentary_explain
+source: >-
+  NTUDynamicRangeGCN teaching notes, §neuron-on (top-k mass):
+  on-mass(c) = sum_{j in S_c} |mu_{c,j}| / sum_j |mu_{c,j}|, S_c = top fF units
+  by |mu_{c,j}|; uniform baseline = f. Replaces the old hard-threshold
+  "neuron-on fraction", which confounded magnitude with engagement.
+
+beats:
+  # ── 1. HOOK ──
+  - id: hook_layer
+    emotional_beat: curiosity
+    tts_chunk: A0
+    pause_after: 0.65
+    say: >-
+      [curious] Take one layer of a trained network... and one class of inputs.
+      Feed every example of that class through, and each unit in the layer
+      answers — some strongly, some barely at all.
+    bookmarks: [layer, class, unit, strongly]
+    show: >-
+      Draw the WHOLE net first, then narrow: POP the wide hidden layer
+      (container). Class-c input chips cycle on the INPUT side while the units
+      of that layer brighten in lockstep (causal pair — never move one side
+      alone). Soft-idle in the baked pause.
+    latex: null
+
+  - id: hook_question
+    emotional_beat: curiosity
+    tts_chunk: A1
+    pause_after: 1.2
+    say: >-
+      So who is carrying this class? A handful of strong units... or the whole
+      layer, sharing the work?
+    bookmarks: [carrying, handful, sharing]
+    show: >-
+      ask_about the highlighted layer while the class chips keep arriving —
+      pulse the focus rectangle and the layer as a group (never Indicate the
+      data-colored fills). Soft-idle through the long pause.
+    latex: null
+
+  # ── 2. THE OBJECT — class means, then magnitudes ──
+  - id: class_means
+    emotional_beat: partial_clarity
+    tts_chunk: B0
+    pause_after: 0.75
+    say: >-
+      Collapse each unit down to one number... its average response over the
+      inputs of that class. That is the class mean for unit j. One bar per unit,
+      and together they are this class's response distribution.
+    bookmarks: [Collapse, average, mean, distribution]
+    show: >-
+      MORPH the layer's units into a row of signed bars around an axis (morph,
+      never respawn). BUILD_UP MathTex: mu_{c,j} written as the average over the
+      examples of class c; Indicate the sum while "average" is spoken. Panel
+      label "class-c response distribution" lands on the spoken word.
+    latex: >
+      \mu_{c,j}
+      =\frac{1}{|\{m:\, y_m=c\}|}\sum_{m:\, y_m=c} a_j(m)
+
+  - id: absolute_value
+    emotional_beat: partial_clarity
+    tts_chunk: B1
+    pause_after: 0.7
+    say: >-
+      Some of those means point down. For this question the direction does not
+      matter — a strongly negative unit is still an engaged unit. So take the
+      size of each mean, and flip it up.
+    bookmarks: [down, direction, size, flip]
+    show: >-
+      STAGED: the negative bars pop, then flip up around the axis one by one.
+      MathTex MORPH mu_{c,j} → |mu_{c,j}| in lockstep with "size".
+    latex: >
+      |\mu_{c,j}|
+
+  # ── 3. WRONG — the fixed threshold ──
+  - id: wrong_cutoff
+    emotional_beat: productive_confusion
+    tts_chunk: C0
+    pause_after: 0.8
+    say: >-
+      Now the tempting move. Pick a fixed value, draw a line there, and call
+      every unit above it on. Count them, and you have a number — nine units on.
+    bookmarks: [fixed, line, Count, nine]
+    show: >-
+      STAGED procedure: the cutoff line slides in; bars above it turn gold one
+      by one from the left; a counter chip ticks up to nine. Each verb is its
+      own readable step — no one-shot recolor.
+    latex: null
+
+  - id: gain_trap
+    emotional_beat: productive_confusion
+    tts_chunk: C1
+    pause_after: 0.95
+    say: >-
+      But turn the gain up on the whole layer. Every response grows by the same
+      factor... and the shape of the distribution is untouched. Yet five more
+      bars cross the line, and the count jumps. The threshold was reading
+      loudness, not concentration.
+    bookmarks: [gain, grows, shape, cross, jumps, loudness]
+    show: >-
+      STAGED against a SHARED reference peak so louder really means taller
+      pixels (never renormalize). A dashed ghost of the original skyline stays
+      to prove the shape held; newly crossing bars flash gold; counter 9 → 14 in
+      red. KEY: "loudness, not concentration".
+    latex: null
+
+  # ── 4. RIGHT — rank, then fix a fraction ──
+  - id: rank_instead
+    emotional_beat: partial_clarity
+    tts_chunk: D0
+    pause_after: 0.7
+    say: >-
+      The fix is to stop naming a fixed number at all. Rank the units instead —
+      sort them by size, biggest first.
+    bookmarks: [stop, Rank, sort, biggest]
+    show: >-
+      MORPH: gain returns to normal and the cutoff line dissolves; bars slide
+      into a descending skyline (positions morph in place, bars keep identity).
+    latex: null
+
+  - id: top_set
+    emotional_beat: partial_clarity
+    tts_chunk: D1
+    pause_after: 0.8
+    say: >-
+      Then choose a set fraction — ten percent, say. Keep that fraction of the
+      units from the top of the ranking. Those are the strongest responders for
+      this class... call that set S sub c.
+    bookmarks: [fraction, percent, Keep, strongest, set]
+    show: >-
+      STAGED quota: chip "f = 10%" appears; a bracket sweeps the top two bars;
+      they go gold, the rest dim (dim, never blank). BUILD_UP MathTex
+      |S_c| = fF; POP the S_c label, then settle in the baked pause.
+    latex: >
+      S_c=\text{top } fF \text{ units by } |\mu_{c,j}|,
+      \qquad |S_c| = fF
+
+  - id: count_is_dead
+    emotional_beat: productive_confusion
+    tts_chunk: D2
+    pause_after: 1.15
+    say: >-
+      So how many units are on now? That question just died. The size of the set
+      is fixed by construction — ten percent in, ten percent out. Counting can
+      no longer tell you anything.
+    bookmarks: [died, fixed, construction, Counting]
+    show: >-
+      ask_about the gold set while the question is spoken (pulse the gold bars
+      and the bracket). Then the counter chip MORPHS into "= fF, always" and is
+      struck out. Soft-idle through the long pause.
+    latex: null
+
+  # ── 5. MASS — motivate → compute → name ──
+  - id: mass_idea
+    emotional_beat: aha
+    tts_chunk: E0
+    pause_after: 0.75
+    say: >-
+      So measure mass instead of membership. Add up the heights of the gold
+      bars... then add up the heights of every bar in the layer.
+    bookmarks: [mass, heights, gold, every]
+    show: >-
+      STAGED accumulation: gold bar heights fly out and stack into a gold
+      column; then all remaining bars stack on top of it into the full column
+      beside the chart. Gutter kept clear between chart and column.
+    latex: null
+
+  - id: formula_build
+    emotional_beat: aha
+    tts_chunk: E1
+    pause_after: 1.0
+    say: >-
+      On-mass is the ratio of those two totals — the mass inside the top set,
+      over the total mass in the layer. The share of the pie that the strongest
+      units hold.
+    bookmarks: [ratio, inside, total, share]
+    show: >-
+      BUILD_UP MathTex morph: sum over j in S_c of |mu| → the same over the
+      denominator sum over all F units → named on-mass(c). Indicate the
+      numerator on "inside", the denominator on "total"; the gold fraction of
+      the column lights on "share". Hold the finished line in the pause.
+    latex: >
+      \mathrm{on\text{-}mass}(c)
+      =\frac{\sum_{j\in S_c}|\mu_{c,j}|}{\sum_{j=1}^{F}|\mu_{c,j}|}
+
+  # ── 6. HOW TO READ IT ──
+  - id: baseline
+    emotional_beat: partial_clarity
+    tts_chunk: F0
+    pause_after: 0.9
+    say: >-
+      Now read it. If every unit carried an equal share, the top ten percent
+      would hold exactly ten percent of the mass — so the flat case is the
+      baseline, and the baseline is the fraction itself. Peakier layers sit far
+      above it. Here, two units out of twenty hold about a quarter of everything.
+    bookmarks: [read, equal, baseline, Peakier, quarter]
+    show: >-
+      MORPH the skyline flat (heights equalize) — readout falls to the dotted
+      baseline at the fraction; then MORPH back to the real distribution and the
+      readout climbs. The number moves on the spoken word, never after.
+    latex: null
+
+  - id: scale_invariance
+    emotional_beat: aha
+    tts_chunk: F1
+    pause_after: 0.85
+    say: >-
+      And now turn the volume back up. Every bar climbs, the gold bars climb
+      with them... and the number does not budge. The trap that broke the
+      threshold cannot touch a ratio.
+    bookmarks: [volume, climbs, budge, trap]
+    show: >-
+      STAGED: the same gain as before, against the same shared reference peak,
+      so bars visibly grow; gold column and total column grow together while the
+      readout holds. A dimmed ghost of the old jumping counter sits beside it,
+      flat this time.
+    latex: null
+
+  # ── 7. SIBLINGS — what it is not ──
+  - id: siblings
+    emotional_beat: productive_confusion
+    tts_chunk: G0
+    pause_after: 0.85
+    say: >-
+      Two nearby questions are not this one. How strong is the top set — that is
+      the average magnitude inside the set, in raw units, and it does rise when
+      everything gets louder. And selectivity asks something else entirely:
+      whether a unit prefers this class over the others. Concentration and
+      preference can move in opposite directions without contradiction.
+    bookmarks: [nearby, magnitude, louder, selectivity, prefers, opposite]
+    show: >-
+      STAGED cards: three chips grow out of the formula — share of mass, top-set
+      strength, class preference. Each lights on its spoken phrase, the others
+      dim. On "opposite", two small arrows move apart, one up one down.
+    latex: null
+
+  # ── 8. SETTLE ──
+  - id: settle
+    emotional_beat: settle
+    tts_chunk: G1
+    pause_after: 0.9
+    say: >-
+      So on-mass answers one question: how much of a class's response is
+      concentrated in its strongest few units. It is a share, not a strength...
+      and it only means anything next to the fraction you chose. Report the pair
+      together, and sweep the fraction before you believe the story.
+    bookmarks: [concentrated, strength, chose, sweep]
+    show: >-
+      MORPH to takeaway: the on-mass line centre stage with a mini skyline below
+      and the (f, on-mass) pair chip; the fraction sweeps through several values
+      while the readout tracks it. KEY: "a share of the mass — at a stated
+      fraction". Soft-idle.
+    latex: >
+      \mathrm{on\text{-}mass}(c)
+      =\frac{\sum_{j\in S_c}|\mu_{c,j}|}{\sum_{j=1}^{F}|\mu_{c,j}|}
+
+tts:
+  provider: openrouter
+  model: x-ai/grok-voice-tts-1.0
+  voice: leo
+  chunk_by: tts_chunk
+  speed: 0.95
+  head_silence: 1.5
+  inter_chunk_silence: 0.45
+  response_format: mp3
+
+stt:
+  model: openai/whisper-large-v3

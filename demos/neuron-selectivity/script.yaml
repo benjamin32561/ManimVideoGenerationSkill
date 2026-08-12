@@ -1,0 +1,263 @@
+# Neuron selectivity — Wrong → Right (top-9 gallery → response distribution → index)
+# Craft: motivate → compute → name; BUILD_UP formulas; questions get ≥0.9 pause.
+slug: neuron-selectivity
+title: "Neuron Selectivity"
+thesis: >-
+  A unit's selectivity is a property of its whole response distribution across
+  labelled inputs — one class mean high, the rest low, normalized so loudness
+  cannot fake it — and a high score is still not evidence that the network
+  relies on that unit.
+pattern: "Wrong → Right"
+audience: graduate
+domain: machine-learning
+tone: curious_hook_documentary_explain
+source: >-
+  Morcos et al., "On the importance of single directions for generalization"
+  (ICLR 2018) — class selectivity index. Cherry-picked top-activating galleries
+  as weak evidence: Bau et al. network dissection; Borowski et al. 2021.
+
+beats:
+  # ── 1. HOOK ──
+  - id: hook_unit
+    emotional_beat: curiosity
+    tts_chunk: A0
+    pause_after: 0.65
+    say: >-
+      [curious] Deep inside a trained network... one unit keeps firing.
+      Show it a dog... and it lights up.
+    bookmarks: [network, unit, dog]
+    show: >-
+      Draw the WHOLE net first, then narrow: POP the hidden layer, then POP one
+      unit inside it (container → member). Input chips cycle on the left while
+      the unit's activation bar responds in lockstep (causal pair). Soft-idle
+      in the baked pause.
+    latex: null
+
+  - id: hook_question
+    emotional_beat: curiosity
+    tts_chunk: A1
+    pause_after: 1.2
+    say: >-
+      So... have you found a dog neuron? What would that claim actually mean?
+    bookmarks: [neuron, claim]
+    show: >-
+      ask_about the highlighted unit while dog chips keep cycling into it.
+      Soft-idle through the long pause before the wrong path.
+    latex: null
+
+  # ── 2. WRONG — the cherry-picked gallery ──
+  - id: wrong_gallery
+    emotional_beat: productive_confusion
+    tts_chunk: B0
+    pause_after: 0.95
+    say: >-
+      The usual evidence is a gallery... the nine inputs that excite this unit
+      the most. Every one of them a dog. Case closed?
+    bookmarks: [gallery, nine, closed]
+    show: >-
+      STAGED: dataset cloud appears; rank it; the top nine lift out and grow
+      into a gold 3-by-3 gallery while the rest dims. Hold in the pause.
+    latex: null
+
+  - id: wrong_gallery_fails
+    emotional_beat: productive_confusion
+    tts_chunk: B1
+    pause_after: 0.8
+    say: >-
+      But that gallery was picked after the fact — it is just the top of a
+      ranking. Look at the rest of the data, and the same unit answers to
+      plenty of other things. A handful of winning pictures cannot tell you
+      what a unit ignores.
+    bookmarks: [ranking, rest, ignores]
+    show: >-
+      MORPH: gold gallery shrinks back into the full cloud; non-dog points
+      light up at mid activation. KEY: "the top of a ranking hides the rest".
+    latex: null
+
+  - id: to_distribution
+    emotional_beat: partial_clarity
+    tts_chunk: B2
+    pause_after: 0.75
+    say: >-
+      Selectivity is not a claim about one picture.
+      It is a claim about the whole distribution of this unit's responses.
+    bookmarks: [picture, distribution]
+    show: >-
+      MORPH cloud → one long response strip along an activation axis
+      (one dot per example). POP the word-avatar "distribution" as the strip
+      lands. Soft-idle.
+    latex: null
+
+  # ── 3. RIGHT OBJECT — split responses by label ──
+  - id: split_by_class
+    emotional_beat: partial_clarity
+    tts_chunk: C0
+    pause_after: 0.7
+    say: >-
+      So run the whole dataset through, record this unit's activation for every
+      input... then split those numbers by the label of the input.
+    bookmarks: [dataset, activation, label]
+    show: >-
+      STAGED: dots stream along the axis, then split DOWN into one row per
+      class. Class chips attach to the INPUT side of each row (never on the
+      response side). Soft-idle.
+    latex: null
+
+  - id: what_selective
+    emotional_beat: partial_clarity
+    tts_chunk: C1
+    pause_after: 1.2
+    say: >-
+      What should selective even look like here?
+    bookmarks: [selective]
+    show: >-
+      ask_about the per-class rows — pulse the rows while the question is
+      spoken; soft-idle through the long pause.
+    latex: null
+
+  - id: dual_panels
+    emotional_beat: aha
+    tts_chunk: C2
+    pause_after: 0.85
+    say: >-
+      One class parked high, every other class down low... that is a selective
+      unit. All the classes piled on top of each other... and the unit answers
+      to everything, which tells you nothing about class.
+    bookmarks: [high, piled, everything]
+    show: >-
+      MORPH into DUAL_PANEL: left rows separate (one row slides high), right
+      rows pile into one band. Panel labels "selective" / "mixed" appear ON
+      those spoken words, in the reserved panel band.
+    latex: null
+
+  # ── 4. MEASURE — class means → index (motivate → compute → name) ──
+  - id: class_means
+    emotional_beat: partial_clarity
+    tts_chunk: D0
+    pause_after: 0.7
+    say: >-
+      To turn that picture into a number, collapse each class to its mean
+      response. The biggest of those class means is the unit's favorite
+      class — call it mu max. Average the means of all the remaining
+      classes... that is the rest.
+    bookmarks: [collapse, biggest, remaining]
+    show: >-
+      BUILD_UP: rows MORPH into class-mean bars. POP the tallest bar gold and
+      write mu max beside it; then the other bars MORPH into one grey bar for
+      the rest. MathTex stages: mu_c → mu_max → mu_{-max}.
+    latex: >
+      \mu_c,\quad
+      \mu_{\max}=\max_c \mu_c,\quad
+      \mu_{-\max}=\mathrm{mean}_{c\neq\max}\ \mu_c
+
+  - id: index_build
+    emotional_beat: aha
+    tts_chunk: D1
+    pause_after: 0.95
+    say: >-
+      Now compare the two. Take the gap between the favorite and the rest...
+      and divide that gap by their sum. That ratio is the class selectivity
+      index.
+    bookmarks: [gap, divide, index]
+    show: >-
+      BUILD_UP MathTex morph: mu_max - mu_{-max} → same over (mu_max +
+      mu_{-max}) → named selectivity index. Gap bracket spans the two bars
+      while "gap" is spoken; total bracket while "divide" is spoken.
+    latex: >
+      \mathrm{SI}
+      =\frac{\mu_{\max}-\mu_{-\max}}{\mu_{\max}+\mu_{-\max}}
+
+  - id: endpoints
+    emotional_beat: partial_clarity
+    tts_chunk: D2
+    pause_after: 0.8
+    say: >-
+      Read the two ends. One means only the favorite class moves this unit at
+      all — the rest sit at zero. And zero means every class means the same
+      thing to it... no class preference at all.
+    bookmarks: [ends, favorite, preference]
+    show: >-
+      STAGED: MORPH bars to the extreme selective case (grey bar → floor) and
+      swing the index dial to one; then MORPH to all-equal bars and swing the
+      dial to zero. Dial moves on the spoken endpoint, never after.
+    latex: null
+
+  # ── 5. WHY NORMALIZED — the loudness trap ──
+  - id: loudness_trap
+    emotional_beat: aha
+    tts_chunk: E0
+    pause_after: 0.9
+    say: >-
+      Why divide at all? Because a raw gap can be faked. Turn the volume up on
+      this unit — scale every response by the same factor — and the raw gap
+      grows, while the shape of the distribution is untouched.
+      The ratio does not budge.
+    bookmarks: [faked, volume, shape, ratio]
+    show: >-
+      STAGED: multiply ALL bar heights by a constant against a shared
+      reference peak, so loudness really changes pixel height. Raw-gap chip
+      inflates in red on "grows"; index dial visibly holds on "ratio".
+    latex: null
+
+  # ── 6. TRAPS — what the number does not say ──
+  - id: not_importance
+    emotional_beat: productive_confusion
+    tts_chunk: F0
+    pause_after: 0.9
+    say: >-
+      One warning. A high index does not mean the network relies on this unit.
+      Delete the most selective unit, and accuracy can barely flinch...
+      delete a unit with a low index, and the damage can be worse.
+    bookmarks: [warning, Delete, worse]
+    show: >-
+      STAGED ablation: cross out the gold selective unit → accuracy bar drops
+      a hair; restore; cross out a mixed unit → bigger drop. The index dial
+      stays high the whole time (ghost).
+    latex: null
+
+  - id: label_axis
+    emotional_beat: partial_clarity
+    tts_chunk: F1
+    pause_after: 0.8
+    say: >-
+      And the index only ever sees the labels you handed it. A unit that looks
+      mixed across your classes can be sharply tuned to something you never
+      measured... a texture, a colour, a curve. Plenty of units answer to
+      several unrelated things at once.
+    bookmarks: [labels, tuned, several]
+    show: >-
+      MORPH: re-sort the same response dots under a different partition
+      (texture instead of class) — the mixed panel becomes separated and the
+      dial climbs. KEY: "selectivity is relative to your labels".
+    latex: null
+
+  # ── 7. SETTLE ──
+  - id: settle
+    emotional_beat: settle
+    tts_chunk: G0
+    pause_after: 0.55
+    say: >-
+      So a selective unit is one whose response distribution separates its
+      favorite class from all the rest — measured over the whole dataset, and
+      normalized so loudness cannot fake it. It describes what a unit responds
+      to. It does not prove the network reads it.
+    bookmarks: [separates, normalized, reads]
+    show: >-
+      MORPH to takeaway: selectivity index formula centre stage with mini dual
+      panels below. KEY: "one class high, the rest low?". Soft-idle.
+    latex: >
+      \mathrm{SI}
+      =\frac{\mu_{\max}-\mu_{-\max}}{\mu_{\max}+\mu_{-\max}}
+
+tts:
+  provider: openrouter
+  model: x-ai/grok-voice-tts-1.0
+  voice: leo
+  chunk_by: tts_chunk
+  speed: 0.95
+  head_silence: 1.5
+  inter_chunk_silence: 0.45
+  response_format: mp3
+
+stt:
+  model: openai/whisper-large-v3

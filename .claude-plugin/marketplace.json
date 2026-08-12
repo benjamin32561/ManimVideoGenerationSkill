@@ -1,0 +1,32 @@
+{
+  "name": "manim-video-generation",
+  "owner": {
+    "name": "Ben Akhovan",
+    "url": "https://github.com/benjamin32561"
+  },
+  "description": "3Blue1Brown-style Manim explainer videos with word-synced voiceover",
+  "plugins": [
+    {
+      "name": "manim-explain",
+      "source": ".",
+      "skills": "./skills",
+      "description": "Turns a concept into a narrated 3b1b-style Manim explainer MP4: narrative script, OpenRouter TTS, word-timestamp sync, timed Manim scenes, pixel QA.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Ben Akhovan"
+      },
+      "homepage": "https://github.com/benjamin32561/ManimVideoGenerationSkill",
+      "repository": "https://github.com/benjamin32561/ManimVideoGenerationSkill",
+      "license": "MIT",
+      "keywords": [
+        "manim",
+        "explainer-video",
+        "3blue1brown",
+        "voiceover",
+        "animation",
+        "teaching"
+      ],
+      "category": "content-creation"
+    }
+  ]
+}

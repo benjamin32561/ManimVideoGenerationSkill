@@ -1,0 +1,34 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Third-party reference clone (see docs/DECISIONS.md — pip install 3brown1blue)
+vendor/
+
+# Locally unpacked dvisvgm / ghostscript (scripts/setup_dvisvgm_local.sh)
+.local/
+
+# Manim render output
+media/
+demos/**/media/
+
+# Generated demo artifacts: audio, renders, QA stills, logs.
+# script.yaml, scenes/, utils/ and timing.json stay tracked.
+demos/**/audio/
+demos/**/out/
+demos/**/*.mp4
+demos/**/*.mp3
+demos/**/*.wav
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+.tts311/
+
+# OS / editor
+.DS_Store
+*.swp

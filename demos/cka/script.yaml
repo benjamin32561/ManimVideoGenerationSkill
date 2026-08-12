@@ -1,0 +1,343 @@
+# CKA v2 — denser math morphs, longer question/morph pauses
+# Craft: no empty explanations; BUILD_UP formulas; pause_after after ? ≥ 0.9
+slug: cka
+title: "Centered Kernel Alignment"
+thesis: >-
+  CKA measures whether two representations induce the same similarity
+  geometry on a shared set of examples — by aligning centered kernels,
+  not by matching neurons one-to-one.
+pattern: "Wrong → Right"
+audience: graduate
+domain: machine-learning
+tone: curious_hook_documentary_explain
+source: >-
+  Kornblith et al., "Similarity of Neural Network Representations
+  Revisited" (ICML 2019). Linear CKA as the workhorse case.
+
+beats:
+  # ── 1. HOOK ──
+  - id: hook_two_nets
+    emotional_beat: curiosity
+    tts_chunk: A0
+    pause_after: 0.65
+    say: >-
+      [curious] Suppose you train two neural nets on the same data.
+      Different seeds... maybe even different architectures.
+    bookmarks: [train, seeds]
+    show: >-
+      Dual nets grow (Net A / Net B). Soft-idle in pause.
+    latex: null
+
+  - id: hook_pick_layers
+    emotional_beat: curiosity
+    tts_chunk: A1
+    pause_after: 0.7
+    say: >-
+      Pick a layer from each.
+    bookmarks: [Pick]
+    show: >-
+      POP one layer on each net + settle in pause_after.
+    latex: null
+
+  - id: hook_question
+    emotional_beat: curiosity
+    tts_chunk: A2
+    pause_after: 1.15
+    say: >-
+      Do they represent the world the same way?
+      How would you even measure that?
+    bookmarks: [represent, measure]
+    show: >-
+      ask_about both highlighted layers while the question is spoken.
+      Soft-idle through the long pause before the wrong path.
+    latex: null
+
+  # ── 2. WRONG — neuron matching ──
+  - id: wrong_match
+    emotional_beat: productive_confusion
+    tts_chunk: B0
+    pause_after: 0.7
+    say: >-
+      A tempting move... match neurons one to one.
+      Correlate unit one with unit one... unit two with unit two.
+    bookmarks: [match, Correlate]
+    show: >-
+      STAGED pairings + rho chips; score dial rises. Soft-idle after morph lands.
+    latex: null
+
+  - id: wrong_permute
+    emotional_beat: productive_confusion
+    tts_chunk: B1
+    pause_after: 0.85
+    say: >-
+      But shuffle the units on one side... and the score collapses.
+      Same geometry... different bookkeeping. One-to-one matching lied.
+    bookmarks: [shuffle, collapses, lied]
+    show: >-
+      MORPH: permute Net B; pairings scramble; dial drops. Hold finished state
+      in pause_after. Caption: "permutation".
+    latex: null
+
+  # ── 3. WRONG — flatten cosine ──
+  - id: wrong_flatten
+    emotional_beat: productive_confusion
+    tts_chunk: B2
+    pause_after: 0.75
+    say: >-
+      Another shortcut... flatten both activation matrices into long vectors,
+      and take a cosine. Fast... but it mixes examples and features into one soup.
+      Structure we care about gets scrambled.
+    bookmarks: [flatten, cosine, scrambled]
+    show: >-
+      MORPH matrices → vectors → cosine arc; structure dissolves.
+      KEY: "loses example geometry". Hold after morph.
+    latex: null
+
+  # ── 4. RIGHT OBJECT — examples + Gram (developed) ──
+  - id: examples_shared
+    emotional_beat: partial_clarity
+    tts_chunk: C0
+    pause_after: 0.7
+    say: >-
+      Start over. Keep a shared set of examples.
+      Feed them through both representations... call the activation matrices
+      X and Y.
+    bookmarks: [shared, Feed, matrices]
+    show: >-
+      Shared example tokens; arrows into repr X / repr Y.
+      BUILD_UP: Write matrix shapes X,Y under panels; soft-idle.
+    latex: >
+      X \in \mathbb{R}^{n \times p},\quad
+      Y \in \mathbb{R}^{n \times q}
+
+  - id: gram_question
+    emotional_beat: partial_clarity
+    tts_chunk: C1
+    pause_after: 1.1
+    say: >-
+      For each representation, ask a different question.
+      Not which neuron is which... but which examples look similar
+      to each other?
+    bookmarks: [question, similar]
+    show: >-
+      ask_about example tokens. Soft-idle through long pause.
+    latex: null
+
+  - id: gram_build
+    emotional_beat: partial_clarity
+    tts_chunk: C2
+    pause_after: 0.85
+    say: >-
+      For every pair of examples i and j... take the inner product of their
+      representation vectors. That entry is K sub i j.
+      Do this for every pair... and you get a Gram matrix.
+      With a linear kernel, that is simply X X transpose.
+      More generally, call it a kernel matrix K... and L for the other side.
+    bookmarks: [pair, entry, Gram, transpose, kernel]
+    show: >-
+      BUILD_UP MathTex morph:
+        K_{ij}=\langle x_i,x_j\rangle
+        → K=XX^{\top}
+        → dual heatmaps grow cell-by-cell (identity-linked to formula).
+      POP K then L. Hold finished Gram in pause_after.
+    latex: >
+      K_{ij}=\langle x_i,x_j\rangle
+      \;\longrightarrow\;
+      K=XX^{\top},\quad L=YY^{\top}
+
+  # ── 5. CENTERING (developed) ──
+  - id: why_center
+    emotional_beat: partial_clarity
+    tts_chunk: D0
+    pause_after: 0.7
+    say: >-
+      Raw similarities still hide a trap.
+      A constant offset across examples can inflate agreement.
+    bookmarks: [trap, inflate]
+    show: >-
+      Mean-glow on heatmaps. KEY: "constant offset can fake agreement".
+    latex: null
+
+  - id: center_build
+    emotional_beat: partial_clarity
+    tts_chunk: D1
+    pause_after: 0.9
+    say: >-
+      So we center.
+      Introduce the centering matrix H... identity minus one over n times
+      the all-ones matrix.
+      Left-and-right multiply... H K H... that is K tilde.
+      Same for L... L tilde.
+      Centering removes that mean structure so only relative geometry remains.
+    bookmarks: [center, Introduce, multiply, tilde, relative]
+    show: >-
+      BUILD_UP MathTex morph:
+        H = I - (1/n)11^T
+        → \tilde{K}=HKH
+        → heatmap MORPH raw→centered; relabel \tilde{K},\tilde{L}.
+      Indicate H, then HKH. Hold after morph lands.
+    latex: >
+      H = I - \tfrac{1}{n}11^{\top},
+      \quad
+      \tilde{K}=HKH,\quad \tilde{L}=HLH
+
+  # ── 6. AGREEMENT SCORE → Frobenius → HSIC → CKA ──
+  # Craft: motivate → compute → name. Never lead with "Frobenius" / "HSIC".
+  - id: align_question
+    emotional_beat: aha
+    tts_chunk: E0
+    pause_after: 1.1
+    say: >-
+      Now ask... how aligned are those two centered geometries?
+    bookmarks: [aligned]
+    show: >-
+      ask_about heatmap *borders* only (not cells). Soft-idle through pause.
+    latex: null
+
+  - id: agree_idea
+    emotional_beat: aha
+    tts_chunk: E1
+    pause_after: 0.85
+    say: >-
+      Look at one cell... examples i and j.
+      The left matrix has a number saying how similar they look under X.
+      The right matrix has a number for the same pair under Y.
+      If both say "alike"... that pair should count as agreement.
+      If one says alike and the other says different... that pair should not help.
+    bookmarks: [Look, alike, help]
+    show: >-
+      STAGED: highlight cell (i,j) on both heatmaps in lockstep; dual callouts
+      "alike" / "different". Soft-idle.
+    latex: null
+
+  - id: agree_sum
+    emotional_beat: aha
+    tts_chunk: E2
+    pause_after: 0.9
+    say: >-
+      So multiply the matching cells... then add those products over every pair.
+      Large when the two similarity patterns agree... small when they fight.
+      That sum is exactly the frobenius inner product of the two centered kernels.
+    bookmarks: [matching, products, patterns, frobenius]
+    show: >-
+      BUILD_UP MathTex morph (no HSIC yet):
+        \tilde{K}_{ij}\,\tilde{L}_{ij}
+        → \sum_{ij} \tilde{K}_{ij}\tilde{L}_{ij}
+        → \langle\tilde{K},\tilde{L}\rangle_F
+      Pulse matching cells while "matching"; cascade fill while "products".
+      Hold after Frobenius name lands.
+    latex: >
+      \sum_{i,j}\tilde{K}_{ij}\tilde{L}_{ij}
+      = \langle\tilde{K},\tilde{L}\rangle_F
+
+  - id: hsic_name
+    emotional_beat: aha
+    tts_chunk: E3
+    pause_after: 0.75
+    say: >-
+      Scale that sum by one over n minus one squared... and people call the
+      result H-S-I-C — the Hilbert–Schmidt Independence Criterion.
+      Think of it as a raw agreement score between the two geometries.
+    bookmarks: [Scale, Criterion, raw]
+    show: >-
+      BUILD_UP morph:
+        \langle\tilde{K},\tilde{L}\rangle_F
+        → \frac{1}{(n-1)^2}\langle...\rangle
+        → HSIC(K,L)=...
+      Indicate the scale factor, then the HSIC name. Hold.
+    latex: >
+      \mathrm{HSIC}(K,L)
+      =\frac{1}{(n-1)^2}\langle\tilde{K},\tilde{L}\rangle_F
+
+  - id: cka_build
+    emotional_beat: aha
+    tts_chunk: E4
+    pause_after: 0.9
+    say: >-
+      But that raw score still grows if you simply make every activation louder.
+      So divide by how strong each geometry is on its own —
+      the square root of each side's agreement with itself.
+      Numerator... agreement between X and Y.
+      Denominator... geometric mean of the self-agreements.
+      That normalized ratio is centered kernel alignment... C-K-A —
+      a score between zero and one.
+    bookmarks: [louder, divide, Numerator, Denominator, alignment]
+    show: >-
+      BUILD_UP morph from HSIC:
+        HSIC(K,L)
+        → fraction with · denom
+        → full CKA=HSIC/sqrt(HSIC(K,K) HSIC(L,L))
+      Indicate num then denom. CKA dial. Hold.
+    latex: >
+      \mathrm{CKA}(K,L)
+      =\frac{\mathrm{HSIC}(K,L)}
+      {\sqrt{\mathrm{HSIC}(K,K)\,\mathrm{HSIC}(L,L)}}
+
+  # ── 7. LINEAR + INVARIANTS ──
+  - id: linear_cka
+    emotional_beat: partial_clarity
+    tts_chunk: F0
+    pause_after: 0.8
+    say: >-
+      In practice, people often use a linear kernel — so K is X X transpose,
+      after centering the features.
+      Then C-K-A is exactly the frobenius cosine of the two centered
+      Gram matrices.
+    bookmarks: [linear, features, cosine]
+    show: >-
+      BUILD_UP morph:
+        CKA with HSIC
+        → CKA=\langle K~,L~\rangle_F / (||K~||_F ||L~||_F)
+      Keep dual heatmaps. Hold.
+    latex: >
+      \mathrm{CKA}
+      =\frac{\langle\tilde{K},\tilde{L}\rangle_F}
+      {\|\tilde{K}\|_F\,\|\tilde{L}\|_F}
+
+  - id: invariants
+    emotional_beat: partial_clarity
+    tts_chunk: F1
+    pause_after: 0.75
+    say: >-
+      That form is invariant to orthogonal transforms of the features...
+      and to isotropic scaling.
+      Permute the units... rescale the whole layer... the score stays put —
+      unlike the one-to-one match that collapsed.
+    bookmarks: [orthogonal, isotropic, Permute, collapsed]
+    show: >-
+      STAGED: rotate → scale → permute on one side; CKA dial holds.
+      Flashback ghost of collapsed 1-to-1 dial. Hold after last morph.
+    latex: null
+
+  # ── 8. SETTLE ──
+  - id: settle
+    emotional_beat: settle
+    tts_chunk: G0
+    pause_after: 0.55
+    say: >-
+      So C-K-A is not asking whether neuron three matches neuron three.
+      It asks whether the two representations induce the same similarity
+      geometry on the examples — after centering, and after normalizing
+      away loudness.
+    bookmarks: [asking, geometry, loudness]
+    show: >-
+      MORPH to takeaway CKA frobenius-cosine + dual centered heatmaps.
+      KEY: "same example geometry?". Soft-idle.
+    latex: >
+      \mathrm{CKA}(K,L)
+      =\frac{\langle\tilde{K},\tilde{L}\rangle_F}
+      {\|\tilde{K}\|_F\,\|\tilde{L}\|_F}
+
+tts:
+  provider: openrouter
+  model: x-ai/grok-voice-tts-1.0
+  voice: leo
+  chunk_by: tts_chunk
+  speed: 0.95
+  head_silence: 1.5
+  inter_chunk_silence: 0.45
+  response_format: mp3
+  note: "V2: longer question pauses + denser math VO."
+
+stt:
+  model: openai/whisper-large-v3

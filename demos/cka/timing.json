@@ -1,0 +1,2752 @@
+{
+  "audio": "audio/narration.mp3",
+  "duration": 258.376122,
+  "stt_model": "openai/whisper-large-v3",
+  "stt_mode": "chunked",
+  "transcript": "Suppose you train two neural nets on the same data, different seeds, maybe even different architectures. Pick a layer from each. Do they represent the world the same way? How would you even measure that? Attempting move. Match neurons one to one. Correlate unit 1 with unit 1. Unit 2 with unit 2. But shuffle the units on one side, and the score collapses. Same geometry, different bookkeeping. One-to-one matching lied. Another shortcut: flatten both activation matrices into long vectors and take a cosine. Fast, but it mixes examples and features into one soup. Structure we care about gets scrambled. Start over. Keep a shared set of examples. Feed them through both representations. Call the activation matrices X and Y. For each representation, ask a different question. Not which neuron is which, but which examples look similar to each other. For every pair of examples i and j, take the inner product of their representation vectors. That entry is k sub ij. Do this for every pair and you get a gram matrix, with a linear kernel that is simply x x transpose. More generally, call it a kernel matrix k, and l for the other side. Raw similarities still hide a trap. A constant offset across examples can inflate agreement. So we center. Introduce the centering matrix H. Identity minus 1 over n times the all-ones matrix. Left and right multiply. H, K, H. That is K tilde. Same for L. L tilde. Centering removes that mean structure so only relative geometry remains. Now ask, how aligned are those two centered geometries? Look at one cell. Examples i and j. The left matrix has a number saying how similar they look under x. The right matrix has a number for the same pair under y. If both say alike, that pair should count as agreement. If one says alike and the other says different, that pair should not help. So multiply the matching cells, then add those products over every pair. Large when the two similarity patterns agree, small when they fight. That sum is exactly the Frobenius inner product of the two centered kernels. Scale that sum by 1/n-1^2, and people call the result HSIC, the Hilbert-Schmidt independence criterion. Think of it as a raw agreement score between the two geometries. But that raw score still grows if you simply make every activation louder. So divide by how strong each geometry is on its own. The square root of each side's agreement with itself. Numerator, agreement between X and Y. Denominator, geometric mean of the self-agreements. That normalized ratio is centered kernel alignment, CKA, a score between 0 and 1. In practice, people often use a linear kernel, so K is X X transpose after centering the features. Then CK A is exactly the Frobenius cosine of the two centered gram matrices. That form is invariant to orthogonal transforms of the features and to isotropic scaling. Permute the units, rescale the whole layer, the score stays put, unlike the one-to-one match that collapsed. So CKA is not asking whether neuron 3 matches neuron 3. It asks whether the two representations induce the same similarity geometry on the examples, after centering and after normalizing away loudness.",
+  "words": [
+    {
+      "word": "Suppose",
+      "start": 1.64025,
+      "end": 2.141375
+    },
+    {
+      "word": "you",
+      "start": 2.2215,
+      "end": 2.3016875
+    },
+    {
+      "word": "train",
+      "start": 2.4219375,
+      "end": 2.6625
+    },
+    {
+      "word": "two",
+      "start": 2.8629375,
+      "end": 3.083375
+    },
+    {
+      "word": "neural",
+      "start": 3.24375,
+      "end": 3.5844375
+    },
+    {
+      "word": "nets",
+      "start": 3.70475,
+      "end": 3.9653125
+    },
+    {
+      "word": "on",
+      "start": 4.16575,
+      "end": 4.2058125
+    },
+    {
+      "word": "the",
+      "start": 4.2659375,
+      "end": 4.346125
+    },
+    {
+      "word": "same",
+      "start": 4.4463124999999994,
+      "end": 4.706875
+    },
+    {
+      "word": "data,",
+      "start": 4.8271250000000006,
+      "end": 5.167875
+    },
+    {
+      "word": "different",
+      "start": 5.869375,
+      "end": 6.1900625
+    },
+    {
+      "word": "seeds,",
+      "start": 6.27025,
+      "end": 6.6510625
+    },
+    {
+      "word": "maybe",
+      "start": 7.011875,
+      "end": 7.252375
+    },
+    {
+      "word": "even",
+      "start": 7.3926875,
+      "end": 7.5730625
+    },
+    {
+      "word": "different",
+      "start": 7.6331875,
+      "end": 7.933875
+    },
+    {
+      "word": "architectures.",
+      "start": 8.034062500000001,
+      "end": 8.675437500000001
+    },
+    {
+      "word": "Pick",
+      "start": 9.7266875,
+      "end": 9.907562500000001
+    },
+    {
+      "word": "a",
+      "start": 9.987937500000001,
+      "end": 10.008000000000001
+    },
+    {
+      "word": "layer",
+      "start": 10.068312500000001,
+      "end": 10.349625000000001
+    },
+    {
+      "word": "from",
+      "start": 10.430000000000001,
+      "end": 10.550500000000001
+    },
+    {
+      "word": "each.",
+      "start": 10.731375,
+      "end": 10.912187500000002
+    },
+    {
+      "word": "Do",
+      "start": 12.05425,
+      "end": 12.1145
+    },
+    {
+      "word": "they",
+      "start": 12.1748125,
+      "end": 12.3355
+    },
+    {
+      "word": "represent",
+      "start": 12.39575,
+      "end": 12.83775
+    },
+    {
+      "word": "the",
+      "start": 12.8779375,
+      "end": 12.978375
+    },
+    {
+      "word": "world",
+      "start": 13.05875,
+      "end": 13.420375
+    },
+    {
+      "word": "the",
+      "start": 13.4806875,
+      "end": 13.6615
+    },
+    {
+      "word": "same",
+      "start": 13.72175,
+      "end": 13.9829375
+    },
+    {
+      "word": "way?",
+      "start": 14.023125,
+      "end": 14.3445625
+    },
+    {
+      "word": "How",
+      "start": 14.9070625,
+      "end": 15.007562499999999
+    },
+    {
+      "word": "would",
+      "start": 15.04775,
+      "end": 15.188375
+    },
+    {
+      "word": "you",
+      "start": 15.188375,
+      "end": 15.288812499999999
+    },
+    {
+      "word": "even",
+      "start": 15.369187499999999,
+      "end": 15.570062499999999
+    },
+    {
+      "word": "measure",
+      "start": 15.590187499999999,
+      "end": 15.871437499999999
+    },
+    {
+      "word": "that?",
+      "start": 15.911625,
+      "end": 16.1728125
+    },
+    {
+      "word": "Attempting",
+      "start": 17.744125,
+      "end": 18.42475
+    },
+    {
+      "word": "move.",
+      "start": 18.564875,
+      "end": 18.90525
+    },
+    {
+      "word": "Match",
+      "start": 19.325625,
+      "end": 19.565875
+    },
+    {
+      "word": "neurons",
+      "start": 19.706,
+      "end": 20.1664375
+    },
+    {
+      "word": "one",
+      "start": 20.386625,
+      "end": 20.50675
+    },
+    {
+      "word": "to",
+      "start": 20.5868125,
+      "end": 20.6869375
+    },
+    {
+      "word": "one.",
+      "start": 20.887125,
+      "end": 21.04725
+    },
+    {
+      "word": "Correlate",
+      "start": 21.56775,
+      "end": 22.08825
+    },
+    {
+      "word": "unit",
+      "start": 22.1683125,
+      "end": 22.3885
+    },
+    {
+      "word": "1",
+      "start": 22.62875,
+      "end": 22.7288125
+    },
+    {
+      "word": "with",
+      "start": 22.848937499999998,
+      "end": 22.9690625
+    },
+    {
+      "word": "unit",
+      "start": 23.1091875,
+      "end": 23.3294375
+    },
+    {
+      "word": "1.",
+      "start": 23.5095625,
+      "end": 23.68975
+    },
+    {
+      "word": "Unit",
+      "start": 24.230249999999998,
+      "end": 24.4304375
+    },
+    {
+      "word": "2",
+      "start": 24.5305625,
+      "end": 24.7106875
+    },
+    {
+      "word": "with",
+      "start": 25.031,
+      "end": 25.191187499999998
+    },
+    {
+      "word": "unit",
+      "start": 25.27125,
+      "end": 25.4714375
+    },
+    {
+      "word": "2.",
+      "start": 25.5715625,
+      "end": 25.7116875
+    },
+    {
+      "word": "But",
+      "start": 26.832124999999998,
+      "end": 26.952375
+    },
+    {
+      "word": "shuffle",
+      "start": 27.132625,
+      "end": 27.4531875
+    },
+    {
+      "word": "the",
+      "start": 27.513312499999998,
+      "end": 27.633499999999998
+    },
+    {
+      "word": "units",
+      "start": 27.7336875,
+      "end": 28.0141875
+    },
+    {
+      "word": "on",
+      "start": 28.2145,
+      "end": 28.2545625
+    },
+    {
+      "word": "one",
+      "start": 28.4749375,
+      "end": 28.595187499999998
+    },
+    {
+      "word": "side,",
+      "start": 28.6953125,
+      "end": 29.015875
+    },
+    {
+      "word": "and",
+      "start": 29.4766875,
+      "end": 29.5568125
+    },
+    {
+      "word": "the",
+      "start": 29.596875,
+      "end": 29.657
+    },
+    {
+      "word": "score",
+      "start": 29.7170625,
+      "end": 29.9775
+    },
+    {
+      "word": "collapses.",
+      "start": 30.0576875,
+      "end": 30.6586875
+    },
+    {
+      "word": "Same",
+      "start": 31.319812499999998,
+      "end": 31.56025
+    },
+    {
+      "word": "geometry,",
+      "start": 31.640375,
+      "end": 32.241437499999996
+    },
+    {
+      "word": "different",
+      "start": 32.6821875,
+      "end": 33.02275
+    },
+    {
+      "word": "bookkeeping.",
+      "start": 33.1229375,
+      "end": 33.7039375
+    },
+    {
+      "word": "One-to-one",
+      "start": 34.3049375,
+      "end": 34.78575
+    },
+    {
+      "word": "matching",
+      "start": 34.8859375,
+      "end": 35.266625
+    },
+    {
+      "word": "lied.",
+      "start": 35.3868125,
+      "end": 35.7875
+    },
+    {
+      "word": "Another",
+      "start": 37.07825,
+      "end": 37.3988125
+    },
+    {
+      "word": "shortcut:",
+      "start": 37.4789375,
+      "end": 37.999874999999996
+    },
+    {
+      "word": "flatten",
+      "start": 38.380562499999996,
+      "end": 38.76125
+    },
+    {
+      "word": "both",
+      "start": 38.941562499999996,
+      "end": 39.182
+    },
+    {
+      "word": "activation",
+      "start": 39.34225,
+      "end": 39.8831875
+    },
+    {
+      "word": "matrices",
+      "start": 39.963375,
+      "end": 40.544375
+    },
+    {
+      "word": "into",
+      "start": 40.6445625,
+      "end": 40.8449375
+    },
+    {
+      "word": "long",
+      "start": 40.965125,
+      "end": 41.1655
+    },
+    {
+      "word": "vectors",
+      "start": 41.2856875,
+      "end": 41.7264375
+    },
+    {
+      "word": "and",
+      "start": 42.1471875,
+      "end": 42.2073125
+    },
+    {
+      "word": "take",
+      "start": 42.2674375,
+      "end": 42.46775
+    },
+    {
+      "word": "a",
+      "start": 42.527875,
+      "end": 42.5679375
+    },
+    {
+      "word": "cosine.",
+      "start": 42.668124999999996,
+      "end": 43.249125
+    },
+    {
+      "word": "Fast,",
+      "start": 43.810125,
+      "end": 44.210875
+    },
+    {
+      "word": "but",
+      "start": 44.651624999999996,
+      "end": 44.7518125
+    },
+    {
+      "word": "it",
+      "start": 44.8119375,
+      "end": 44.8920625
+    },
+    {
+      "word": "mixes",
+      "start": 44.9721875,
+      "end": 45.352875
+    },
+    {
+      "word": "examples",
+      "start": 45.413,
+      "end": 45.933875
+    },
+    {
+      "word": "and",
+      "start": 45.994,
+      "end": 46.074124999999995
+    },
+    {
+      "word": "features",
+      "start": 46.1743125,
+      "end": 46.5950625
+    },
+    {
+      "word": "into",
+      "start": 46.6551875,
+      "end": 46.835499999999996
+    },
+    {
+      "word": "one",
+      "start": 47.015812499999996,
+      "end": 47.135999999999996
+    },
+    {
+      "word": "soup.",
+      "start": 47.2963125,
+      "end": 47.55675
+    },
+    {
+      "word": "Structure",
+      "start": 48.197874999999996,
+      "end": 48.618625
+    },
+    {
+      "word": "we",
+      "start": 48.67875,
+      "end": 48.758875
+    },
+    {
+      "word": "care",
+      "start": 48.8590625,
+      "end": 49.1195
+    },
+    {
+      "word": "about",
+      "start": 49.159625,
+      "end": 49.4
+    },
+    {
+      "word": "gets",
+      "start": 49.4801875,
+      "end": 49.680499999999995
+    },
+    {
+      "word": "scrambled.",
+      "start": 49.740625,
+      "end": 50.2815625
+    },
+    {
+      "word": "Start",
+      "start": 51.452124999999995,
+      "end": 51.75243749999999
+    },
+    {
+      "word": "over.",
+      "start": 51.8925625,
+      "end": 52.11275
+    },
+    {
+      "word": "Keep",
+      "start": 52.55318749999999,
+      "end": 52.7333125
+    },
+    {
+      "word": "a",
+      "start": 52.793375,
+      "end": 52.81343749999999
+    },
+    {
+      "word": "shared",
+      "start": 52.933499999999995,
+      "end": 53.21375
+    },
+    {
+      "word": "set",
+      "start": 53.313874999999996,
+      "end": 53.474
+    },
+    {
+      "word": "of",
+      "start": 53.5340625,
+      "end": 53.614124999999994
+    },
+    {
+      "word": "examples.",
+      "start": 53.65418749999999,
+      "end": 54.19468749999999
+    },
+    {
+      "word": "Feed",
+      "start": 54.675124999999994,
+      "end": 54.87531249999999
+    },
+    {
+      "word": "them",
+      "start": 54.93537499999999,
+      "end": 55.03543749999999
+    },
+    {
+      "word": "through",
+      "start": 55.095499999999994,
+      "end": 55.37575
+    },
+    {
+      "word": "both",
+      "start": 55.415812499999994,
+      "end": 55.71606249999999
+    },
+    {
+      "word": "representations.",
+      "start": 55.756125,
+      "end": 56.61693749999999
+    },
+    {
+      "word": "Call",
+      "start": 57.0373125,
+      "end": 57.2375
+    },
+    {
+      "word": "the",
+      "start": 57.25749999999999,
+      "end": 57.397625
+    },
+    {
+      "word": "activation",
+      "start": 57.437687499999996,
+      "end": 57.93812499999999
+    },
+    {
+      "word": "matrices",
+      "start": 58.018187499999996,
+      "end": 58.5186875
+    },
+    {
+      "word": "X",
+      "start": 58.898999999999994,
+      "end": 58.919
+    },
+    {
+      "word": "and",
+      "start": 59.2393125,
+      "end": 59.319374999999994
+    },
+    {
+      "word": "Y.",
+      "start": 59.639687499999994,
+      "end": 59.6596875
+    },
+    {
+      "word": "For",
+      "start": 60.760062500000004,
+      "end": 60.8601875
+    },
+    {
+      "word": "each",
+      "start": 61.0403125,
+      "end": 61.2004375
+    },
+    {
+      "word": "representation,",
+      "start": 61.3205625,
+      "end": 62.181312500000004
+    },
+    {
+      "word": "ask",
+      "start": 62.221375,
+      "end": 62.8819375
+    },
+    {
+      "word": "a",
+      "start": 63.002,
+      "end": 63.022062500000004
+    },
+    {
+      "word": "different",
+      "start": 63.102125,
+      "end": 63.4624375
+    },
+    {
+      "word": "question.",
+      "start": 63.5225,
+      "end": 63.942875
+    },
+    {
+      "word": "Not",
+      "start": 64.5834375,
+      "end": 64.843625
+    },
+    {
+      "word": "which",
+      "start": 65.0638125,
+      "end": 65.284
+    },
+    {
+      "word": "neuron",
+      "start": 65.424125,
+      "end": 65.8445
+    },
+    {
+      "word": "is",
+      "start": 66.004625,
+      "end": 66.0446875
+    },
+    {
+      "word": "which,",
+      "start": 66.1848125,
+      "end": 66.4650625
+    },
+    {
+      "word": "but",
+      "start": 66.9855,
+      "end": 67.145625
+    },
+    {
+      "word": "which",
+      "start": 67.2056875,
+      "end": 67.405875
+    },
+    {
+      "word": "examples",
+      "start": 67.60606250000001,
+      "end": 68.18656250000001
+    },
+    {
+      "word": "look",
+      "start": 68.2065625,
+      "end": 68.3666875
+    },
+    {
+      "word": "similar",
+      "start": 68.526875,
+      "end": 68.9271875
+    },
+    {
+      "word": "to",
+      "start": 69.00725,
+      "end": 69.0873125
+    },
+    {
+      "word": "each",
+      "start": 69.1674375,
+      "end": 69.2875
+    },
+    {
+      "word": "other.",
+      "start": 69.387625,
+      "end": 69.58775
+    },
+    {
+      "word": "For",
+      "start": 71.0080625,
+      "end": 71.10812499999999
+    },
+    {
+      "word": "every",
+      "start": 71.24824999999998,
+      "end": 71.4684375
+    },
+    {
+      "word": "pair",
+      "start": 71.56856249999998,
+      "end": 71.78875
+    },
+    {
+      "word": "of",
+      "start": 71.84874999999998,
+      "end": 71.88881249999999
+    },
+    {
+      "word": "examples",
+      "start": 71.988875,
+      "end": 72.60943749999998
+    },
+    {
+      "word": "i",
+      "start": 72.8896875,
+      "end": 72.90968749999999
+    },
+    {
+      "word": "and",
+      "start": 73.12987499999998,
+      "end": 73.20993749999998
+    },
+    {
+      "word": "j,",
+      "start": 73.31006249999999,
+      "end": 73.33006249999998
+    },
+    {
+      "word": "take",
+      "start": 74.09068749999999,
+      "end": 74.3109375
+    },
+    {
+      "word": "the",
+      "start": 74.39099999999999,
+      "end": 74.49106249999998
+    },
+    {
+      "word": "inner",
+      "start": 74.63118749999998,
+      "end": 74.81131249999999
+    },
+    {
+      "word": "product",
+      "start": 74.89143749999998,
+      "end": 75.33181249999998
+    },
+    {
+      "word": "of",
+      "start": 75.45187499999999,
+      "end": 75.49193749999999
+    },
+    {
+      "word": "their",
+      "start": 75.51193749999999,
+      "end": 75.71212499999999
+    },
+    {
+      "word": "representation",
+      "start": 75.75212499999999,
+      "end": 76.57287499999998
+    },
+    {
+      "word": "vectors.",
+      "start": 76.6529375,
+      "end": 77.07331249999999
+    },
+    {
+      "word": "That",
+      "start": 77.65381249999999,
+      "end": 77.83393749999999
+    },
+    {
+      "word": "entry",
+      "start": 77.99406249999998,
+      "end": 78.35437499999999
+    },
+    {
+      "word": "is",
+      "start": 78.57456249999998,
+      "end": 78.63462499999999
+    },
+    {
+      "word": "k",
+      "start": 78.75474999999999,
+      "end": 78.77474999999998
+    },
+    {
+      "word": "sub",
+      "start": 79.1150625,
+      "end": 79.31524999999999
+    },
+    {
+      "word": "ij.",
+      "start": 79.63549999999998,
+      "end": 79.81568749999998
+    },
+    {
+      "word": "Do",
+      "start": 80.69643749999999,
+      "end": 80.83656249999999
+    },
+    {
+      "word": "this",
+      "start": 80.91662499999998,
+      "end": 81.07674999999999
+    },
+    {
+      "word": "for",
+      "start": 81.13681249999999,
+      "end": 81.23687499999998
+    },
+    {
+      "word": "every",
+      "start": 81.39699999999999,
+      "end": 81.61718749999999
+    },
+    {
+      "word": "pair",
+      "start": 81.71731249999999,
+      "end": 81.97749999999999
+    },
+    {
+      "word": "and",
+      "start": 82.37787499999999,
+      "end": 82.45793749999999
+    },
+    {
+      "word": "you",
+      "start": 82.49799999999999,
+      "end": 82.57806249999999
+    },
+    {
+      "word": "get",
+      "start": 82.61806249999998,
+      "end": 82.73818749999998
+    },
+    {
+      "word": "a",
+      "start": 82.79824999999998,
+      "end": 82.81824999999999
+    },
+    {
+      "word": "gram",
+      "start": 82.87831249999999,
+      "end": 83.17856249999998
+    },
+    {
+      "word": "matrix,",
+      "start": 83.27862499999999,
+      "end": 83.71906249999999
+    },
+    {
+      "word": "with",
+      "start": 84.31956249999999,
+      "end": 84.43962499999999
+    },
+    {
+      "word": "a",
+      "start": 84.4996875,
+      "end": 84.51974999999999
+    },
+    {
+      "word": "linear",
+      "start": 84.59981249999998,
+      "end": 84.88006249999998
+    },
+    {
+      "word": "kernel",
+      "start": 84.98012499999999,
+      "end": 85.3404375
+    },
+    {
+      "word": "that",
+      "start": 85.68074999999999,
+      "end": 85.82087499999999
+    },
+    {
+      "word": "is",
+      "start": 85.90093749999998,
+      "end": 85.94093749999999
+    },
+    {
+      "word": "simply",
+      "start": 86.00099999999999,
+      "end": 86.34131249999999
+    },
+    {
+      "word": "x",
+      "start": 86.70162499999999,
+      "end": 86.72162499999999
+    },
+    {
+      "word": "x",
+      "start": 87.18199999999999,
+      "end": 87.20206249999998
+    },
+    {
+      "word": "transpose.",
+      "start": 87.40218749999998,
+      "end": 88.04274999999998
+    },
+    {
+      "word": "More",
+      "start": 88.66331249999999,
+      "end": 88.82343749999998
+    },
+    {
+      "word": "generally,",
+      "start": 88.90349999999998,
+      "end": 89.40393749999998
+    },
+    {
+      "word": "call",
+      "start": 89.76424999999999,
+      "end": 89.94443749999999
+    },
+    {
+      "word": "it",
+      "start": 90.04449999999999,
+      "end": 90.14456249999999
+    },
+    {
+      "word": "a",
+      "start": 90.26468749999998,
+      "end": 90.28468749999999
+    },
+    {
+      "word": "kernel",
+      "start": 90.38481249999998,
+      "end": 90.74512499999999
+    },
+    {
+      "word": "matrix",
+      "start": 90.82518749999998,
+      "end": 91.20549999999999
+    },
+    {
+      "word": "k,",
+      "start": 91.40568749999998,
+      "end": 91.42568749999998
+    },
+    {
+      "word": "and",
+      "start": 92.20637499999998,
+      "end": 92.30643749999999
+    },
+    {
+      "word": "l",
+      "start": 92.66674999999998,
+      "end": 92.70681249999998
+    },
+    {
+      "word": "for",
+      "start": 92.92699999999999,
+      "end": 93.00706249999999
+    },
+    {
+      "word": "the",
+      "start": 93.04706249999998,
+      "end": 93.16718749999998
+    },
+    {
+      "word": "other",
+      "start": 93.22724999999998,
+      "end": 93.40737499999999
+    },
+    {
+      "word": "side.",
+      "start": 93.44743749999998,
+      "end": 93.72768749999999
+    },
+    {
+      "word": "Raw",
+      "start": 95.09837499999998,
+      "end": 95.31893749999998
+    },
+    {
+      "word": "similarities",
+      "start": 95.43918749999997,
+      "end": 96.22106249999997
+    },
+    {
+      "word": "still",
+      "start": 96.32131249999998,
+      "end": 96.58193749999998
+    },
+    {
+      "word": "hide",
+      "start": 96.68218749999998,
+      "end": 96.90268749999998
+    },
+    {
+      "word": "a",
+      "start": 96.96287499999998,
+      "end": 97.00293749999997
+    },
+    {
+      "word": "trap.",
+      "start": 97.06312499999999,
+      "end": 97.34374999999997
+    },
+    {
+      "word": "A",
+      "start": 98.00537499999997,
+      "end": 98.02537499999998
+    },
+    {
+      "word": "constant",
+      "start": 98.14568749999998,
+      "end": 98.60681249999998
+    },
+    {
+      "word": "offset",
+      "start": 98.72706249999997,
+      "end": 99.06787499999997
+    },
+    {
+      "word": "across",
+      "start": 99.18818749999998,
+      "end": 99.44881249999997
+    },
+    {
+      "word": "examples",
+      "start": 99.50893749999997,
+      "end": 100.03018749999998
+    },
+    {
+      "word": "can",
+      "start": 100.11037499999998,
+      "end": 100.21062499999998
+    },
+    {
+      "word": "inflate",
+      "start": 100.27074999999998,
+      "end": 100.73187499999997
+    },
+    {
+      "word": "agreement.",
+      "start": 100.81206249999998,
+      "end": 101.25312499999998
+    },
+    {
+      "word": "So",
+      "start": 102.45406249999998,
+      "end": 102.59418749999998
+    },
+    {
+      "word": "we",
+      "start": 102.75431249999998,
+      "end": 102.85437499999998
+    },
+    {
+      "word": "center.",
+      "start": 103.07449999999997,
+      "end": 103.51481249999998
+    },
+    {
+      "word": "Introduce",
+      "start": 104.17531249999998,
+      "end": 104.65568749999998
+    },
+    {
+      "word": "the",
+      "start": 104.71568749999997,
+      "end": 104.81581249999998
+    },
+    {
+      "word": "centering",
+      "start": 104.91587499999999,
+      "end": 105.35618749999998
+    },
+    {
+      "word": "matrix",
+      "start": 105.41624999999998,
+      "end": 105.81649999999998
+    },
+    {
+      "word": "H.",
+      "start": 106.25681249999998,
+      "end": 106.29687499999997
+    },
+    {
+      "word": "Identity",
+      "start": 106.89731249999998,
+      "end": 107.47768749999997
+    },
+    {
+      "word": "minus",
+      "start": 107.67787499999997,
+      "end": 108.01812499999998
+    },
+    {
+      "word": "1",
+      "start": 108.21824999999998,
+      "end": 108.33831249999997
+    },
+    {
+      "word": "over",
+      "start": 108.51849999999997,
+      "end": 108.69862499999998
+    },
+    {
+      "word": "n",
+      "start": 108.95881249999998,
+      "end": 108.97881249999998
+    },
+    {
+      "word": "times",
+      "start": 109.17893749999998,
+      "end": 109.45912499999997
+    },
+    {
+      "word": "the",
+      "start": 109.49918749999998,
+      "end": 109.57924999999997
+    },
+    {
+      "word": "all-ones",
+      "start": 109.75937499999998,
+      "end": 110.23968749999997
+    },
+    {
+      "word": "matrix.",
+      "start": 110.31974999999998,
+      "end": 110.72006249999998
+    },
+    {
+      "word": "Left",
+      "start": 111.44056249999998,
+      "end": 111.66074999999998
+    },
+    {
+      "word": "and",
+      "start": 111.76081249999999,
+      "end": 111.84087499999998
+    },
+    {
+      "word": "right",
+      "start": 111.92093749999998,
+      "end": 112.20112499999998
+    },
+    {
+      "word": "multiply.",
+      "start": 112.24118749999998,
+      "end": 112.76156249999998
+    },
+    {
+      "word": "H,",
+      "start": 113.56212499999998,
+      "end": 113.60218749999999
+    },
+    {
+      "word": "K,",
+      "start": 113.80231249999997,
+      "end": 113.82231249999998
+    },
+    {
+      "word": "H.",
+      "start": 114.48281249999998,
+      "end": 114.52281249999999
+    },
+    {
+      "word": "That",
+      "start": 115.06318749999998,
+      "end": 115.22331249999998
+    },
+    {
+      "word": "is",
+      "start": 115.36343749999997,
+      "end": 115.44349999999997
+    },
+    {
+      "word": "K",
+      "start": 115.62362499999998,
+      "end": 115.64362499999999
+    },
+    {
+      "word": "tilde.",
+      "start": 116.04393749999998,
+      "end": 116.40418749999998
+    },
+    {
+      "word": "Same",
+      "start": 117.04462499999998,
+      "end": 117.28481249999997
+    },
+    {
+      "word": "for",
+      "start": 117.36487499999998,
+      "end": 117.46493749999998
+    },
+    {
+      "word": "L.",
+      "start": 117.70512499999998,
+      "end": 117.74518749999999
+    },
+    {
+      "word": "L",
+      "start": 118.40562499999999,
+      "end": 118.44568749999998
+    },
+    {
+      "word": "tilde.",
+      "start": 118.58574999999998,
+      "end": 118.92599999999997
+    },
+    {
+      "word": "Centering",
+      "start": 119.58649999999997,
+      "end": 120.08687499999998
+    },
+    {
+      "word": "removes",
+      "start": 120.20693749999998,
+      "end": 120.66731249999998
+    },
+    {
+      "word": "that",
+      "start": 120.74731249999998,
+      "end": 120.86743749999998
+    },
+    {
+      "word": "mean",
+      "start": 120.96749999999997,
+      "end": 121.14762499999998
+    },
+    {
+      "word": "structure",
+      "start": 121.26768749999998,
+      "end": 121.72806249999998
+    },
+    {
+      "word": "so",
+      "start": 121.80812499999998,
+      "end": 121.90818749999998
+    },
+    {
+      "word": "only",
+      "start": 122.14837499999999,
+      "end": 122.44856249999998
+    },
+    {
+      "word": "relative",
+      "start": 122.54862499999999,
+      "end": 122.94893749999997
+    },
+    {
+      "word": "geometry",
+      "start": 123.00899999999999,
+      "end": 123.50937499999998
+    },
+    {
+      "word": "remains.",
+      "start": 123.58937499999998,
+      "end": 124.00968749999998
+    },
+    {
+      "word": "Now",
+      "start": 125.45062499999999,
+      "end": 125.61118749999999
+    },
+    {
+      "word": "ask,",
+      "start": 125.97243749999998,
+      "end": 126.11293749999999
+    },
+    {
+      "word": "how",
+      "start": 126.69499999999998,
+      "end": 126.83549999999998
+    },
+    {
+      "word": "aligned",
+      "start": 126.95593749999998,
+      "end": 127.47774999999999
+    },
+    {
+      "word": "are",
+      "start": 127.57812499999999,
+      "end": 127.65837499999998
+    },
+    {
+      "word": "those",
+      "start": 127.69856249999998,
+      "end": 127.93937499999998
+    },
+    {
+      "word": "two",
+      "start": 128.01968749999997,
+      "end": 128.18024999999997
+    },
+    {
+      "word": "centered",
+      "start": 128.3809375,
+      "end": 128.72212499999998
+    },
+    {
+      "word": "geometries?",
+      "start": 128.78237499999997,
+      "end": 129.424625
+    },
+    {
+      "word": "Look",
+      "start": 131.04606249999998,
+      "end": 131.20618749999997
+    },
+    {
+      "word": "at",
+      "start": 131.30624999999998,
+      "end": 131.34631249999998
+    },
+    {
+      "word": "one",
+      "start": 131.58649999999997,
+      "end": 131.7065625
+    },
+    {
+      "word": "cell.",
+      "start": 131.86668749999998,
+      "end": 132.14693749999998
+    },
+    {
+      "word": "Examples",
+      "start": 132.8875,
+      "end": 133.42793749999998
+    },
+    {
+      "word": "i",
+      "start": 133.66812499999997,
+      "end": 133.68812499999999
+    },
+    {
+      "word": "and",
+      "start": 133.80825,
+      "end": 133.88831249999998
+    },
+    {
+      "word": "j.",
+      "start": 133.96837499999998,
+      "end": 133.988375
+    },
+    {
+      "word": "The",
+      "start": 134.82899999999998,
+      "end": 134.90906249999998
+    },
+    {
+      "word": "left",
+      "start": 134.969125,
+      "end": 135.18931249999997
+    },
+    {
+      "word": "matrix",
+      "start": 135.28937499999998,
+      "end": 135.72968749999998
+    },
+    {
+      "word": "has",
+      "start": 135.84981249999998,
+      "end": 135.96987499999997
+    },
+    {
+      "word": "a",
+      "start": 136.00993749999998,
+      "end": 136.06999999999996
+    },
+    {
+      "word": "number",
+      "start": 136.1500625,
+      "end": 136.43024999999997
+    },
+    {
+      "word": "saying",
+      "start": 136.51031249999997,
+      "end": 136.77049999999997
+    },
+    {
+      "word": "how",
+      "start": 136.85056249999997,
+      "end": 136.9506875
+    },
+    {
+      "word": "similar",
+      "start": 137.1308125,
+      "end": 137.45106249999998
+    },
+    {
+      "word": "they",
+      "start": 137.51112499999996,
+      "end": 137.63118749999998
+    },
+    {
+      "word": "look",
+      "start": 137.69124999999997,
+      "end": 137.87137499999997
+    },
+    {
+      "word": "under",
+      "start": 138.01149999999998,
+      "end": 138.191625
+    },
+    {
+      "word": "x.",
+      "start": 138.43181249999998,
+      "end": 138.4518125
+    },
+    {
+      "word": "The",
+      "start": 139.13237499999997,
+      "end": 139.21243749999996
+    },
+    {
+      "word": "right",
+      "start": 139.2925,
+      "end": 139.51262499999999
+    },
+    {
+      "word": "matrix",
+      "start": 139.59268749999998,
+      "end": 139.99299999999997
+    },
+    {
+      "word": "has",
+      "start": 140.11312499999997,
+      "end": 140.21318749999998
+    },
+    {
+      "word": "a",
+      "start": 140.25324999999998,
+      "end": 140.33331249999998
+    },
+    {
+      "word": "number",
+      "start": 140.39331249999998,
+      "end": 140.65356249999996
+    },
+    {
+      "word": "for",
+      "start": 140.71356249999997,
+      "end": 140.8136875
+    },
+    {
+      "word": "the",
+      "start": 140.8736875,
+      "end": 140.95374999999999
+    },
+    {
+      "word": "same",
+      "start": 141.01381249999997,
+      "end": 141.254
+    },
+    {
+      "word": "pair",
+      "start": 141.3340625,
+      "end": 141.59425
+    },
+    {
+      "word": "under",
+      "start": 141.75437499999998,
+      "end": 141.91449999999998
+    },
+    {
+      "word": "y.",
+      "start": 142.23474999999996,
+      "end": 142.25474999999997
+    },
+    {
+      "word": "If",
+      "start": 142.85524999999998,
+      "end": 142.91531249999997
+    },
+    {
+      "word": "both",
+      "start": 143.035375,
+      "end": 143.2355625
+    },
+    {
+      "word": "say",
+      "start": 143.35562499999997,
+      "end": 143.55581249999997
+    },
+    {
+      "word": "alike,",
+      "start": 143.59581249999997,
+      "end": 144.19631249999998
+    },
+    {
+      "word": "that",
+      "start": 144.77674999999996,
+      "end": 144.97687499999998
+    },
+    {
+      "word": "pair",
+      "start": 145.07693749999999,
+      "end": 145.31712499999998
+    },
+    {
+      "word": "should",
+      "start": 145.3771875,
+      "end": 145.55731249999997
+    },
+    {
+      "word": "count",
+      "start": 145.63737499999996,
+      "end": 145.87756249999998
+    },
+    {
+      "word": "as",
+      "start": 145.95762499999998,
+      "end": 146.01768749999997
+    },
+    {
+      "word": "agreement.",
+      "start": 146.07774999999998,
+      "end": 146.53812499999998
+    },
+    {
+      "word": "If",
+      "start": 147.11856249999997,
+      "end": 147.1585625
+    },
+    {
+      "word": "one",
+      "start": 147.33874999999998,
+      "end": 147.43881249999998
+    },
+    {
+      "word": "says",
+      "start": 147.51887499999998,
+      "end": 147.69899999999998
+    },
+    {
+      "word": "alike",
+      "start": 147.77906249999998,
+      "end": 148.0793125
+    },
+    {
+      "word": "and",
+      "start": 148.15937499999998,
+      "end": 148.23943749999998
+    },
+    {
+      "word": "the",
+      "start": 148.2594375,
+      "end": 148.3395
+    },
+    {
+      "word": "other",
+      "start": 148.37949999999998,
+      "end": 148.53962499999997
+    },
+    {
+      "word": "says",
+      "start": 148.5996875,
+      "end": 148.81987499999997
+    },
+    {
+      "word": "different,",
+      "start": 148.89993749999996,
+      "end": 149.34024999999997
+    },
+    {
+      "word": "that",
+      "start": 149.88068749999996,
+      "end": 150.080875
+    },
+    {
+      "word": "pair",
+      "start": 150.1609375,
+      "end": 150.38106249999998
+    },
+    {
+      "word": "should",
+      "start": 150.46112499999998,
+      "end": 150.64131249999997
+    },
+    {
+      "word": "not",
+      "start": 150.72137499999997,
+      "end": 150.92149999999998
+    },
+    {
+      "word": "help.",
+      "start": 151.00156249999998,
+      "end": 151.24174999999997
+    },
+    {
+      "word": "So",
+      "start": 152.57218749999998,
+      "end": 152.692375
+    },
+    {
+      "word": "multiply",
+      "start": 152.89262499999998,
+      "end": 153.45331249999998
+    },
+    {
+      "word": "the",
+      "start": 153.513375,
+      "end": 153.6335
+    },
+    {
+      "word": "matching",
+      "start": 153.75368749999998,
+      "end": 154.15418749999998
+    },
+    {
+      "word": "cells,",
+      "start": 154.2543125,
+      "end": 154.67481249999997
+    },
+    {
+      "word": "then",
+      "start": 155.27556249999998,
+      "end": 155.41574999999997
+    },
+    {
+      "word": "add",
+      "start": 155.71612499999998,
+      "end": 155.83624999999998
+    },
+    {
+      "word": "those",
+      "start": 155.87631249999998,
+      "end": 156.17668749999999
+    },
+    {
+      "word": "products",
+      "start": 156.27681249999998,
+      "end": 156.69731249999998
+    },
+    {
+      "word": "over",
+      "start": 156.937625,
+      "end": 157.07774999999998
+    },
+    {
+      "word": "every",
+      "start": 157.3180625,
+      "end": 157.578375
+    },
+    {
+      "word": "pair.",
+      "start": 157.67849999999999,
+      "end": 157.95887499999998
+    },
+    {
+      "word": "Large",
+      "start": 158.579625,
+      "end": 158.96012499999998
+    },
+    {
+      "word": "when",
+      "start": 159.06025,
+      "end": 159.180375
+    },
+    {
+      "word": "the",
+      "start": 159.22043749999997,
+      "end": 159.3205625
+    },
+    {
+      "word": "two",
+      "start": 159.38062499999998,
+      "end": 159.56087499999998
+    },
+    {
+      "word": "similarity",
+      "start": 159.68099999999998,
+      "end": 160.22168749999997
+    },
+    {
+      "word": "patterns",
+      "start": 160.30175,
+      "end": 160.68224999999998
+    },
+    {
+      "word": "agree,",
+      "start": 160.72224999999997,
+      "end": 161.0426875
+    },
+    {
+      "word": "small",
+      "start": 161.6834375,
+      "end": 162.0839375
+    },
+    {
+      "word": "when",
+      "start": 162.20412499999998,
+      "end": 162.34425
+    },
+    {
+      "word": "they",
+      "start": 162.3843125,
+      "end": 162.5245
+    },
+    {
+      "word": "fight.",
+      "start": 162.62462499999998,
+      "end": 162.88493749999998
+    },
+    {
+      "word": "That",
+      "start": 163.54575,
+      "end": 163.726
+    },
+    {
+      "word": "sum",
+      "start": 163.84612499999997,
+      "end": 164.04637499999998
+    },
+    {
+      "word": "is",
+      "start": 164.246625,
+      "end": 164.30668749999998
+    },
+    {
+      "word": "exactly",
+      "start": 164.40681249999997,
+      "end": 164.9875625
+    },
+    {
+      "word": "the",
+      "start": 164.9875625,
+      "end": 165.12768749999998
+    },
+    {
+      "word": "Frobenius",
+      "start": 165.18781249999998,
+      "end": 165.86862499999998
+    },
+    {
+      "word": "inner",
+      "start": 166.04887499999998,
+      "end": 166.2290625
+    },
+    {
+      "word": "product",
+      "start": 166.28912499999998,
+      "end": 166.669625
+    },
+    {
+      "word": "of",
+      "start": 166.82981249999997,
+      "end": 166.86987499999998
+    },
+    {
+      "word": "the",
+      "start": 166.90993749999998,
+      "end": 167.01006249999998
+    },
+    {
+      "word": "two",
+      "start": 167.1101875,
+      "end": 167.29037499999998
+    },
+    {
+      "word": "centered",
+      "start": 167.4505625,
+      "end": 167.791
+    },
+    {
+      "word": "kernels.",
+      "start": 167.87112499999998,
+      "end": 168.27162499999997
+    },
+    {
+      "word": "Scale",
+      "start": 169.65224999999998,
+      "end": 170.01274999999998
+    },
+    {
+      "word": "that",
+      "start": 170.09281249999998,
+      "end": 170.2330625
+    },
+    {
+      "word": "sum",
+      "start": 170.3531875,
+      "end": 170.57349999999997
+    },
+    {
+      "word": "by",
+      "start": 170.79381249999997,
+      "end": 170.93399999999997
+    },
+    {
+      "word": "1/n-1^2,",
+      "start": 171.17437499999997,
+      "end": 173.19718749999998
+    },
+    {
+      "word": "and",
+      "start": 173.75799999999998,
+      "end": 173.83806249999998
+    },
+    {
+      "word": "people",
+      "start": 173.89818749999998,
+      "end": 174.1385
+    },
+    {
+      "word": "call",
+      "start": 174.19856249999998,
+      "end": 174.3388125
+    },
+    {
+      "word": "the",
+      "start": 174.39887499999998,
+      "end": 174.49899999999997
+    },
+    {
+      "word": "result",
+      "start": 174.5190625,
+      "end": 174.8194375
+    },
+    {
+      "word": "HSIC,",
+      "start": 175.2400625,
+      "end": 176.20137499999998
+    },
+    {
+      "word": "the",
+      "start": 176.9624375,
+      "end": 177.04256249999997
+    },
+    {
+      "word": "Hilbert-Schmidt",
+      "start": 177.12268749999998,
+      "end": 177.90374999999997
+    },
+    {
+      "word": "independence",
+      "start": 178.08399999999997,
+      "end": 178.64481249999997
+    },
+    {
+      "word": "criterion.",
+      "start": 178.7449375,
+      "end": 179.32574999999997
+    },
+    {
+      "word": "Think",
+      "start": 180.08681249999998,
+      "end": 180.2270625
+    },
+    {
+      "word": "of",
+      "start": 180.30712499999998,
+      "end": 180.3471875
+    },
+    {
+      "word": "it",
+      "start": 180.42731249999997,
+      "end": 180.46737499999998
+    },
+    {
+      "word": "as",
+      "start": 180.56749999999997,
+      "end": 180.60756249999997
+    },
+    {
+      "word": "a",
+      "start": 180.68768749999998,
+      "end": 180.7076875
+    },
+    {
+      "word": "raw",
+      "start": 180.80787499999997,
+      "end": 181.04818749999998
+    },
+    {
+      "word": "agreement",
+      "start": 181.10824999999997,
+      "end": 181.66906249999997
+    },
+    {
+      "word": "score",
+      "start": 181.74918749999998,
+      "end": 182.02956249999997
+    },
+    {
+      "word": "between",
+      "start": 182.16974999999996,
+      "end": 182.47018749999998
+    },
+    {
+      "word": "the",
+      "start": 182.4901875,
+      "end": 182.59031249999998
+    },
+    {
+      "word": "two",
+      "start": 182.61037499999998,
+      "end": 182.75056249999997
+    },
+    {
+      "word": "geometries.",
+      "start": 182.8506875,
+      "end": 183.45156249999997
+    },
+    {
+      "word": "But",
+      "start": 184.64206249999998,
+      "end": 184.76218749999998
+    },
+    {
+      "word": "that",
+      "start": 184.80225,
+      "end": 185.04243749999998
+    },
+    {
+      "word": "raw",
+      "start": 185.14256249999997,
+      "end": 185.36274999999998
+    },
+    {
+      "word": "score",
+      "start": 185.502875,
+      "end": 185.82312499999998
+    },
+    {
+      "word": "still",
+      "start": 185.96325,
+      "end": 186.22349999999997
+    },
+    {
+      "word": "grows",
+      "start": 186.3435625,
+      "end": 186.76393749999997
+    },
+    {
+      "word": "if",
+      "start": 186.844,
+      "end": 186.88406249999997
+    },
+    {
+      "word": "you",
+      "start": 186.94412499999999,
+      "end": 187.02418749999998
+    },
+    {
+      "word": "simply",
+      "start": 187.10424999999998,
+      "end": 187.38449999999997
+    },
+    {
+      "word": "make",
+      "start": 187.46456249999997,
+      "end": 187.6246875
+    },
+    {
+      "word": "every",
+      "start": 187.92499999999998,
+      "end": 188.18518749999998
+    },
+    {
+      "word": "activation",
+      "start": 188.345375,
+      "end": 188.925875
+    },
+    {
+      "word": "louder.",
+      "start": 189.02593749999997,
+      "end": 189.40631249999998
+    },
+    {
+      "word": "So",
+      "start": 189.98681249999998,
+      "end": 190.086875
+    },
+    {
+      "word": "divide",
+      "start": 190.18699999999998,
+      "end": 190.60731249999998
+    },
+    {
+      "word": "by",
+      "start": 190.6874375,
+      "end": 190.80749999999998
+    },
+    {
+      "word": "how",
+      "start": 190.90762499999997,
+      "end": 191.02768749999998
+    },
+    {
+      "word": "strong",
+      "start": 191.16781249999997,
+      "end": 191.48812499999997
+    },
+    {
+      "word": "each",
+      "start": 191.62824999999998,
+      "end": 191.78837499999997
+    },
+    {
+      "word": "geometry",
+      "start": 191.86843749999997,
+      "end": 192.40893749999998
+    },
+    {
+      "word": "is",
+      "start": 192.58906249999998,
+      "end": 192.6691875
+    },
+    {
+      "word": "on",
+      "start": 192.76924999999997,
+      "end": 192.80931249999998
+    },
+    {
+      "word": "its",
+      "start": 192.90937499999998,
+      "end": 193.0094375
+    },
+    {
+      "word": "own.",
+      "start": 193.14956249999997,
+      "end": 193.2496875
+    },
+    {
+      "word": "The",
+      "start": 193.790125,
+      "end": 193.89024999999998
+    },
+    {
+      "word": "square",
+      "start": 193.9503125,
+      "end": 194.2905625
+    },
+    {
+      "word": "root",
+      "start": 194.39068749999998,
+      "end": 194.59087499999998
+    },
+    {
+      "word": "of",
+      "start": 194.6909375,
+      "end": 194.79099999999997
+    },
+    {
+      "word": "each",
+      "start": 194.85106249999998,
+      "end": 195.03124999999997
+    },
+    {
+      "word": "side's",
+      "start": 195.11131249999997,
+      "end": 195.3915625
+    },
+    {
+      "word": "agreement",
+      "start": 195.45162499999998,
+      "end": 195.87199999999999
+    },
+    {
+      "word": "with",
+      "start": 195.91199999999998,
+      "end": 196.052125
+    },
+    {
+      "word": "itself.",
+      "start": 196.0921875,
+      "end": 196.47249999999997
+    },
+    {
+      "word": "Numerator,",
+      "start": 197.25318749999997,
+      "end": 197.89374999999998
+    },
+    {
+      "word": "agreement",
+      "start": 198.27406249999999,
+      "end": 198.75449999999998
+    },
+    {
+      "word": "between",
+      "start": 198.79456249999998,
+      "end": 199.0948125
+    },
+    {
+      "word": "X",
+      "start": 199.35506249999997,
+      "end": 199.37506249999998
+    },
+    {
+      "word": "and",
+      "start": 199.53518749999998,
+      "end": 199.61524999999997
+    },
+    {
+      "word": "Y.",
+      "start": 199.9155625,
+      "end": 199.93556249999997
+    },
+    {
+      "word": "Denominator,",
+      "start": 200.576125,
+      "end": 201.33681249999998
+    },
+    {
+      "word": "geometric",
+      "start": 201.79718749999998,
+      "end": 202.39774999999997
+    },
+    {
+      "word": "mean",
+      "start": 202.5178125,
+      "end": 202.73799999999997
+    },
+    {
+      "word": "of",
+      "start": 202.838125,
+      "end": 202.89818749999998
+    },
+    {
+      "word": "the",
+      "start": 202.89818749999998,
+      "end": 203.01824999999997
+    },
+    {
+      "word": "self-agreements.",
+      "start": 203.07831249999998,
+      "end": 203.85899999999998
+    },
+    {
+      "word": "That",
+      "start": 204.4795625,
+      "end": 204.71974999999998
+    },
+    {
+      "word": "normalized",
+      "start": 204.79981249999997,
+      "end": 205.3603125
+    },
+    {
+      "word": "ratio",
+      "start": 205.46043749999998,
+      "end": 205.86075
+    },
+    {
+      "word": "is",
+      "start": 206.02093749999997,
+      "end": 206.08093749999998
+    },
+    {
+      "word": "centered",
+      "start": 206.1810625,
+      "end": 206.52137499999998
+    },
+    {
+      "word": "kernel",
+      "start": 206.62143749999998,
+      "end": 206.94174999999998
+    },
+    {
+      "word": "alignment,",
+      "start": 207.0418125,
+      "end": 207.52224999999999
+    },
+    {
+      "word": "CKA,",
+      "start": 208.06268749999998,
+      "end": 209.02356249999997
+    },
+    {
+      "word": "a",
+      "start": 209.70412499999998,
+      "end": 209.72418749999997
+    },
+    {
+      "word": "score",
+      "start": 209.80424999999997,
+      "end": 210.0845
+    },
+    {
+      "word": "between",
+      "start": 210.12449999999998,
+      "end": 210.44481249999998
+    },
+    {
+      "word": "0",
+      "start": 210.544875,
+      "end": 210.90518749999998
+    },
+    {
+      "word": "and",
+      "start": 211.10537499999998,
+      "end": 211.18543749999998
+    },
+    {
+      "word": "1.",
+      "start": 211.405625,
+      "end": 211.50574999999998
+    },
+    {
+      "word": "In",
+      "start": 212.78606249999999,
+      "end": 212.8260625
+    },
+    {
+      "word": "practice,",
+      "start": 212.986125,
+      "end": 213.5064375
+    },
+    {
+      "word": "people",
+      "start": 213.7665625,
+      "end": 214.08675
+    },
+    {
+      "word": "often",
+      "start": 214.2468125,
+      "end": 214.4669375
+    },
+    {
+      "word": "use",
+      "start": 214.627,
+      "end": 214.7470625
+    },
+    {
+      "word": "a",
+      "start": 214.847125,
+      "end": 214.867125
+    },
+    {
+      "word": "linear",
+      "start": 214.9871875,
+      "end": 215.307375
+    },
+    {
+      "word": "kernel,",
+      "start": 215.4074375,
+      "end": 215.767625
+    },
+    {
+      "word": "so",
+      "start": 216.267875,
+      "end": 216.3879375
+    },
+    {
+      "word": "K",
+      "start": 216.5280625,
+      "end": 216.5680625
+    },
+    {
+      "word": "is",
+      "start": 217.0283125,
+      "end": 217.108375
+    },
+    {
+      "word": "X",
+      "start": 217.42849999999999,
+      "end": 217.4685625
+    },
+    {
+      "word": "X",
+      "start": 217.9488125,
+      "end": 217.9888125
+    },
+    {
+      "word": "transpose",
+      "start": 218.1889375,
+      "end": 218.8893125
+    },
+    {
+      "word": "after",
+      "start": 219.4295625,
+      "end": 219.6096875
+    },
+    {
+      "word": "centering",
+      "start": 219.72975,
+      "end": 220.1099375
+    },
+    {
+      "word": "the",
+      "start": 220.15,
+      "end": 220.23
+    },
+    {
+      "word": "features.",
+      "start": 220.3100625,
+      "end": 220.69025
+    },
+    {
+      "word": "Then",
+      "start": 221.4506875,
+      "end": 221.73081249999998
+    },
+    {
+      "word": "CK",
+      "start": 221.9109375,
+      "end": 222.231125
+    },
+    {
+      "word": "A",
+      "start": 222.73137499999999,
+      "end": 222.751375
+    },
+    {
+      "word": "is",
+      "start": 223.0715625,
+      "end": 223.1315625
+    },
+    {
+      "word": "exactly",
+      "start": 223.231625,
+      "end": 223.7519375
+    },
+    {
+      "word": "the",
+      "start": 223.7719375,
+      "end": 223.892
+    },
+    {
+      "word": "Frobenius",
+      "start": 223.952,
+      "end": 224.592375
+    },
+    {
+      "word": "cosine",
+      "start": 224.672375,
+      "end": 225.1726875
+    },
+    {
+      "word": "of",
+      "start": 225.31275,
+      "end": 225.35275
+    },
+    {
+      "word": "the",
+      "start": 225.3928125,
+      "end": 225.49281249999999
+    },
+    {
+      "word": "two",
+      "start": 225.592875,
+      "end": 225.773
+    },
+    {
+      "word": "centered",
+      "start": 225.9330625,
+      "end": 226.29325
+    },
+    {
+      "word": "gram",
+      "start": 226.3933125,
+      "end": 226.63343749999999
+    },
+    {
+      "word": "matrices.",
+      "start": 226.7135,
+      "end": 227.2538125
+    },
+    {
+      "word": "That",
+      "start": 228.514125,
+      "end": 228.734375
+    },
+    {
+      "word": "form",
+      "start": 228.8144375,
+      "end": 229.07475
+    },
+    {
+      "word": "is",
+      "start": 229.275,
+      "end": 229.3350625
+    },
+    {
+      "word": "invariant",
+      "start": 229.4351875,
+      "end": 230.0559375
+    },
+    {
+      "word": "to",
+      "start": 230.136,
+      "end": 230.216125
+    },
+    {
+      "word": "orthogonal",
+      "start": 230.256125,
+      "end": 230.8368125
+    },
+    {
+      "word": "transforms",
+      "start": 230.9369375,
+      "end": 231.517625
+    },
+    {
+      "word": "of",
+      "start": 231.5776875,
+      "end": 231.61775
+    },
+    {
+      "word": "the",
+      "start": 231.63775,
+      "end": 231.737875
+    },
+    {
+      "word": "features",
+      "start": 231.818,
+      "end": 232.2184375
+    },
+    {
+      "word": "and",
+      "start": 232.779125,
+      "end": 232.89925
+    },
+    {
+      "word": "to",
+      "start": 233.11950000000002,
+      "end": 233.199625
+    },
+    {
+      "word": "isotropic",
+      "start": 233.3598125,
+      "end": 233.840375
+    },
+    {
+      "word": "scaling.",
+      "start": 233.9605,
+      "end": 234.3609375
+    },
+    {
+      "word": "Permute",
+      "start": 235.1018125,
+      "end": 235.5223125
+    },
+    {
+      "word": "the",
+      "start": 235.542375,
+      "end": 235.6625
+    },
+    {
+      "word": "units,",
+      "start": 235.762625,
+      "end": 236.083
+    },
+    {
+      "word": "rescale",
+      "start": 236.443375,
+      "end": 236.9239375
+    },
+    {
+      "word": "the",
+      "start": 236.964,
+      "end": 237.044125
+    },
+    {
+      "word": "whole",
+      "start": 237.084125,
+      "end": 237.284375
+    },
+    {
+      "word": "layer,",
+      "start": 237.32443750000002,
+      "end": 237.60475
+    },
+    {
+      "word": "the",
+      "start": 238.02525,
+      "end": 238.12537500000002
+    },
+    {
+      "word": "score",
+      "start": 238.20543750000002,
+      "end": 238.545875
+    },
+    {
+      "word": "stays",
+      "start": 238.6059375,
+      "end": 238.9263125
+    },
+    {
+      "word": "put,",
+      "start": 239.006375,
+      "end": 239.2466875
+    },
+    {
+      "word": "unlike",
+      "start": 239.847375,
+      "end": 240.1276875
+    },
+    {
+      "word": "the",
+      "start": 240.1878125,
+      "end": 240.247875
+    },
+    {
+      "word": "one-to-one",
+      "start": 240.348,
+      "end": 240.7484375
+    },
+    {
+      "word": "match",
+      "start": 240.8485625,
+      "end": 241.08881250000002
+    },
+    {
+      "word": "that",
+      "start": 241.1689375,
+      "end": 241.26906250000002
+    },
+    {
+      "word": "collapsed.",
+      "start": 241.329125,
+      "end": 241.7896875
+    },
+    {
+      "word": "So",
+      "start": 242.9200625,
+      "end": 243.200375
+    },
+    {
+      "word": "CKA",
+      "start": 243.46062500000002,
+      "end": 244.5818125
+    },
+    {
+      "word": "is",
+      "start": 244.7419375,
+      "end": 244.82206250000002
+    },
+    {
+      "word": "not",
+      "start": 244.9621875,
+      "end": 245.162375
+    },
+    {
+      "word": "asking",
+      "start": 245.42268750000002,
+      "end": 245.723
+    },
+    {
+      "word": "whether",
+      "start": 245.7830625,
+      "end": 246.02325000000002
+    },
+    {
+      "word": "neuron",
+      "start": 246.103375,
+      "end": 246.4436875
+    },
+    {
+      "word": "3",
+      "start": 246.623875,
+      "end": 246.88418750000002
+    },
+    {
+      "word": "matches",
+      "start": 247.04431250000002,
+      "end": 247.3846875
+    },
+    {
+      "word": "neuron",
+      "start": 247.48475000000002,
+      "end": 247.805125
+    },
+    {
+      "word": "3.",
+      "start": 247.96525000000003,
+      "end": 248.30562500000002
+    },
+    {
+      "word": "It",
+      "start": 248.786125,
+      "end": 248.8261875
+    },
+    {
+      "word": "asks",
+      "start": 249.026375,
+      "end": 249.266625
+    },
+    {
+      "word": "whether",
+      "start": 249.32668750000002,
+      "end": 249.546875
+    },
+    {
+      "word": "the",
+      "start": 249.56693750000002,
+      "end": 249.72706250000002
+    },
+    {
+      "word": "two",
+      "start": 249.76712500000002,
+      "end": 249.90725
+    },
+    {
+      "word": "representations",
+      "start": 250.027375,
+      "end": 251.0484375
+    },
+    {
+      "word": "induce",
+      "start": 251.18856250000002,
+      "end": 251.5289375
+    },
+    {
+      "word": "the",
+      "start": 251.609,
+      "end": 251.68912500000002
+    },
+    {
+      "word": "same",
+      "start": 251.76918750000002,
+      "end": 252.0294375
+    },
+    {
+      "word": "similarity",
+      "start": 252.12956250000002,
+      "end": 252.710125
+    },
+    {
+      "word": "geometry",
+      "start": 252.79025000000001,
+      "end": 253.35081250000002
+    },
+    {
+      "word": "on",
+      "start": 253.4909375,
+      "end": 253.531
+    },
+    {
+      "word": "the",
+      "start": 253.55100000000002,
+      "end": 253.6911875
+    },
+    {
+      "word": "examples,",
+      "start": 253.7311875,
+      "end": 254.25175000000002
+    },
+    {
+      "word": "after",
+      "start": 254.9124375,
+      "end": 255.13262500000002
+    },
+    {
+      "word": "centering",
+      "start": 255.1926875,
+      "end": 255.71325000000002
+    },
+    {
+      "word": "and",
+      "start": 256.01356250000003,
+      "end": 256.09362500000003
+    },
+    {
+      "word": "after",
+      "start": 256.25381250000004,
+      "end": 256.434
+    },
+    {
+      "word": "normalizing",
+      "start": 256.5340625,
+      "end": 257.19475
+    },
+    {
+      "word": "away",
+      "start": 257.23481250000003,
+      "end": 257.415
+    },
+    {
+      "word": "loudness.",
+      "start": 257.55512500000003,
+      "end": 258.0756875
+    }
+  ],
+  "bookmarks": {
+    "train": 2.4219375,
+    "seeds": 6.27025,
+    "Pick": 9.7266875,
+    "represent": 12.39575,
+    "measure": 15.590187499999999,
+    "match": 19.325625,
+    "Correlate": 21.56775,
+    "shuffle": 27.132625,
+    "collapses": 30.0576875,
+    "lied": 35.3868125,
+    "flatten": 38.380562499999996,
+    "cosine": 42.668124999999996,
+    "scrambled": 49.740625,
+    "shared": 52.933499999999995,
+    "Feed": 54.675124999999994,
+    "matrices": 58.018187499999996,
+    "question": 63.5225,
+    "similar": 68.526875,
+    "pair": 71.56856249999998,
+    "entry": 77.99406249999998,
+    "Gram": 82.87831249999999,
+    "transpose": 87.40218749999998,
+    "kernel": 90.38481249999998,
+    "trap": 97.06312499999999,
+    "inflate": 100.27074999999998,
+    "center": 103.07449999999997,
+    "Introduce": 104.17531249999998,
+    "multiply": 112.24118749999998,
+    "tilde": 116.04393749999998,
+    "relative": 122.54862499999999,
+    "aligned": 126.95593749999998,
+    "Look": 131.04606249999998,
+    "alike": 143.59581249999997,
+    "help": 151.00156249999998,
+    "matching": 153.75368749999998,
+    "products": 156.27681249999998,
+    "patterns": 160.30175,
+    "frobenius": 165.18781249999998,
+    "Scale": 169.65224999999998,
+    "Criterion": 178.7449375,
+    "raw": 180.80787499999997,
+    "louder": 189.02593749999997,
+    "divide": 190.18699999999998,
+    "Numerator": 197.25318749999997,
+    "Denominator": 200.576125,
+    "alignment": 207.0418125,
+    "linear": 214.9871875,
+    "features": 220.3100625,
+    "cosine#2": 224.672375,
+    "orthogonal": 230.256125,
+    "isotropic": 233.3598125,
+    "Permute": 235.1018125,
+    "collapsed": 241.329125,
+    "asking": 245.42268750000002,
+    "geometry": 252.79025000000001,
+    "loudness": 257.55512500000003
+  }
+}
