@@ -83,6 +83,13 @@ Examples: dogs/cats chips → morph into `class c`; neurons → morph into bars;
   (spread/piled/…) match on-screen labels; fix figure gutters and text↔graph
   occlusion before shipping
 
+## Gutters vs the assert pad
+
+`assert_no_overlaps(pad=p)` expands **both** boxes, so two tracked mobjects need
+more than **2 × pad** of clear space (≈0.16 at the default 0.08). When a label
+must sit just outside a figure, size the figure so the gutter clears that, rather
+than nudging the label until the test stops complaining.
+
 ## Persistent chips (counters, quotas, gain badges, readouts)
 
 Long explainers accumulate small status pills. Give each one a **named x slot**

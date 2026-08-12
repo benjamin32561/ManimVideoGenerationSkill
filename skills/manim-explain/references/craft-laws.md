@@ -86,7 +86,12 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
    back as `9`. `align_words.py` normalizes digit↔word and splits symbol tokens
    (`10%` → `10` + `percent`), but the reliable cue is still a distinctive
    **lexical** word next to the number ("fraction", "quota"), not the number.
-10. **Repair cues without re-paying for STT.** When only the cue list changed
+10. **Cue words must be spelled the way STT writes them.** Transcripts come back
+    in US spelling whatever locale the narration was written in, so a British cue
+    ("memorises", "colour", "centre") never matches its transcript. `align_words.py`
+    folds the known variants (-ise/-ize, -our/-or, -re/-er), but prefer the US form
+    in `say` for any cue word that has one.
+11. **Repair cues without re-paying for STT.** When only the cue list changed
     (renamed / dropped bookmark, same audio), run
     `align_words.py demos/<slug> --remap` — it re-maps against the words already
     in `timing.json`. Re-run full alignment only when the narration audio changed.
@@ -143,7 +148,10 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
 14. **Do not Indicate whole heatmaps / dense grids.** `Indicate` / `ask_about` on a
     grid of cells can wash fills to the highlight color. Pulse the **border** /
     SurroundingRectangle, or rebuild the heatmap after. Same for any many-cell
-    VGroup whose fill encodes data.
+    VGroup whose fill encodes data — bar rows and 1-D sequence strips included.
+    **This covers `ask_about` referents**, whose motion is an `Indicate`: pass a
+    `SurroundingRectangle` around the data, never the data mobject itself, or the
+    whole figure turns highlight-coloured and the encoding is destroyed.
 15. **Render ≥30fps** (`-qm`). `-ql` (15fps) looks stepped even with smooth rate funcs.
 16. **Visual-only iteration is allowed** when wording/pauses are already correct.
     If pauses or spoken nouns are wrong, **regen TTS** (split chunks + `pause_after`)
@@ -156,9 +164,13 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
 2. Run layout tests (`pytest tests/test_layout.py` or demo snapshots) before calling
    a scene done.
    **A snapshot must contain every text-like mobject that is on screen at that
-   beat.** A snapshot listing a subset certifies a frame that never occurs: two
-   chips that each pass alone still collide when they are co-present. Build the
-   snapshot from "what is alive right now", not from "what this beat adds".
+   beat — and only those.** A snapshot listing a subset certifies a frame that
+   never occurs: two chips that each pass alone still collide when they are
+   co-present. An *over*-inclusive snapshot is equally wrong — it invents a
+   collision between things that never share the screen, and you "fix" a layout
+   that was fine. When a beat passes through two states (a chip is replaced, a
+   figure is cleared mid-beat), snapshot **each state separately**. Build every
+   snapshot from "what is alive at this instant", not "what this beat mentions".
 3. **Give each persistent chip its own reserved x slot.** Counters, quotas, gain
    badges and readouts accumulate as a video goes on; place them from named
    constants (one slot each) instead of eyeballing a free-looking gap, and the

@@ -87,21 +87,14 @@ skills/manim-explain/     the skill (this is what you install)
 ├── references/           craft laws, narrative patterns, layout, sync, TTS
 ├── scripts/              TTS, alignment, layout checks, QA stills, render
 └── assets/               script + scene + style templates
-demos/                    worked examples (script, scenes, timing)
 docs/                     locked decisions and research notes
 tests/                    layout overlap tests
 .claude-plugin/           plugin + marketplace manifests
 ```
 
-## Demos
-
-| Demo | Teaches |
-|------|---------|
-| [`demos/topk-on-mass`](demos/topk-on-mass) | Top-$k$ on-mass: concentration as a share of response mass, and why a fixed threshold measures loudness instead |
-| [`demos/neuron-selectivity`](demos/neuron-selectivity) | Class selectivity index, and why a top-9 gallery is not evidence |
-| [`demos/cka`](demos/cka) | Centered Kernel Alignment between two representations |
-
-Renders and audio are gitignored — regenerate them with the pipeline above.
+The pipeline writes each video into `demos/<slug>/` (script, audio, `timing.json`,
+scenes, renders). That directory is gitignored — it is your working output, not
+part of the skill — so the layout tests skip any demo that is not present.
 
 ## Credits
 

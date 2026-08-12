@@ -48,6 +48,41 @@ NUMBER_WORDS = {
 }
 _SYMBOL_WORDS = {"%": "percent", "$": "dollars", "&": "and", "+": "plus", "=": "equals"}
 
+# STT models transcribe in US spelling whatever the narration was written in, so
+# a British cue word ("memorises") never matches its transcript ("memorizes").
+_SPELLING_PAIRS = {
+    "centre": "center", "metre": "meter", "litre": "liter", "fibre": "fiber",
+    "theatre": "theater", "defence": "defense", "offence": "offense",
+    "licence": "license", "practise": "practice", "grey": "gray",
+    "catalogue": "catalog", "dialogue": "dialog", "colour": "color",
+    "behaviour": "behavior", "favour": "favor", "honour": "honor",
+    "labour": "labor", "neighbour": "neighbor", "humour": "humor",
+    "rumour": "rumor", "odour": "odor", "vapour": "vapor", "armour": "armor",
+    "harbour": "harbor", "valour": "valor", "savour": "savor",
+    "endeavour": "endeavor", "splendour": "splendor",
+}
+_IS_TO_IZ_SUFFIXES = ("ise", "ises", "ised", "ising", "isation", "isations")
+
+
+def canonical_spelling(word: str) -> str:
+    """Fold British spellings onto their US form for cue matching.
+
+    Args:
+        word: Already-normalized token (lowercase, punctuation stripped).
+
+    Returns:
+        The US-spelling equivalent when one is known, else ``word`` unchanged.
+    """
+    for brit, us in _SPELLING_PAIRS.items():
+        if word == brit:
+            return us
+        if word.startswith(brit) and len(word) - len(brit) <= 2:
+            return us + word[len(brit) :]
+    for suffix in _IS_TO_IZ_SUFFIXES:
+        if word.endswith(suffix) and len(word) > len(suffix) + 2:
+            return word[: -len(suffix)] + suffix.replace("is", "iz", 1)
+    return word
+
 
 def expand_words(words: list[dict]) -> list[dict]:
     """Split symbol-glued STT tokens so spelled-out cues can match.
@@ -106,6 +141,9 @@ def _token_matches(expected: str, actual: str) -> bool:
                 return True
     # spelled-out number cue vs numeral transcript (and back)
     if NUMBER_WORDS.get(expected) == actual or NUMBER_WORDS.get(actual) == expected:
+        return True
+    # British cue vs US transcript ("memorises" → "memorizes")
+    if canonical_spelling(expected) == canonical_spelling(actual):
         return True
     return False
 

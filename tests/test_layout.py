@@ -112,6 +112,8 @@ def test_assert_no_overlaps_raises():
     "settle",
 ])
 def test_demo_layout_snapshots_no_overlap(name):
+    if not DEMO.is_dir():
+        pytest.skip(f"demo not present: {DEMO.name} (demos/ is gitignored)")
     # Import manim-backed snapshots lazily so pure tests stay light
     from utils.layout_snapshots import ALL_SNAPSHOTS  # noqa: WPS433
 
@@ -126,6 +128,7 @@ def test_demo_layout_snapshots_no_overlap(name):
 
 CKA_DEMO = REPO / "demos" / "cka"
 SELECTIVITY_DEMO = REPO / "demos" / "neuron-selectivity"
+HATS_DEMO = REPO / "demos" / "axiom-of-choice-hats"
 
 
 def _check_demo_snapshot(demo_dir, module_name, name):
@@ -141,10 +144,15 @@ def _check_demo_snapshot(demo_dir, module_name, name):
 
     Raises:
         AssertionError: If any tracked mobjects overlap or leave the safe frame.
+
+    Skips when the demo directory is absent — ``demos/`` is gitignored, so a
+    fresh clone of the skill has no demos to check.
     """
     import importlib.util
 
     snap_path = demo_dir / "utils" / "layout_snapshots.py"
+    if not snap_path.is_file():
+        pytest.skip(f"demo not present: {demo_dir.name} (demos/ is gitignored)")
     spec = importlib.util.spec_from_file_location(module_name, snap_path)
     assert spec and spec.loader
     sys.path.insert(0, str(demo_dir))
@@ -201,3 +209,20 @@ def test_cka_layout_snapshots_no_overlap(name):
 ])
 def test_selectivity_layout_snapshots_no_overlap(name):
     _check_demo_snapshot(SELECTIVITY_DEMO, "selectivity_layout_snapshots", name)
+
+
+@pytest.mark.parametrize("name", [
+    "hook",
+    "finite_trick",
+    "infinite_counter",
+    "infinite_question",
+    "claim",
+    "sequence",
+    "equivalence",
+    "axiom",
+    "why_it_works",
+    "catch",
+    "settle",
+])
+def test_hats_layout_snapshots_no_overlap(name):
+    _check_demo_snapshot(HATS_DEMO, "hats_layout_snapshots", name)

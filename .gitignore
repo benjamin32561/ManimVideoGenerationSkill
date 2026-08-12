@@ -13,13 +13,8 @@ vendor/
 media/
 demos/**/media/
 
-# Generated demo artifacts: audio, renders, QA stills, logs.
-# script.yaml, scenes/, utils/ and timing.json stay tracked.
-demos/**/audio/
-demos/**/out/
-demos/**/*.mp4
-demos/**/*.mp3
-demos/**/*.wav
+# Demos are local working output of the skill, not part of the published skill
+demos/
 
 # Python
 __pycache__/
