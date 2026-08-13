@@ -24,6 +24,16 @@ When unsure how to speak a symbol or expression, look it up (e.g. MathSpeak / Cl
 | \(\mathrm{corr}(a_i,a_j)\) | "the correlation of unit i with unit j" |
 | \(\lvert\mathrm{corr}(a_i,a_j)\rvert\) | "the absolute correlation" |
 | \(\frac{2}{n(n-1)}\sum_{i<j}\) | "the average over every pair" |
+| RDM / \(\mathrm{RDM}_X\) | "R-D-M" or "representational dissimilarity matrix" |
+| \(\|x_i-x_j\|_2\) | "the Euclidean distance between clip i and clip j" |
+| \(d_X\) | "the distance vector" |
+| RSA / \(\mathrm{RSA}(X,Y)\) | "R-S-A" |
+| \(\mathrm{corr}(d_X,d_Y)\) | "the correlation of the two distance vectors" |
+| CKA / \(\mathrm{CKA}(X,Y)\) | "C-K-A" or "centered kernel alignment" |
+| \(K=XX^{\top}\) | "K is X X transpose" / "the Gram matrix" |
+| \(\langle K,L\rangle_F\) | "the Frobenius inner product of K with L" |
+| \(\|K\|_F\) | "the Frobenius norm of K" |
+| \(\|Y^{\top}X\|_F^{2}\) | "the squared Frobenius norm of Y transpose X" |
 
 ## General patterns
 

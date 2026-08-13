@@ -133,6 +133,7 @@ PLANCK_DEMO = REPO / "demos" / "planck-uv-catastrophe"
 MAGNET_DEMO = REPO / "demos" / "magnet-creation"
 ERANK_DEMO = REPO / "demos" / "effective-rank"
 REDUNDANCY_DEMO = REPO / "demos" / "neuron-redundancy"
+RSA_DEMO = REPO / "demos" / "rsa"
 
 
 def _check_demo_snapshot(demo_dir, module_name, name):
@@ -188,12 +189,16 @@ def _check_demo_snapshot(demo_dir, module_name, name):
 @pytest.mark.parametrize("name", [
     "hook",
     "question",
-    "match_lied",
-    "flatten",
-    "gram",
+    "lied",
+    "matrices",
     "center",
-    "cka_formula",
+    "gram",
+    "frobenius",
+    "formula",
+    "equivalent",
+    "read",
     "invariants",
+    "siblings",
     "settle",
 ])
 def test_cka_layout_snapshots_no_overlap(name):
@@ -310,3 +315,19 @@ def test_erank_layout_snapshots_no_overlap(name):
 ])
 def test_redundancy_layout_snapshots_no_overlap(name):
     _check_demo_snapshot(REDUNDANCY_DEMO, "redundancy_layout_snapshots", name)
+
+
+@pytest.mark.parametrize("name", [
+    "hook",
+    "question",
+    "gram",
+    "lied",
+    "rdm",
+    "vector",
+    "scatter",
+    "siblings",
+    "brain",
+    "settle",
+])
+def test_rsa_layout_snapshots_no_overlap(name):
+    _check_demo_snapshot(RSA_DEMO, "rsa_layout_snapshots", name)
