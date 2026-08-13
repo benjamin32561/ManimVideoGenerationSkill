@@ -50,12 +50,14 @@ def _skill_scripts() -> Path:
 sys.path.insert(0, str(_skill_scripts()))
 sys.path.insert(0, str(DEMO_DIR))
 
+from layout_watch import watch_layout  # noqa: E402
 from timing_helpers import TimedNarration  # noqa: E402
 from utils.style import (  # noqa: E402
     C,
     LayoutBoard,
     ask_about,
     bottom_note,
+    breathe_until,
     section_title,
     soft_idle,
 )
@@ -66,6 +68,9 @@ class ExplainerScene(Scene):
         demo_dir = DEMO_DIR
         tn = TimedNarration(demo_dir / "timing.json", demo_dir / "audio" / "narration.mp3")
         tn.attach(self)
+        # Records every text collision that happens *during* motion, and flushes
+        # out/layout_violations.json when tn.wait_until_end() runs.
+        watch_layout(self, demo_dir)
         board = LayoutBoard()
 
         title = board.set_title(section_title("Title"))

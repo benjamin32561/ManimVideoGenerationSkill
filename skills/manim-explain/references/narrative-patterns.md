@@ -51,6 +51,24 @@ Preferred blend:
 5. **Contrast siblings:** nearby-but-different quantities.
 6. **Settle:** one-line takeaway.
 
+## The provenance beat (before any posit)
+
+Between "the old idea fails" and "here is the fix" there is a beat most
+explanations skip: **where the fix came from**. Without it the resolution arrives
+by authorial fiat and the viewer learns a result instead of an argument.
+
+Answer, in order:
+
+1. What was already known that survived (the constraint the fix had to respect).
+2. What was tried, and how it failed.
+3. What pinned this *particular* form — a limit it had to reproduce, a symmetry,
+   a scaling law, a fit to data.
+4. What was **still unjustified** when it was proposed.
+
+Historical honesty belongs here. If the author guessed, say so and say what the
+guess was fitted to: "he had no mechanism, only these two constraints and a
+formula that worked" is a stronger teaching beat than a confident non-answer.
+
 ## Empty vs developed explanations
 
 | Hollow | Developed |

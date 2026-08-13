@@ -129,6 +129,10 @@ def test_demo_layout_snapshots_no_overlap(name):
 CKA_DEMO = REPO / "demos" / "cka"
 SELECTIVITY_DEMO = REPO / "demos" / "neuron-selectivity"
 HATS_DEMO = REPO / "demos" / "axiom-of-choice-hats"
+PLANCK_DEMO = REPO / "demos" / "planck-uv-catastrophe"
+MAGNET_DEMO = REPO / "demos" / "magnet-creation"
+ERANK_DEMO = REPO / "demos" / "effective-rank"
+REDUNDANCY_DEMO = REPO / "demos" / "neuron-redundancy"
 
 
 def _check_demo_snapshot(demo_dir, module_name, name):
@@ -226,3 +230,83 @@ def test_selectivity_layout_snapshots_no_overlap(name):
 ])
 def test_hats_layout_snapshots_no_overlap(name):
     _check_demo_snapshot(HATS_DEMO, "hats_layout_snapshots", name)
+
+
+@pytest.mark.parametrize("name", [
+    "hook",
+    "modes",
+    "counting_safe",
+    "equipartition",
+    "rayleigh_jeans",
+    "catastrophe",
+    "interpolation",
+    "finite_step",
+    "two_ladders",
+    "evidence_board",
+    "ladder",
+    "derivation_stages",
+    "boltzmann_sum",
+    "closed_form",
+    "low_limit",
+    "freeze_out",
+    "plancks_law",
+    "settle",
+])
+def test_planck_layout_snapshots_no_overlap(name):
+    _check_demo_snapshot(PLANCK_DEMO, "planck_layout_snapshots", name)
+
+
+@pytest.mark.parametrize("name", [
+    "hook",
+    "question",
+    "wrong",
+    "moment",
+    "bohr",
+    "dual",
+    "exchange",
+    "domains",
+    "remanence",
+    "hysteresis",
+    "macro",
+    "curie",
+    "settle",
+])
+def test_magnet_layout_snapshots_no_overlap(name):
+    _check_demo_snapshot(MAGNET_DEMO, "magnet_layout_snapshots", name)
+
+
+@pytest.mark.parametrize("name", [
+    "hook",
+    "matrix",
+    "centering",
+    "ambient_dimension",
+    "hard_rank",
+    "normalized",
+    "entropy_units",
+    "exponentiate",
+    "definition",
+    "real_numbers",
+    "traps",
+    "settle",
+])
+def test_erank_layout_snapshots_no_overlap(name):
+    _check_demo_snapshot(ERANK_DEMO, "erank_layout_snapshots", name)
+
+
+@pytest.mark.parametrize("name", [
+    "hook",
+    "question",
+    "wrong_count",
+    "lockstep",
+    "traces",
+    "pair",
+    "formula",
+    "sibling",
+    "init",
+    "crossing",
+    "band",
+    "four",
+    "settle",
+])
+def test_redundancy_layout_snapshots_no_overlap(name):
+    _check_demo_snapshot(REDUNDANCY_DEMO, "redundancy_layout_snapshots", name)

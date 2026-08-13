@@ -1,10 +1,18 @@
-"""Manim helpers: drive visuals from timing.json bookmark times."""
+"""Manim helpers: drive visuals from timing.json bookmark times.
+
+Beyond waiting for cues, this records a **timeline** of what actually moved and
+when. A cue whose window contains no animation is a beat where the narration
+described something and the picture sat still — the single most common way these
+videos go wrong, and impossible to see by reading 1000 lines of scene code.
+The timeline lands in ``out/timeline.json``; ``check_sync.py`` turns it into a
+verdict and ``qa_frames.py`` uses it to sample motion, not just cue times.
+"""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Union
+from typing import Any, Union
 
 from manim import Scene
 
@@ -25,13 +33,46 @@ class TimedNarration:
         self.audio_path = Path(audio_path)
         self.scene: Scene | None = None
         self._audio_added = False
+        # instrumentation
+        self.plays: list[dict[str, Any]] = []
+        self.cue_log: list[dict[str, Any]] = []
+        self._orig_play = None
 
     def attach(self, scene: Scene) -> None:
+        """Add narration audio and start recording the motion timeline.
+
+        Wraps ``scene.play`` so every animation's start and end time is logged.
+        The wrapper is transparent: arguments and return value pass through.
+
+        Args:
+            scene: The scene about to be constructed.
+        """
         self.scene = scene
         if not self._audio_added:
             # Manim CE: add_sound path relative to cwd or absolute
             scene.add_sound(str(self.audio_path))
             self._audio_added = True
+        if self._orig_play is None:
+            self._orig_play = scene.play
+
+            def _logged_play(*args: Any, **kwargs: Any) -> Any:
+                start = float(scene.time)
+                result = self._orig_play(*args, **kwargs)
+                # Manim implements Scene.wait as play(Wait(...)); a wait is the
+                # opposite of motion, so it must never count as one.
+                kinds = [type(a).__name__ for a in args]
+                is_wait = bool(kinds) and all(k == "Wait" for k in kinds)
+                self.plays.append(
+                    {
+                        "start": round(start, 3),
+                        "end": round(float(scene.time), 3),
+                        "kind": "wait" if is_wait else "anim",
+                        "anims": kinds[:6],
+                    }
+                )
+                return result
+
+            scene.play = _logged_play  # type: ignore[method-assign]
 
     def time_of(self, bookmark: str) -> float:
         if bookmark not in self.bookmarks:
@@ -46,6 +87,7 @@ class TimedNarration:
         if self.scene is None:
             raise RuntimeError("Call attach(scene) first")
         target = self.time_of(bookmark) + pad
+        self.cue_log.append({"cue": bookmark, "t": round(target, 3)})
         remaining = target - float(self.scene.time)
         if remaining > 1e-3:
             self.scene.wait(remaining)
@@ -107,3 +149,30 @@ class TimedNarration:
         remaining = target - float(self.scene.time)
         if remaining > 1e-3:
             self.scene.wait(remaining)
+        self.write_timeline()
+
+    def write_timeline(self) -> Path | None:
+        """Write the motion timeline, and flush any attached layout watcher.
+
+        Returns:
+            Path to ``out/timeline.json``, or None when no demo directory can be
+            inferred from the timing file location.
+        """
+        demo_dir = self.timing_path.parent
+        out_dir = demo_dir / "out"
+        try:
+            out_dir.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            return None
+        payload = {
+            "duration": self.duration,
+            "cues": sorted(self.cue_log, key=lambda c: c["t"]),
+            "plays": self.plays,
+            "bookmarks": self.bookmarks,
+        }
+        path = out_dir / "timeline.json"
+        path.write_text(json.dumps(payload, indent=2) + "\n")
+        watcher = getattr(self.scene, "_layout_watcher", None)
+        if watcher is not None:
+            watcher.flush()
+        return path

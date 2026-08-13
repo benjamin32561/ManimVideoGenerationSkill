@@ -218,6 +218,37 @@ def soft_idle(scene: Scene, *mobs, run_time: float = 0.9, scale: float = 1.02) -
     )
 
 
+def breathe_until(scene: Scene, clock, bookmark: str, *mobs, cadence: float = 1.1,
+                  gap: float = 0.45, scale: float = 1.015) -> None:
+    """Keep a figure alive until a cue, instead of freezing after one breath.
+
+    A single ``soft_idle`` covers about a second; a cue eight seconds away leaves
+    seven seconds of frozen frame while the narration keeps talking. This repeats
+    gentle idles until the cue is nearly due, so the picture never stops moving
+    mid-sentence.
+
+    Args:
+        scene: The running scene.
+        clock: Anything exposing ``span_until(bookmark)`` — normally the
+            ``TimedNarration``.
+        bookmark: Cue to breathe up to.
+        mobs: Mobjects to idle; no-op when empty.
+        cadence: Length of each individual breath.
+        gap: Silence deliberately left before the cue lands.
+        scale: Breath amplitude — keep it subtle.
+    """
+    if not mobs:
+        return
+    while True:
+        remaining = float(clock.span_until(bookmark))
+        if remaining <= gap + 0.2:
+            return
+        run = min(cadence, remaining - gap)
+        if run < 0.25:
+            return
+        soft_idle(scene, *mobs, run_time=run, scale=scale)
+
+
 def pop_named(
     scene: Scene,
     *mobs,
@@ -409,6 +440,7 @@ __all__ = [
     "bottom_note",
     "panel_label",
     "soft_idle",
+    "breathe_until",
     "ask_about",
     "pop_named",
     "key_sentence",

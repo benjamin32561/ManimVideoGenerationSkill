@@ -30,10 +30,15 @@ metadata:
 5. **Tone split:** curious hooks / story; documentary explanations. Lead-in **question**, not “let’s start…”.
 6. **Progressive reveal.** One idea per beat. Concrete hook → abstract forever (unless a tiny toy).
 7. **Morph, don’t respawn.** Related A→B transforms in place. First charts must animate, then soft-idle.
-8. **Picture matches the spoken noun.** Show the structure VO names; labels on the correct side (inputs↔classes). Questions move referents; named objects pop then settle in a **baked audio pause** (`tts_chunk` split + `pause_after`); causal pairs move both sides; procedures staged. Never put prose on a live graph.
-9. **Math develops on screen.** Formula beats: spoken meaning for each piece + `MathTex` morph stages (BUILD_UP) — not a one-shot final equation. After questions / heavy morphs, bake long `pause_after` (questions 0.9–1.3s).
-10. **Use project scripts** under this skill’s `scripts/` — no ad-hoc TTS/mux paths. Run `lint_script.py` before TTS.
-11. **Feedback → abstract skill law.** User craft corrections update [references/craft-laws.md](references/craft-laws.md) as *general* rules (plus related refs/templates), not only the current demo. Regen TTS when pauses/wording are wrong; visual-only only when VO is already correct.
+8. **Every spoken change has a visible one.** If the VO gives an object a verb or
+   an adjective — grows, spreads, cancels, crowds, peakier, frozen — that motion
+   plays *on that word*. `lint_script.py` checks this against `show:` before TTS;
+   `check_sync.py` checks the rendered result against the real timeline. Neither
+   is optional.
+9. **Picture matches the spoken noun.** Show the structure VO names; labels on the correct side (inputs↔classes). Questions move referents; named objects pop then settle in a **baked audio pause** (`tts_chunk` split + `pause_after`); causal pairs move both sides; procedures staged. Never put prose on a live graph.
+10. **Math develops on screen.** Formula beats: spoken meaning for each piece + `MathTex` morph stages (BUILD_UP) — not a one-shot final equation. After questions / heavy morphs, bake long `pause_after` (questions 0.9–1.3s).
+11. **Use project scripts** under this skill’s `scripts/` — no ad-hoc TTS/mux paths. Run `lint_script.py` before TTS.
+12. **Feedback → abstract skill law.** User craft corrections update [references/craft-laws.md](references/craft-laws.md) as *general* rules (plus related refs/templates), not only the current demo. Regen TTS when pauses/wording are wrong; visual-only only when VO is already correct.
 
 **Read first:** [references/craft-laws.md](references/craft-laws.md)
 
@@ -60,26 +65,44 @@ use `MANIM_EXPLAIN_ROOT`, or `scripts/skill_paths.py` from Python.
 - [ ] 6. TTS: python scripts/tts_openrouter.py demos/<slug>/script.yaml
 - [ ] 7. Align: python scripts/align_words.py demos/<slug>
 - [ ] 8. Implement Manim (morphs, formula BUILD_UP, soft idle, ask_about, LayoutBoard, `play_before`)
-- [ ] 9. pytest tests/test_layout.py → render -qm → watch → fix
-- [ ] 10. **Visual QA:** `python scripts/qa_frames.py demos/<slug> --contact-sheet`
-       → read contact sheet + key full frames → fix overlaps/spacing → re-render
-- [ ] 11. On craft feedback: update craft-laws (+ refs/templates) BEFORE or WITH the demo fix
-- [ ] 12. Deliver: script, scenes, audio/, timing.json, MP4, one-line thesis
+       — first two lines of `construct`: `tn.attach(self)` then `watch_layout(self, DEMO_DIR)`
+- [ ] 9. pytest tests/test_layout.py → render -qm
+- [ ] 10. **Motion audit:** `python scripts/check_sync.py demos/<slug>`
+       → every silent cue is a beat the VO narrated and the picture ignored. Fix them.
+- [ ] 11. **Layout audit:** `python scripts/check_layout.py demos/<slug>`
+       → text that collided *during* motion, which bookmark stills never show. Fix them.
+- [ ] 12. **Pixel QA:** `qa_frames.py demos/<slug> --from-timeline --contact-sheet`
+       → samples motion ends + collisions, not just cue times. Read the sheet, then
+       full frames for anything suspicious → fix → re-render → re-audit
+- [ ] 13. On craft feedback: update craft-laws (+ refs/templates) BEFORE or WITH the demo fix
+- [ ] 14. Deliver: script, scenes, audio/, timing.json, MP4, one-line thesis
 ```
 
-### Visual QA loop (required)
+### The three audits (required after every render)
 
-AABB / LayoutBoard catches reserved-band collisions. **Still look at pixels.**
+Reading a contact sheet of bookmark stills is not enough: it samples the moments
+*you* chose, and both classic failures happen elsewhere — a described change that
+never animates, and text that collides only while something is moving or at full
+size. The render instruments itself, so all three are mechanical:
 
 ```bash
-python "$MANIM_EXPLAIN_ROOT/scripts/qa_frames.py" demos/<slug> --contact-sheet
-# frames land in demos/<slug>/out/qa_frames/
+python "$MANIM_EXPLAIN_ROOT/scripts/check_sync.py"   demos/<slug>   # silent cues
+python "$MANIM_EXPLAIN_ROOT/scripts/check_layout.py" demos/<slug>   # live collisions
+python "$MANIM_EXPLAIN_ROOT/scripts/qa_frames.py"    demos/<slug> --from-timeline --contact-sheet
 ```
 
-Agent must **Read** the contact sheet, then **full-resolution frames for every beat
-that parks a caption near a figure** (plus major motions: dual panel, formula, gold
-set). Spoken state-words (spread / piled / scale…) must visibly match. Fix gutters /
-occlusion; do not ship on code review alone.
+* **check_sync** — cue windows with no animation. A cue marks a visual event by
+  definition, so a silent window is a beat where the narration moved and the
+  picture did not. Also flags *thin* windows (a token pulse standing in for a
+  described change) and long frozen stretches.
+* **check_layout** — every text-vs-text overlap the renderer actually produced,
+  with the interval it lasted. Requires `watch_layout(self, DEMO_DIR)` in the
+  scene; it samples the live frame, so it sees collisions no snapshot can.
+* **qa_frames --from-timeline** — stills at motion *ends* (where a growing shape
+  is largest and a moving label has just landed) and at collision midpoints.
+
+Then **Read** the contact sheet and the full-resolution frames for anything the
+audits flagged. Do not ship on code review alone.
 
 ### Visual-only pass (no new audio)
 
@@ -103,6 +126,8 @@ demos/<slug>/
   utils/style.py
   utils/layout_snapshots.py   # overlap tests
   out/final.mp4
+  out/timeline.json           # what moved, when (written by TimedNarration)
+  out/layout_violations.json  # live text collisions (written by watch_layout)
 ```
 
 ## Script contract
@@ -135,10 +160,13 @@ Template: [assets/script_template.yaml](assets/script_template.yaml)
 |--------|------|
 | `scripts/tts_openrouter.py` | The VO path — Grok Voice `leo`, `chunk_by: tts_chunk` |
 | `scripts/align_words.py` | Whisper word timestamps (`--remap` re-maps cues with no STT call) |
-| `scripts/lint_script.py` | Pre-TTS checks: question pauses, formula BUILD_UP |
+| `scripts/lint_script.py` | Pre-TTS checks: question pauses, formula BUILD_UP, **spoken change-words vs `show:`** |
 | `scripts/layout_check.py` | AABB overlap / safe frame |
-| `scripts/qa_frames.py` | Post-render stills at bookmarks + contact sheet for pixel QA |
+| `scripts/qa_frames.py` | Post-render stills — `--from-timeline` samples motion ends + collisions |
 | `scripts/render_and_mux.sh` | Default `-qm` (30fps); avoid `-ql` |
+| `scripts/layout_watch.py` | `watch_layout(scene, demo_dir)` — records live text collisions |
+| `scripts/check_sync.py` | Silent / thin cues from the rendered timeline |
+| `scripts/check_layout.py` | Verdict on the recorded collisions |
 | `scripts/skill_paths.py` | Locate the skill / project from any install path |
 
 ## Inspiration (do not copy runtime)

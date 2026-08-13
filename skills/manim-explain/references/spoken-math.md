@@ -20,6 +20,10 @@ When unsure how to speak a symbol or expression, look it up (e.g. MathSpeak / Cl
 | fraction bar | "divided by" / "over" |
 | \(\sig\) / \(\sigma\) | "sigma" (bias scale) |
 | \(10\%\) | "ten percent" |
+| \(R\) / neuron redundancy | "neuron redundancy" |
+| \(\mathrm{corr}(a_i,a_j)\) | "the correlation of unit i with unit j" |
+| \(\lvert\mathrm{corr}(a_i,a_j)\rvert\) | "the absolute correlation" |
+| \(\frac{2}{n(n-1)}\sum_{i<j}\) | "the average over every pair" |
 
 ## General patterns
 

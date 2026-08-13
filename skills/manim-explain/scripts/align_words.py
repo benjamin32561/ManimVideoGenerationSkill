@@ -64,6 +64,93 @@ _SPELLING_PAIRS = {
 _IS_TO_IZ_SUFFIXES = ("ise", "ises", "ised", "ising", "isation", "isations")
 
 
+def _edit_distance(a: str, b: str, *, cap: int) -> int:
+    """Levenshtein distance between two short tokens, giving up past ``cap``.
+
+    Args:
+        a: First token.
+        b: Second token.
+        cap: Stop early once the best possible distance exceeds this.
+
+    Returns:
+        The edit distance, or ``cap + 1`` when it provably exceeds ``cap``.
+    """
+    if abs(len(a) - len(b)) > cap:
+        return cap + 1
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, start=1):
+        cur = [i]
+        for j, cb in enumerate(b, start=1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        if min(cur) > cap:
+            return cap + 1
+        prev = cur
+    return prev[-1]
+
+
+def near_homophone(expected: str, actual: str) -> bool:
+    """Whether a long technical cue survived STT as a near-miss spelling.
+
+    Transcribers mangle rare terms ("equipartition" → "equipetition"). Only long
+    tokens sharing a prefix are compared, and the tolerance stays tight, so
+    ordinary words are never conflated.
+
+    Args:
+        expected: Normalized cue token from the script.
+        actual: Normalized transcript token.
+
+    Returns:
+        True when the two are within the allowed edit distance.
+    """
+    if len(expected) < 8 or len(actual) < 8:
+        return False
+    if expected[:3] != actual[:3]:
+        return False
+    tolerance = 1 + len(expected) // 10
+    return _edit_distance(expected, actual, cap=tolerance) <= tolerance
+
+
+def same_word_number(a: str, b: str) -> bool:
+    """Whether two tokens differ only by a trailing plural/possessive ``s``.
+
+    STT writes "nats" as "nat's", which normalization reduces to "nat"; the same
+    fold rescues "modes"/"mode" and "elements"/"element".
+
+    Args:
+        a: First normalized token.
+        b: Second normalized token.
+
+    Returns:
+        True when stripping one trailing ``s`` from each makes them equal.
+    """
+    sa, sb = a.rstrip("s"), b.rstrip("s")
+    return len(sa) >= 3 and sa == sb
+
+
+def partial_word_match(expected: str, actual: str) -> bool:
+    """Whether a cue survived STT as a fragment of itself, or vice versa.
+
+    Transcribers split rare words across tokens ("recovered" → "but covered")
+    and add or drop inflections ("element" → "elements"). Either way one token
+    is a prefix or suffix of the other; requiring a long, high-coverage overlap
+    keeps unrelated words apart.
+
+    Args:
+        expected: Normalized cue token from the script.
+        actual: Normalized transcript token.
+
+    Returns:
+        True when one token is a prefix or suffix of the other, sharing at least
+        six characters and 60% of the longer token.
+    """
+    long, short = (expected, actual) if len(expected) >= len(actual) else (actual, expected)
+    if len(short) < 6:
+        return False
+    if not (long.startswith(short) or long.endswith(short)):
+        return False
+    return len(short) / len(long) >= 0.6
+
+
 def canonical_spelling(word: str) -> str:
     """Fold British spellings onto their US form for cue matching.
 
@@ -144,6 +231,15 @@ def _token_matches(expected: str, actual: str) -> bool:
         return True
     # British cue vs US transcript ("memorises" → "memorizes")
     if canonical_spelling(expected) == canonical_spelling(actual):
+        return True
+    # rare technical term mangled by STT ("equipartition" → "equipetition")
+    if near_homophone(expected, actual):
+        return True
+    # cue split or inflected by STT ("recovered" → "but covered", "element"/"elements")
+    if partial_word_match(expected, actual):
+        return True
+    # singular vs plural / possessive-stripped ("nats" → "nat's" → "nat")
+    if same_word_number(expected, actual):
         return True
     return False
 
