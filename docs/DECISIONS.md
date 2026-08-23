@@ -1,10 +1,10 @@
 # Locked product decisions
 
-Updated: 2026-08-10
+Updated: 2026-08-21
 
 | Decision | Choice |
 |----------|--------|
-| Inspiration | Distill from [3brown1blue](https://github.com/AmitSubhash/3brown1blue) (`pip install 3brown1blue`, MIT); do not ship its Kokoro/atempo sync. Not vendored — clone it locally under `vendor/` (gitignored) if you want to read it |
+| Inspiration | Distill from [3brown1blue](https://github.com/AmitSubhash/3brown1blue) (`pip install 3brown1blue`, MIT); do not ship its Kokoro/atempo sync. Optional read-only clone: `vendor/3brown1blue/` (gitignored) |
 | Sync pipeline | Script+cues → OpenRouter TTS → Whisper word timestamps → timed Manim → mux |
 | TTS | **OpenRouter only** — `x-ai/grok-voice-tts-1.0`, male voice **`leo`**, `chunk_by: tts_chunk`. No second provider (2026-08-11) |
 | Autonomy | Skill runs **end to end** — no approval gate on script/arc/visuals; user reviews the finished MP4 |
@@ -14,7 +14,11 @@ Updated: 2026-08-10
 | Question motion | Referent mobjects move while the question is asked (`ask_about`) |
 | Staged procedures | Multi-step VO (choose/rank/cut/lock/build) animates each verb, not one recolor |
 | Beat suspense | ~0.3s via `tts.inter_chunk_silence` + soft-idle (not naked desync waits) |
-| Visual QA | `qa_frames.py` post-motion stills + contact sheet; agent Reads pixels before ship |
+| Visual QA | Geometry pass captures sparse stills; `qa_frames.py` tiles `out/keyframes/`; `render_stills.py` Cairo-rasterizes named times into `out/stills/` and aborts after the last hit. No MP4 seek in the inner loop (2026-08-21) |
+| Build loop | Four gates, cheapest first: `--geometry_only` walk → occupancy/`check_sync`/`check_layout` → pixels read off captured stills → `-qm` once behind `review_gate.py`. `--dry_run` is not used: it still Cairo-rasterizes every frame. See `references/build-loop.md` (2026-08-21) |
+| Render isolation | Every render passes `--media_dir`; `render_and_mux.sh` uses a per-invocation tree. Same-scene concurrency is safe by construction, not by coordination (2026-08-20) |
+| Cue robustness | Cues must be transcript singletons. `align_words.py` rejects implausible forward jumps and joins split compounds; `cue_doctor.py` diagnoses, `cue_repair.py` re-cues and re-maps free. Unresolved cues now **fail** the align step instead of warning (2026-08-20) |
+| Delivery path | Finished videos go to `<project>/output_videos/<series>/<slug>.mp4`, grouped by slug prefix (`ce-` → `computer-engineering/`, `pf-` → `philosophical-foundations/`, `thermal-` → `thermal/`, else `other/`). `demos/<slug>/` keeps the working tree only. Path is resolved by `skill_paths.final_video_path` (2026-08-22; was a flat directory 2026-08-19) |
 | Figure gutters | Clear air between panels / bars / text (≥ ~0.35–0.5 units) |
 | Terminology | Prefer precise domain nouns (e.g. **distribution** over “profile”) |
 
@@ -32,6 +36,7 @@ Updated: 2026-08-10
 | Third-party inspiration | `3brown1blue` is referenced by URL + pip name, never vendored into the repo (2026-08-12) |
 | First demo topic | **Top-$k$ on-mass** (NTUDynamicRangeGCN neuron-on metric) |
 | Manim env | `/raid/conda_envs/ben_envs/manim_env` |
+| GPU rasterizer | Not for the inner loop (2026-08-21). Named stills after a geometry pass restore compact mobject snapshots (`out/snapshots/`, 0.5 s + overlaps) and Cairo once — no `construct`. CE-14: 2 stills at 93.6 + 367.8 in **2.0 s** vs construct walk **13.6 s** for 93.6 alone. First occupancy walk still pays construct (~8 min). Snapshot dump ~155 MB. `--walk` forces the slow path. |
 
 ## Source concept (first demo)
 

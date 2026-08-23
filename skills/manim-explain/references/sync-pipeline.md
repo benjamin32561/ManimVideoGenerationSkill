@@ -7,7 +7,7 @@ script.yaml (say + bookmarks + show)
   → tts_openrouter.py  → audio/chunks/chunk_NN.mp3 + audio/narration.mp3
   → align_words.py     → timing.json  (words[] + bookmarks{})
   → Manim scene using absolute bookmark times
-  → render_and_mux.sh  → out/final.mp4
+  → render_and_mux.sh  → output_videos/<series>/<slug>.mp4
 ```
 
 TTS and STT both run through **OpenRouter** (single key). `align_words.py` uses
@@ -32,7 +32,7 @@ Run `scripts/lint_script.py` before TTS to catch short question pauses and empty
 If VO + bookmarks are already good, skip TTS/align:
 
 ```
-edit scenes / style → render_and_mux.sh … -qm → out/final.mp4
+edit scenes / style → render_and_mux.sh … -qm → output_videos/<series>/<slug>.mp4
 ```
 
 Keep `timing.json` and `narration.mp3` unchanged. Still update `craft-laws.md` if

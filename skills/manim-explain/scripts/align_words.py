@@ -253,6 +253,11 @@ def map_bookmarks(words: list[dict], bookmarks: list[str]) -> dict[str, float]:
     norm_words = [(normalize_token(w.get("word", "")), w) for w in expand_words(words)]
     out: dict[str, float] = {}
     cursor = 0
+    last_time: float | None = None
+    # A cue should land within a beat or two of the previous one. Scale the
+    # tolerance to the narration so short demos are not judged by a long one.
+    duration = float(words[-1].get("start", 0.0)) if words else 0.0
+    max_gap = max(45.0, 4.0 * duration / max(1, len(bookmarks)))
 
     for mark in bookmarks:
         parts = [normalize_token(p) for p in mark.split() if normalize_token(p)]
@@ -281,10 +286,36 @@ def map_bookmarks(words: list[dict], bookmarks: list[str]) -> dict[str, float]:
             if ok:
                 found = (i, float(w["start"]))
                 break
+        if found is None and len(parts) == 1:
+            # Whisper splits compound technical words: "wordline" comes back as
+            # "word line", "lookaside" as "look aside", "dataflow" as "data
+            # flow". Retry the cue against pairs of adjacent transcript tokens.
+            target = parts[0]
+            for i in range(cursor, len(norm_words) - 1):
+                joined = norm_words[i][0] + norm_words[i + 1][0]
+                if _token_matches(target, joined):
+                    found = (i, float(norm_words[i][1]["start"]))
+                    break
         if found is None:
             print(f"warn: bookmark not found in STT words: {mark!r}", file=sys.stderr)
             continue
         idx, start = found
+        # Reject an implausible jump. When Whisper writes a cue differently
+        # ("wordline" -> "word line"), the search runs past where that beat
+        # actually is and binds the *next* cue to a much later occurrence of the
+        # same word — after which every remaining cue is hunted for beyond that
+        # point and fails. One mangled word can take thirty with it. A cue that
+        # lands far past the previous one is almost always this failure, so drop
+        # it and leave the cursor where it was rather than derailing the rest.
+        if last_time is not None and start - last_time > max_gap:
+            print(
+                f"warn: bookmark {mark!r} only matches {start:.1f}s, "
+                f"{start - last_time:.1f}s after the previous cue — treating as "
+                "not found rather than binding it there",
+                file=sys.stderr,
+            )
+            continue
+        last_time = start
         cursor = idx + 1
         key = mark
         n = 2
@@ -435,8 +466,34 @@ def remap(demo_dir: Path, script: dict) -> None:
     print(f"Remapped {len(timing['bookmarks'])}/{len(bookmarks)} bookmarks in {timing_path}")
     found_bases = {k.split("#")[0] for k in timing["bookmarks"]}
     missing = [b for b in bookmarks if b not in found_bases]
-    if missing:
-        print(f"warn: still missing bookmarks: {missing}")
+    _fail_on_missing(missing)
+
+
+def _fail_on_missing(missing: list[str]) -> None:
+    """Stop the pipeline when a cue did not survive transcription.
+
+    An unresolved cue is not a warning: the scene will call ``wait_until`` on it
+    and die mid-render, after the expensive part. It is also the one failure the
+    three audits cannot reach, since they only run on a render that finished.
+    Whisper writes what it *hears*, so the usual causes are a word it mangles
+    ("guards" comes back "gods", "bench" comes back "bent"). The repair is to
+    re-cue that beat on a word the transcript actually contains and re-run with
+    ``--remap``, which costs nothing.
+
+    Args:
+        missing: Bookmark names absent from the resolved cue table.
+
+    Raises:
+        SystemExit: If anything is missing, with the repair instructions.
+    """
+    if not missing:
+        return
+    raise SystemExit(
+        f"\nERROR: {len(missing)} cue(s) did not survive transcription: {missing}\n"
+        "  Whisper transcribes what it hears, so pick a different, distinctive\n"
+        "  word from the same sentence — check the transcript in timing.json for\n"
+        "  what it actually wrote — then re-run with --remap (no STT cost)."
+    )
 
 
 def main() -> None:
@@ -540,10 +597,9 @@ def main() -> None:
     # account for #n duplicates in collect — map_bookmarks uses mark / mark#n
     found_bases = {k.split("#")[0] for k in bookmark_times}
     missing = [b for b in bookmarks if b not in found_bases]
-    if missing:
-        print(f"warn: still missing bookmarks: {missing}")
     for k, v in bookmark_times.items():
         print(f"  @{k}: {v:.3f}s")
+    _fail_on_missing(missing)
 
 
 if __name__ == "__main__":

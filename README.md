@@ -39,13 +39,22 @@ can live anywhere on disk.
 
 | Need | Why |
 |------|-----|
-| [Manim Community](https://docs.manim.community/) + ffmpeg | rendering and mux |
+| Vendored [Manim Community](https://docs.manim.community/) + ffmpeg | rendering and mux — source is `vendor/manim` |
 | LaTeX with `dvisvgm` | `MathTex` on screen (classic 3b1b look) |
 | Python `requests`, `PyYAML` | pipeline scripts |
 | `OPENROUTER_API_KEY` | TTS **and** word alignment both go through OpenRouter |
 
 Copy [`.env.example`](.env.example) to `.env` in *your* project and fill in the key.
 Set `MANIM_ENV=/path/to/env` there if Manim lives in a dedicated interpreter.
+After clone, install the in-tree engine (not the PyPI wheel):
+
+```bash
+git submodule update --init --recursive
+pip install -e vendor/manim
+```
+
+Patches go in `vendor/manim`. Pull community updates with
+[`scripts/sync_manim_upstream.sh`](scripts/sync_manim_upstream.sh).
 No sudo for `dvisvgm`? [`scripts/setup_dvisvgm_local.sh`](scripts/setup_dvisvgm_local.sh)
 unpacks it under `.local/` (Debian/Ubuntu).
 
@@ -87,14 +96,17 @@ skills/manim-explain/     the skill (this is what you install)
 ├── references/           craft laws, narrative patterns, layout, sync, TTS
 ├── scripts/              TTS, alignment, layout checks, QA stills, render
 └── assets/               script + scene + style templates
+vendor/manim/             our fork of Manim Community (editable install)
 docs/                     locked decisions and research notes
 tests/                    layout overlap tests
 .claude-plugin/           plugin + marketplace manifests
 ```
 
-The pipeline writes each video into `demos/<slug>/` (script, audio, `timing.json`,
-scenes, renders). That directory is gitignored — it is your working output, not
-part of the skill — so the layout tests skip any demo that is not present.
+The pipeline works inside `demos/<slug>/` (script, audio, `timing.json`, scenes,
+renders, QA stills) and delivers the finished video to `output_videos/<series>/<slug>.mp4`
+at your project root. Both directories are gitignored — they are your working
+output and your deliverables, not part of the skill — so the layout tests skip
+any demo that is not present.
 
 ## Credits
 

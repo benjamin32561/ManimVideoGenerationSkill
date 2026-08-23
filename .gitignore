@@ -3,8 +3,10 @@
 .env.*
 !.env.example
 
-# Third-party reference clone (see docs/DECISIONS.md — pip install 3brown1blue)
-vendor/
+# Optional 3brown1blue clone for reading (see docs/DECISIONS.md)
+vendor/3brown1blue/
+
+# Manim Community is tracked on purpose at vendor/manim (our fork).
 
 # Locally unpacked dvisvgm / ghostscript (scripts/setup_dvisvgm_local.sh)
 .local/
@@ -15,6 +17,9 @@ demos/**/media/
 
 # Demos are local working output of the skill, not part of the published skill
 demos/
+
+# Delivered videos (render_and_mux.sh) — your output, not part of the skill
+output_videos/
 
 # Python
 __pycache__/

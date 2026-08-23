@@ -1,0 +1,3 @@
+[submodule "vendor/manim"]
+	path = vendor/manim
+	url = git@github.com-personal:benjamin32561/manim.git

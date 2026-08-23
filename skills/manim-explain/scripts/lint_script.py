@@ -246,7 +246,53 @@ def lint(path: Path) -> list[str]:
                     "(Whisper alignment will fail)"
                 )
 
+    warnings.extend(_check_global_first_occurrence(beats))
     return warnings
+
+
+def _check_global_first_occurrence(beats: list) -> list[str]:
+    """Flag cues that are not the first spoken occurrence of their word.
+
+    Cues are matched forward-only against one transcript of the *whole*
+    narration, so a cue on a word that was already spoken three beats earlier
+    resolves to that earlier moment and fires the animation at the wrong time —
+    or, if the earlier moment has already passed, fires it instantly. The
+    per-beat order check cannot see this, because within its own beat the cue
+    looks perfectly well placed.
+
+    This is the single most common authoring error in a long script, and it is
+    invisible until the render walks to a cue that already happened.
+
+    Args:
+        beats: The parsed ``beats`` list from the script.
+
+    Returns:
+        One warning per cue that is not a global first occurrence.
+    """
+    out: list[str] = []
+    spoken: list[tuple[str, str]] = []   # (word, beat id) in narration order
+    for b in beats:
+        bid = b.get("id", "?")
+        for w in _words(b.get("say") or ""):
+            spoken.append((w, bid))
+
+    first_beat: dict[str, str] = {}
+    for w, bid in spoken:
+        first_beat.setdefault(w, bid)
+
+    for b in beats:
+        bid = b.get("id", "?")
+        for bm in (b.get("bookmarks") or []):
+            token = str(bm).split("#")[0].lower()
+            owner = first_beat.get(token)
+            if owner is not None and owner != bid:
+                out.append(
+                    f"{bid}: cue {str(bm)!r} is not its first occurrence — "
+                    f"{token!r} is already spoken in beat {owner!r}, so the cue "
+                    "will resolve there and fire at the wrong time. Choose a "
+                    "word unique to this beat."
+                )
+    return out
 
 
 def main() -> None:

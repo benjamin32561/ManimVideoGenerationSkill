@@ -11,6 +11,7 @@ verdict and ``qa_frames.py`` uses it to sample motion, not just cue times.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, Union
 
@@ -49,8 +50,12 @@ class TimedNarration:
         """
         self.scene = scene
         if not self._audio_added:
-            # Manim CE: add_sound path relative to cwd or absolute
-            scene.add_sound(str(self.audio_path))
+            from manim import config
+
+            # Geometry-only walks still call attach(); converting the narration
+            # mp3 to wav on every inner-loop pass was pure waste.
+            if not getattr(config, "geometry_only", False):
+                scene.add_sound(str(self.audio_path))
             self._audio_added = True
         if self._orig_play is None:
             self._orig_play = scene.play
@@ -70,6 +75,10 @@ class TimedNarration:
                         "anims": kinds[:6],
                     }
                 )
+                if not is_wait:
+                    capture = getattr(scene, "_geometry_capture", None)
+                    if capture is not None:
+                        capture.capture("play-end")
                 return result
 
             scene.play = _logged_play  # type: ignore[method-assign]
@@ -91,6 +100,9 @@ class TimedNarration:
         remaining = target - float(self.scene.time)
         if remaining > 1e-3:
             self.scene.wait(remaining)
+        capture = getattr(self.scene, "_geometry_capture", None)
+        if capture is not None:
+            capture.capture(f"cue:{bookmark}")
 
     def suspense(self, seconds: float = 0.3) -> None:
         """Thinking gap between beats.
@@ -159,6 +171,11 @@ class TimedNarration:
             inferred from the timing file location.
         """
         demo_dir = self.timing_path.parent
+        if os.environ.get("MANIM_STILL_ONLY") == "1":
+            capture = getattr(self.scene, "_geometry_capture", None)
+            if capture is not None:
+                capture.flush()
+            return None
         out_dir = demo_dir / "out"
         try:
             out_dir.mkdir(parents=True, exist_ok=True)

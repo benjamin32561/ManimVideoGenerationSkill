@@ -96,6 +96,68 @@ def find_project_root(start: Path) -> Path:
     return start
 
 
+# Slug prefix → folder under output_videos/. Unmatched slugs land in other/.
+SERIES_PREFIXES: tuple[tuple[str, str], ...] = (
+    ("ce-", "computer-engineering"),
+    ("pf-", "philosophical-foundations"),
+    ("il-", "introduction-to-language"),
+    ("mn-", "molecule-to-neuron"),
+    ("thermal-", "thermal"),
+)
+
+
+def output_videos_dir(project_root: Path) -> Path:
+    """Return the project's delivery directory for finished videos.
+
+    Renders, stills, timelines and audio stay under ``demos/<slug>/``; this
+    directory holds only the finished MP4 of each demo, one file per video, so
+    the deliverables are findable without walking the working tree.
+
+    Args:
+        project_root: Root of the user's project (see :func:`find_project_root`).
+
+    Returns:
+        Path to ``<project_root>/output_videos`` — not created.
+    """
+    return Path(project_root) / "output_videos"
+
+
+def series_folder_for_slug(slug: str) -> str:
+    """Return the output_videos subfolder for a demo slug.
+
+    Prefix mapping is the series identity. A one-off demo never pollutes a
+    course folder: unmatched slugs go to ``other``.
+
+    Args:
+        slug: Demo directory name, e.g. ``ce-01-sequential-machines``.
+
+    Returns:
+        Folder name under ``output_videos/``.
+    """
+    for prefix, folder in SERIES_PREFIXES:
+        if slug.startswith(prefix):
+            return folder
+    return "other"
+
+
+def final_video_path(demo_dir: Path) -> Path:
+    """Return the delivered MP4 for a demo, named after the demo slug.
+
+    Args:
+        demo_dir: The ``demos/<slug>`` directory of the video.
+
+    Returns:
+        ``<project_root>/output_videos/<series>/<slug>.mp4``.
+    """
+    demo_dir = Path(demo_dir).resolve()
+    slug = demo_dir.name
+    return (
+        output_videos_dir(find_project_root(demo_dir))
+        / series_folder_for_slug(slug)
+        / f"{slug}.mp4"
+    )
+
+
 def load_dotenv(project_root: Path) -> None:
     """Load ``KEY=value`` pairs from the project's ``.env`` into the environment.
 
@@ -114,3 +176,12 @@ def load_dotenv(project_root: Path) -> None:
             continue
         key, _, val = line.partition("=")
         os.environ.setdefault(key.strip(), val.strip().strip('"').strip("'"))
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) < 2:
+        sys.stderr.write("usage: skill_paths.py <demo_dir>\n")
+        sys.exit(2)
+    print(final_video_path(Path(sys.argv[1])))

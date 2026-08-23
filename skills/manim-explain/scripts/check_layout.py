@@ -2,9 +2,11 @@
 """Turn the runtime layout report into a verdict.
 
 Reads ``out/layout_violations.json`` (written by ``layout_watch``) and prints the
-text-vs-text collisions that lasted long enough for a viewer to see them —
-including the ones that only happen mid-motion, which static snapshots and
-bookmark stills both miss.
+collisions that lasted long enough for a viewer to see them — including the ones
+that only happen mid-motion, which static snapshots and bookmark stills both
+miss. Two kinds are reported: text over text, and a box border cutting through
+text (an chip rectangle running into the label beside it, an emphasis box
+starting mid-word, a caption overflowing its panel).
 
 Usage::
 
@@ -36,22 +38,31 @@ def main() -> None:
     report = json.loads(path.read_text())
     violations = [v for v in report.get("violations", []) if v["duration"] >= args.min_duration]
 
-    print(f"{report.get('samples', 0)} samples, {len(violations)} overlap interval(s)")
+    cuts = [v for v in violations if v.get("kind") == "box-cuts-text"]
+    buried = [v for v in violations if v.get("kind") == "box-buries-text"]
+    overs = [v for v in violations
+             if v.get("kind") not in ("box-cuts-text", "box-buries-text")]
+    print(f"{report.get('samples', 0)} samples, {len(violations)} overlap interval(s)"
+          f" — {len(overs)} text-over-text, {len(cuts)} box-cuts-text,"
+          f" {len(buried)} box-buries-text")
     if not violations:
-        print("OK: no text overlapped text for longer than "
+        print("OK: nothing overlapped for longer than "
               f"{report.get('min_duration', 0)}s.")
         return
 
-    print("\nTEXT COLLISIONS (grab these frames — they are not at bookmarks):")
+    print("\nCOLLISIONS (grab these frames — they are not at bookmarks):")
     for v in violations:
+        kind = v.get("kind", "text-over-text")
+        rel = {"box-cuts-text": "cuts",
+               "box-buries-text": "completely covers"}.get(kind, "↔")
         print(
             f"  {v['start']:7.2f}s–{v['end']:7.2f}s  ({v['duration']:5.2f}s, "
-            f"{int(v['max_overlap_frac'] * 100):3d}% of the smaller box)\n"
-            f"      {v['a']!r}\n      ↔ {v['b']!r}"
+            f"{int(v['max_overlap_frac'] * 100):3d}%, {kind})\n"
+            f"      {v['a']!r}\n      {rel} {v['b']!r}"
         )
     print(
-        "\nExtract them with:\n"
-        f"  python qa_frames.py {args.demo_dir} --from-timeline"
+        "\nStills for these intervals were captured during the geometry walk:\n"
+        f"  python qa_frames.py {args.demo_dir}"
     )
     if args.strict:
         sys.exit(1)

@@ -22,6 +22,14 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
 
 1. **Lead with a question / situation**, never “let’s start… / today we will…”.
    Pattern: situation → stake → question → first tool.
+   **Independent series open on their own question.** Never open video 01 of a
+   new course with “you already know / you already own / as an engineer you
+   have…” from another course or from the viewer’s résumé. Each topic is a
+   self-contained argument. Inherit-and-hand-off applies *within* a series
+   (video n opens on n−1’s close). Video 01 has no previous video in *this*
+   series. Domain analogies (RC, filter, table) may appear *inside* a beat when
+   they are the picture for a mechanism this course is teaching — never as the
+   hook that assumes a previous series.
 2. **Tone split:** hooks and story beats = **curious**; definitions and formulas =
    **documentary** (clear, steady, fewer flourishes).
 3. **Concrete only for the intro.** After the hook, stay abstract unless a tiny toy
@@ -113,7 +121,21 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
     ("memorises", "colour", "centre") never matches its transcript. `align_words.py`
     folds the known variants (-ise/-ize, -our/-or, -re/-er), but prefer the US form
     in `say` for any cue word that has one.
-11. **Repair cues without re-paying for STT.** When only the cue list changed
+11. **Cue words must be transcript singletons, and compounds are not safe.**
+    Two failure modes, both invisible until a render walks to a cue that already
+    happened. (a) A cue word Whisper writes differently — it splits compound
+    technical terms, so `wordline` comes back "word line", `lookaside` "look
+    aside", `dataflow` "data flow". (b) A cue word the narration says more than
+    once: forward-only matching binds it to whichever occurrence follows the
+    cursor, which is usually the wrong one, and each late bind drags the cursor
+    further so the *following* beats fail too. One mangled word has been
+    observed taking thirty cues with it. Choose words that occur **exactly once
+    in the whole narration**, and prefer a distinctive multi-syllable word over
+    a short common one. `cue_doctor.py` reports what the transcript actually
+    says; `cue_repair.py` re-cues automatically; `align_words.py` now joins
+    adjacent tokens and rejects implausible forward jumps, but none of that
+    beats picking a singleton in the first place.
+12. **Repair cues without re-paying for STT.** When only the cue list changed
     (renamed / dropped bookmark, same audio), run
     `align_words.py demos/<slug> --remap` — it re-maps against the words already
     in `timing.json`. Re-run full alignment only when the narration audio changed.
@@ -227,11 +249,25 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
    names an object must be faded in the same `play` that removes the object. A
    label outliving its figure silently mislabels whatever occupies that space for
    the rest of the video, and no overlap test can catch it — only pixels can.
+   **This includes emphasis decorations**, which are the ones actually forgotten:
+   a `SurroundingRectangle` / ring / arrow drawn to highlight something is not
+   part of that something, so the `FadeOut(figure)` at the section boundary does
+   not reach it. It then sits on an empty stage for the rest of the video as a
+   mysterious empty box, and later lands on top of whatever the next section
+   draws there. Every ring goes into the same disposal `play` as its subject.
+   Neither audit sees this: an empty rectangle overlaps no *text*, and the cue
+   windows it sits through are full of other motion.
 4. **Give each persistent chip its own reserved x slot.** Counters, quotas, gain
    badges and readouts accumulate as a video goes on; place them from named
    constants (one slot each) instead of eyeballing a free-looking gap, and the
    collision cannot happen when a later beat adds one more.
-5. Key sentences park in **KEY_BAND**, never into the title strip.
+5. **Never crossfade two key sentences in one `play`.** `FadeOut(old)` and
+   `FadeIn(new)` in the same call leaves both in KEY_BAND for the whole run
+   time, which `watch_layout` reports as a live collision and `assert_clear`
+   cannot see (it only samples where you call it). Sequence the handover: fade
+   the old one out, `board.clear` it, then fade the new one in. Same rule for
+   any two mobjects that share one reserved slot.
+6. Key sentences park in **KEY_BAND**, never into the title strip.
 6. Labels beside/above objects in reserved bands — never on growing bars.
 7. **A section boundary must dispose of the previous figure, explicitly.** Before
    the first mobject of a new section lands, every mobject from the previous one
@@ -260,7 +296,15 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
    **Loudness must change pixel height:** if bar heights are peak-normalized, scaling
    every value by a constant is a no-op on screen — use a shared `ref_peak` or
    `multiply_heights` so quiet→loud is visible and more units can cross a fixed cutoff.
-12. **Highlighting must keep the label readable.** Never raise a labelled chip /
+12. **Sibling cards must read at one type size.** Helpers that shrink text to
+   fit a width (`safe_text(..., max_width=…)`) are silent: the short label keeps
+   its font size and the long one is scaled down, so two cards presenting a
+   parallel pair — the two branches of a fork, the two halves of a comparison —
+   end up visibly different sizes and the longer idea reads as the lesser one.
+   Wrap the long label onto two lines at the shared size (`safe_multiline`)
+   instead of letting it shrink. Check any card whose text you did not choose
+   the width for.
+13. **Highlighting must keep the label readable.** Never raise a labelled chip /
    box / node to full fill opacity in the *same colour as its own text* — the word
    disappears. Emphasize with fill ~0.4–0.55 + brighter stroke + a contrasting
    (white) label, and dim the others rather than blanking them. Same for
@@ -268,27 +312,34 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
    it silently drives the shape's fill to 1 as well. (Also: `set_opacity` on a
    group containing an `Arc`/outline turns it into a filled blob — set stroke
    opacity instead.)
+   **A `(grid, SurroundingRectangle)` sheet is the same trap and the commonest
+   one:** `set_opacity(f)` on that pair raises the *rectangle's fill* opacity too,
+   so the border stops framing the data and becomes a coloured pane painted over
+   it — at `set_opacity(1.0)` the grid disappears completely behind a solid
+   block. Drive the grid's fill and the border's stroke separately (a
+   `dim_sheet(group, frac)` helper), and never `set_opacity` a group that mixes a
+   filled figure with an outline. No audit catches this: the frame is fully
+   populated, nothing overlaps, every cue window has motion — only pixels show a
+   flat rectangle where the data was.
    **Corollary — emphasize the frame, not the group.** `Indicate` / `pop_named`
    on a card, chip or labelled box recolors *every* submobject, so the label ends
    up the same color as the fill it sits on. Build such objects as
    `VGroup(frame, body)` and animate them separately: pulse the frame's stroke,
    tint its fill ≤ ~0.2, and drive the body's opacity on its own. Dim/undim
    helpers beat a bare `set_opacity` on the whole card.
-13. **One conceptual lane.** Do not reopen a closed layer of the story (e.g. finish
+14. **One conceptual lane.** Do not reopen a closed layer of the story (e.g. finish
    the class-mean *distribution*, then talk as if we are back to raw activations).
    Advance: activations → means → distribution → mass / shape → number. Each step
    names the *current* object.
-14. **Visual QA loop (mandatory before calling a render done).** AABB tests catch
-    some overlaps; **pixels catch the rest**. After `-qm` render:
-    1. Run `scripts/qa_frames.py demos/<slug> --contact-sheet` (settle ~1.0–1.2s so
-       FadeIns / formula morphs have landed — not mid-tween).
+15. **Visual QA loop (mandatory before calling a render done).** AABB occupancy
+    catches overlaps and leftovers; **pixels catch the rest**. After the
+    geometry pass:
+    1. Run `scripts/qa_frames.py demos/<slug>` (tiles `out/keyframes/`).
     2. **Read the contact sheet**, then **Read full-resolution frames** for *every*
        beat that adds a caption near a figure (not only a sparse bookmark list).
     3. Check: text contrast, gutters, no text↔graph occlusion, labels on the correct
        side, spoken adjectives visibly matched, **formula stages readable**.
-    4. Fix; re-render; re-extract until clean.
-    Missing a caption-over-nodes frame means the cue list was too sparse — add that
-    bookmark and re-QA.
+    4. Fix; re-run the geometry pass; re-read until clean.
 
 
 ## QA / tooling
@@ -301,6 +352,29 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
    Prefer scripts that show sum/product stages before named operators (Frobenius, HSIC).
 3. **`TimedNarration.play_before`.** Prefer over bare `play` when a morph must land
    before the next bookmark.
+4. **Never read a colour off a `Text`.** `Text` is a `VGroup` of glyphs and its
+   *group* colour is unset, so `mob.get_color()` returns black. A helper that
+   re-creates a label "in the same colour as the old one" therefore paints it
+   black on a black background: invisible, and invisible to every mechanical
+   audit — the mobject is present, nothing overlaps, the cue window has motion.
+   Read the colour from the thing that actually carries it (a frame's stroke, a
+   role constant), never from the glyph group.
+5. **A render that stops advancing has asserted, not hung.** Layout assertions
+   abort the process, so the last `Animation N` line sits there looking like a
+   stall under load. Always read the log tail before blaming contention:
+   `sed 's/\x1b\[[0-9;]*m//g' <log> | grep -E "^  (overlap|oob):"`.
+6. **Marginal overlaps are still overlaps.** `assert_clear()` pads by ~0.08, so
+   two labels a tenth of a unit apart fail. When inserting something *between*
+   two existing objects, move **both** neighbours — shifting only one just moves
+   the collision to the other side.
+7. **Scan for mobjects that are added and never removed.** Before rendering,
+   list every name passed to `FadeIn` / `Create` / `Write` / `Grow*` and subtract
+   every name passed to `FadeOut` / `ReplacementTransform` / `TransformMatchingTex`
+   and every name folded into a `VGroup` that is disposed of. What remains should
+   be exactly the mobjects meant to persist to the last frame (title, final
+   equation, closing note). Anything else is a ghost that will ride the rest of
+   the video. This is ten lines of static analysis and it catches in seconds what
+   otherwise costs a full render plus a frame-by-frame read.
 
 ## The three audits (mandatory, mechanical)
 
@@ -318,9 +392,10 @@ Craft laws about motion and layout used to be checkable only by a human reading
    something grows, slides, or sits at maximum size — exactly the ones static
    snapshots and bookmark stills both miss. Brief crossings during a morph are
    filtered out; anything that lingers is real.
-3. **`qa_frames.py --from-timeline` — sample motion, not cue times.** Stills at
-   animation *ends* and collision midpoints. Bookmark stills remain useful for
-   reading the story; they are not a layout check.
+3. **`qa_frames.py` tiles captured stills, not an MP4.** The geometry pass
+   already rasterized cues, play ends, and overlap openings into
+   `out/keyframes/`. Bookmark stills remain useful for reading the story; they
+   are not a layout check.
 
 A render is not done until all three are clean or every remaining item is
 deliberate and stated.
@@ -336,3 +411,203 @@ When the user says “X felt wrong”:
 
 Do not “just fix this video.” The skill exists so the same feedback is not repeated
 for every new topic.
+
+## Register every figure with the board, or the audits are blind
+
+`LayoutBoard.assert_clear()` only compares what was handed to `board.add(...)`.
+A table, strip or panel built and positioned without registering it is invisible
+to the check, and so are all the collisions it causes. Two videos shipped defects
+of exactly this shape:
+
+- an instruction strip whose last chip's rectangle ran through the `counter`
+  pointer label beside a memory table — neither was registered
+- a memory table sitting in the same band as every caption and outcome chip in
+  the scene, its border painted across three of them
+
+Both looked fine to a green `assert_clear()`. When a figure is placed, register
+it in the same breath. If a collision is reported against something you thought
+was elsewhere, the fix is usually to register the *other* thing too and let the
+board tell you the truth.
+
+## A box either contains a text or does not touch it
+
+The most common real collision is not text over text — the two glyph runs never
+meet. It is a **box border cutting through text**: a chip rectangle running into
+the label beside it, an emphasis rectangle starting mid-word, a table's edge
+crossing a caption, a caption overflowing the panel it was meant to sit in.
+
+`check_layout` now reports these as `box-cuts-text`, using the rule above: a
+partial overlap between a drawn rectangle and a text is always a defect, while
+full containment (a chip and its own label) is always fine. Text-over-text
+still blocks the build; `box-cuts-text` is surfaced for the frame review to
+judge, because a bar behind a label or deliberately stacked cards are legitimate.
+
+## Clearance is 0.17, not 0.16 — leave 0.25
+
+`LayoutBoard` pads **both** boxes by 0.08 (its `pad` default), and the overlap
+test uses `<=`, so a gap of exactly 0.16 is still reported. Measured:
+
+| gap | reported |
+|-----|----------|
+| 0.14 | overlap |
+| 0.16 | overlap |
+| 0.17 | clear |
+
+So the true minimum is 0.17 and there is no margin at it. **Leave 0.25 or
+more.** Most of the layout failures in one 15-video series were of exactly one
+shape — two figures 0.10 to 0.14 apart — and several fix attempts moved
+something to precisely the minimum and failed again.
+
+## Fixing one assertion exposes the next
+
+Layout assertions abort on the first failure, so a scene with four of them takes
+four rounds. Expect a cascade and keep the `-n 0,1` loop tight rather than
+reading the first failure as the only one.
+
+## Every drawn encoding is computed from named fields and asserted
+
+A hand-typed bit string is a factual claim no audit and no frame review can
+check — 32 characters all look equally plausible, and the field brackets under
+them look right wherever they are put. One video reached the review gate with a
+`fence w,w` strip that was wrong twice over: the bits were not the instruction,
+and the `pred` / `succ` brackets pointed at the `rd` and `opcode` fields.
+
+Build the word from its fields and assert it against the known value:
+
+```python
+_FENCE_W = 0b0001                       # the W bit of a pred / succ field
+FENCE_WW_WORD = ((0b0000 << 28) | (_FENCE_W << 24) | (_FENCE_W << 20)
+                 | (0 << 15) | (0b000 << 12) | (0 << 7) | 0b0001111)
+assert FENCE_WW_WORD == 0x0110000F, "fence w,w assembles to 0x0110000f"
+FENCE_WW_BITS = format(FENCE_WW_WORD, "032b")
+FENCE_PRED_SPAN, FENCE_SUCC_SPAN = (4, 7), (8, 11)     # string indices, from the left
+assert FENCE_WW_BITS[4:8] == "0001" and FENCE_WW_BITS[8:12] == "0001"
+```
+
+Assert the field spans too, not just the word. `bitfield()` takes **string
+indices from the left**, which are the complement of the bit numbers the ISA
+manual quotes: for a 32-bit word, `bits[31:28]` is `s[0:4]`. Getting the word
+right and the brackets wrong still draws a lie. The same discipline already
+protected the `lw` strip in another video, where the word came from a computed
+constant and the spans matched the spec exactly.
+
+## A faded figure is still a box unless the slot is cleared
+
+`FadeOut` changes opacity; it does not change coordinates, and it does not
+unregister the slot. A board slot whose mobject has been faded therefore keeps
+contributing a **phantom box** at the old position, and everything later placed
+there is reported as colliding with something the viewer cannot see. Chasing
+those as real defects wastes whole render cycles.
+
+`assert_clear()` now skips figures whose fill and stroke opacity are both
+effectively zero, which matches what `layout_watch` already did on the live
+frame. Still call `board.clear(name)` when you dispose a figure — the opacity
+check is a safety net, not a licence to leak slots. And check the *names*: a
+`board.clear("c0head")` for a slot registered as `"head0"` silently does
+nothing.
+
+## The detectors are helpers; the frame review is the gate
+
+A chip's rounded border ran through the "slot 0" label of the queue row it was
+placed in, for fifteen seconds, and `check_layout` did not report it — the same
+geometry flagged correctly in an isolated test, so the real scene fell just
+outside a threshold. It was found by looking at the frame.
+
+Take the reports as a list of places to look first, never as proof that the rest
+is clean. Every tool here narrows the search; none of them closes it.
+
+## A label that outlives its section can be wrong, not just misplaced
+
+One panel label reading "snooping: every cache listens" was never disposed and
+rode into the section that replaced snooping with a directory and a mesh. That is
+not a layout blemish — for the length of that section the caption asserted the
+opposite of the picture. When checking leftovers, ask what the stale figure is
+*claiming*, not only what it overlaps.
+
+## Anchor a caption to the thing it labels, never to an absolute y
+
+Almost every `box-cuts-text` defect in one 15-video series had the same shape: a
+caption pinned to a hand-chosen `y` that happened to land on the **bottom border
+of the very box it was describing**. The author picks the number by eye against
+one render; the box's height then comes from its content (`queue_card(4,
+row_h=0.34)` is 1.36 tall, a `SurroundingRectangle` adds its buff), so the
+caption ends up on the edge and the border strikes through the words.
+
+Observed in one scene alone: "one ready list" on its card's frame for 6 s, "one
+ready list per core — one lock per core" across four queue cards for **51 s**,
+and "working set" on its ring's border for 16 s.
+
+Write the relationship, not the coordinate:
+
+```python
+list_lab.next_to(list_card, DOWN, buff=0.24)
+count_chip.next_to(list_lab, DOWN, buff=0.20)
+ws_name.next_to(ws_ring, UP, buff=0.20)      # below it, the bottom band leaves 0.16
+```
+
+`next_to` survives a change in the box's contents; an absolute `y` does not. Use
+absolute coordinates for the *figures*, relative placement for their *labels*.
+
+## When a band cannot hold everything, retire a caption instead of shuffling
+
+The same scene had a 0.79-high band that four things wanted: the queue cards'
+caption, two load chips, a theta marker and an equation — 0.95 of content with
+clearance. No arrangement fits, and three attempts at nudging one of them each
+traded the collision for a different one.
+
+The answer was not a better position. The partition caption had already been
+read by the time the load-balance beat began, so it was **disposed at its own
+beat boundary** and the band held the rest comfortably. Ask what still needs to
+be on screen before asking where to put it.
+
+## A box that swallows a text whole is occlusion, not containment
+
+The containment rule — "a box either fully contains a text or must not touch
+it" — has a hole. When a *wide* panel is laid over a *small* node, the node's
+label ends up 100 % inside the panel, which the rule reads as legitimate. One
+video shipped an entire MOESI state diagram buried under a later comparison
+panel that way: "your copy is wrong" sat exactly on the `S` node, and `O` sat on
+the core boxes, for the rest of the section.
+
+The distinction is ownership. `check_layout` now records each leaf's top-level
+ancestor and reports full containment as **box-buries-text** whenever the box and
+the text belong to different top-level mobjects. A chip containing its own label
+shares an ancestor and stays silent.
+
+## Two things that made the layout audit quietly narrower than it looked
+
+Both were found by testing the detector against a case it had missed, rather than
+by trusting a green report:
+
+1. **`family_members_with_points()` skips text.** A manim `Text` has
+   `has_points() == False` — its outlines live in `VMobjectFromSVGPath` children —
+   so walking the family that way never yields the `Text` itself. Walk
+   `get_family()`, which includes point-less parents.
+2. **A `MathTex` parent reports zero opacity.** The glyphs carry it, not the
+   parent, so an "is it visible?" filter reading only the parent discarded every
+   equation. Fall back to the maximum over children.
+
+The lesson under both: a checker that reports "0 problems" is making two claims —
+that it looked, and that it found nothing. Test it against a defect you have
+already seen with your own eyes before believing the second one.
+
+## Containment is only occlusion with draw order and fill
+
+The first version of the buried-text check asked one question — do the box and
+the text belong to different groups? — and reported 46 violations on a video that
+had none. Every one was innocent, for two reasons worth knowing:
+
+* `set_reg` / `set_readout` / `set_cell` swap a value with `Transform`, which
+  re-adds the **new** text as its own top-level mobject. Its own cell box then
+  looks like a stranger enclosing it.
+* A `SurroundingRectangle` ring is *supposed* to enclose things it does not own,
+  and hides nothing, because it has no fill.
+
+A box conceals a text only when all three hold: it fully contains it, it is
+painted **after** it (`scene.mobjects` is drawn in order, so a later index is on
+top), and it has real fill (> 0.30). With those, the check finds the genuine case
+— an opaque panel laid over a state node — and stays quiet on the rest.
+
+The general lesson: a geometric test alone cannot decide occlusion. Occlusion is
+geometry **plus paint order plus opacity**, and a checker that ignores two of the
+three will bury you in noise and get ignored — which is worse than not having it.

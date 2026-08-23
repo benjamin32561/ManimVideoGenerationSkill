@@ -66,6 +66,25 @@ def motion_in_window(plays: list[dict], start: float, end: float) -> list[dict]:
     ]
 
 
+def _cue_after(cues: list[dict], t: float) -> str | None:
+    """The first cue at or after a time.
+
+    A frozen stretch is fixed by breathing up to whatever cue ends it, so the
+    report is only actionable if it names that cue.
+
+    Args:
+        cues: Cue records sorted by ``t``.
+        t: Time the stretch begins.
+
+    Returns:
+        The cue word, or ``None`` when the stretch runs to the end of the video.
+    """
+    for c in cues:
+        if float(c["t"]) >= t:
+            return str(c.get("cue"))
+    return None
+
+
 def analyse(timeline: dict, owner: dict[str, str], *, min_motion: float, max_gap: float) -> dict:
     """Compare cue windows against recorded motion.
 
@@ -109,10 +128,12 @@ def analyse(timeline: dict, owner: dict[str, str], *, min_motion: float, max_gap
     for play in plays:
         if play["start"] - cursor > max_gap:
             gaps.append({"from": round(cursor, 2), "to": round(play["start"], 2),
+                         "next_cue": _cue_after(cues, cursor),
                          "length": round(play["start"] - cursor, 2)})
         cursor = max(cursor, float(play["end"]))
     if duration - cursor > max_gap:
         gaps.append({"from": round(cursor, 2), "to": round(duration, 2),
+                     "next_cue": _cue_after(cues, cursor),
                      "length": round(duration - cursor, 2)})
 
     return {"silent": silent, "thin": thin, "gaps": gaps,
@@ -151,7 +172,9 @@ def main() -> None:
     if report["gaps"]:
         print(f"\nSTILL STRETCHES over {args.max_gap}s ({len(report['gaps'])}):")
         for g in report["gaps"]:
-            print(f"  {g['from']:7.2f}s → {g['to']:7.2f}s  ({g['length']}s frozen)")
+            nxt = g.get("next_cue")
+            hint = f"  → breathe up to {nxt!r}" if nxt else "  → runs to the end"
+            print(f"  {g['from']:7.2f}s → {g['to']:7.2f}s  ({g['length']}s frozen){hint}")
     if not (report["silent"] or report["thin"] or report["gaps"]):
         print("\nOK: every cue window contains motion.")
 

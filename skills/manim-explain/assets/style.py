@@ -7,8 +7,10 @@ parked key lines, panel labels, and bottom notes do not collide.
 # ruff: noqa: F403, F405
 from __future__ import annotations
 
+import atexit
 import os
 import sys
+import traceback
 from pathlib import Path
 
 from manim import *
@@ -62,6 +64,9 @@ from layout_check import (  # noqa: E402
     assert_in_safe_frame,
     assert_no_overlaps,
     collect_boxes,
+    find_out_of_bounds,
+    find_overlaps,
+    format_overlap_report,
     mobject_box,
     park_key_sentence,
 )
@@ -269,6 +274,111 @@ def pop_named(
         soft_idle(scene, *mobs, run_time=settle)
 
 
+def _on_stage_ids() -> set | None:
+    """Ids of everything currently drawn, when a watcher has attached a scene.
+
+    Returns:
+        A set of ``id()`` values, or ``None`` when no scene is available (in
+        which case the caller must not filter anything out).
+    """
+    try:
+        from layout_watch import active_scene, on_stage_ids
+    except Exception:  # noqa: BLE001 - the board works without the watcher
+        return None
+    scene = active_scene()
+    if scene is None:
+        return None
+    try:
+        return on_stage_ids(scene)
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _visible_opacity(mob: object) -> float:
+    """Best-effort visible opacity of a tracked mobject.
+
+    Args:
+        mob: Any Manim mobject held in a board slot.
+
+    Returns:
+        The larger of fill and stroke opacity, or 1.0 when it cannot be read
+        (an unreadable mobject is assumed visible, so nothing is skipped by
+        accident).
+    """
+    try:
+        fill = float(mob.get_fill_opacity())
+    except Exception:  # noqa: BLE001 - not all mobjects carry a fill
+        fill = 0.0
+    try:
+        stroke = float(mob.get_stroke_opacity())
+    except Exception:  # noqa: BLE001 - nor a stroke
+        stroke = 0.0
+    if fill == 0.0 and stroke == 0.0:
+        try:                                # a group: take the brightest child
+            kids = mob.family_members_with_points()
+        except Exception:  # noqa: BLE001
+            return 1.0
+        if not kids:
+            return 1.0
+        return max((_visible_opacity(k) for k in kids if k is not mob), default=1.0)
+    return max(fill, stroke)
+
+
+_COLLECT_LAYOUT = os.environ.get("MANIM_LAYOUT_COLLECT", "") not in ("", "0")
+_LAYOUT_FAILURES: dict[str, str] = {}
+
+
+def _layout_call_site() -> str:
+    """Describe the scene line that called ``assert_clear``.
+
+    Returns:
+        ``"file.py:123"`` for the nearest frame outside this module, or
+        ``"?"`` when the stack cannot be read.
+    """
+    here = os.path.basename(__file__)
+    for frame in reversed(traceback.extract_stack()[:-2]):
+        name = os.path.basename(frame.filename)
+        if name != here:
+            return f"{name}:{frame.lineno}"
+    return "?"
+
+
+def _collect_layout_failure(boxes, pad: float) -> None:
+    """Record, rather than raise, the failures at one ``assert_clear`` site.
+
+    Args:
+        boxes: The tracked boxes at this call.
+        pad: Clearance padding applied to both boxes of a pair.
+    """
+    parts = []
+    hits = find_overlaps(boxes, pad=pad)
+    if hits:
+        parts.append(format_overlap_report(hits))
+    bad = find_out_of_bounds(boxes)
+    if bad:
+        parts.extend(f"  oob: '{b.label}' [{b.x_min:.2f},{b.y_min:.2f}]"
+                     f"-[{b.x_max:.2f},{b.y_max:.2f}]" for b in bad)
+    if parts:
+        _LAYOUT_FAILURES.setdefault(_layout_call_site(), "\n".join(parts))
+
+
+def _report_collected_layout() -> None:
+    """Print every recorded layout failure, grouped by call site."""
+    if not _LAYOUT_FAILURES:
+        if _COLLECT_LAYOUT:
+            print("\nLAYOUT SURVEY: no assert_clear site reported a problem.")
+        return
+    print(f"\nLAYOUT SURVEY: {len(_LAYOUT_FAILURES)} assert_clear site(s) would fail:")
+    for site, detail in _LAYOUT_FAILURES.items():
+        print(f"  at {site}")
+        for line in detail.splitlines():
+            print(f"  {line}")
+
+
+if _COLLECT_LAYOUT:
+    atexit.register(_report_collected_layout)
+
+
 class LayoutBoard:
     """Track on-screen text/math and fail fast on overlaps.
 
@@ -323,11 +433,39 @@ class LayoutBoard:
         return items
 
     def assert_clear(self) -> None:
+        """Check every tracked figure for overlap and frame violations.
+
+        Raises:
+            AssertionError: On the first overlap or out-of-frame figure, so the
+                render stops where the problem is.
+
+        Notes:
+            With ``MANIM_LAYOUT_COLLECT=1`` in the environment, failures are
+            recorded with their call site and printed at exit instead of
+            raising. One logic pass then reports *every* bad placement in the
+            scene rather than only the earliest, which turns a chain of
+            one-fix-per-render cycles into a single round. Set it only for that
+            survey — a collecting render is not a passing render.
+        """
         if not self.enforce:
             return
-        boxes = collect_boxes(self.tracked_items())
+        # A disposed figure keeps its coordinates, so a slot that was never
+        # cleared contributes a phantom box that collides with everything later
+        # placed there — a whole class of false failures that used to be chased
+        # as real ones. Manim's FadeOut *restores* opacity and merely removes the
+        # mobject from the scene, so membership is the reliable test and opacity
+        # is the fallback for figures faded in place.
+        items = list(self.tracked_items())
+        stage = _on_stage_ids()
+        if stage is not None:
+            items = [(m, n) for m, n in items if id(m) in stage]
+        items = [(m, n) for m, n in items if _visible_opacity(m) > 0.02]
+        boxes = collect_boxes(items)
         # Drop degenerate / tiny boxes (empty groups)
         boxes = [b for b in boxes if b.width > 0.01 and b.height > 0.01]
+        if _COLLECT_LAYOUT:
+            _collect_layout_failure(boxes, self.pad)
+            return
         assert_no_overlaps(boxes, pad=self.pad)
         assert_in_safe_frame(boxes)
 
@@ -451,3 +589,40 @@ __all__ = [
     "assert_in_safe_frame",
     "collect_boxes",
 ]
+
+def breathe_scene(scene, clock, cue: str, cadence: float = 1.1,
+                  gap: float = 0.45, scale: float = 1.006) -> None:
+    """Idle on whatever is currently on stage until a cue is nearly due.
+
+    ``breathe_until`` must be handed the mobjects to move, which means knowing
+    exactly what is alive at that instant. For a mid-beat cue several plays deep
+    that is error-prone, and guessing wrong either crashes or animates the wrong
+    thing. This breathes the scene's own top-level mobjects instead, with a
+    ``there_and_back`` scale small enough to be imperceptible and self-reversing,
+    so nothing drifts out of its reserved band.
+
+    Use it wherever ``check_sync`` reports a still stretch: the report names the
+    cue each stretch runs into, and that cue is the one to breathe up to.
+
+    Args:
+        scene: The running scene.
+        clock: Anything exposing ``span_until`` — normally the ``TimedNarration``.
+        cue: Cue to breathe up to.
+        cadence: Length of one breath.
+        gap: Silence deliberately left before the cue lands.
+        scale: Breath amplitude; keep it tiny.
+    """
+    while True:
+        remaining = float(clock.span_until(cue))
+        if remaining <= gap + 0.2:
+            return
+        run = min(cadence, remaining - gap)
+        if run < 0.25:
+            return
+        movers = [m for m in scene.mobjects
+                  if isinstance(m, VMobject) and len(m.get_all_points())][:8]
+        if not movers:
+            scene.wait(run)
+            continue
+        scene.play(*[m.animate.scale(scale) for m in movers], run_time=run,
+                   rate_func=there_and_back)
