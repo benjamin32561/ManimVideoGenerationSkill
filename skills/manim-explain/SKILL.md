@@ -4,13 +4,10 @@ description: >-
   Creates 3Blue1Brown-style Manim explainer videos with synced voiceover.
   Use when the user asks for an explainer video, 3b1b-style animation, Manim
   with narration, teaching a concept visually with voiceover, or producing a
-  timed lesson MP4. Mandates narrative planning before Manim code, OpenRouter
-  TTS with word-timestamp sync, LaTeX on-screen with spoken-math
+  timed lesson MP4. Mandates a cold-viewer contract and causal story before
+  Manim code, OpenRouter TTS with word-timestamp sync, LaTeX on-screen with spoken-math
   narration, morph-not-respawn motion, and craft-laws updates from user feedback.
 license: MIT
-compatibility: >-
-  Requires Manim Community, ffmpeg, a LaTeX install with dvisvgm, Python with
-  requests + PyYAML, and an OPENROUTER_API_KEY for TTS and word alignment.
 metadata:
   author: Ben Akhovan
   version: "0.1.0"
@@ -21,14 +18,19 @@ metadata:
 
 ## Hard rules
 
-1. **Plan before code.** Write `script.yaml` (thesis, pattern, beats with cues) — then TTS/align — then Manim.
+1. **Plan before code.** Write the `viewer_contract` and causal story spine, then
+   `script.yaml` (beats with roles, bridges, cues, and knowledge gains) — then
+   TTS/align — then Manim. See [references/narrative-patterns.md](references/narrative-patterns.md).
    **Run end to end without approval gates.** Do not stop to ask whether the arc is OK;
    self-review against the craft laws, ship the MP4, then iterate on feedback.
 2. **Audio-first sync.** Never stretch audio to fit a pre-timed video as the primary mode.
 3. **LaTeX on screen** (`MathTex` / `Tex`). Classic dark 3b1b look.
 4. **TTS never gets raw LaTeX.** Narration uses spoken math only. See [references/spoken-math.md](references/spoken-math.md).
-5. **Tone split:** curious hooks / story; documentary explanations. Lead-in **question**, not “let’s start…”.
-6. **Progressive reveal.** One idea per beat. Concrete hook → abstract forever (unless a tiny toy).
+5. **Tone split:** curious hooks / story; documentary explanations. Let an
+   understandable situation create the central question; never open with “let’s start…”.
+6. **Orient, investigate, resolve.** Establish the situation and desired outcome
+   before the central question. Keep one concrete anchor through intuition →
+   contradiction → mechanism → formalization → test → resolution. One idea per beat.
 7. **Morph, don’t respawn.** Related A→B transforms in place. First charts must animate, then soft-idle.
 8. **Every spoken change has a visible one.** If the VO gives an object a verb or
    an adjective — grows, spreads, cancels, crowds, peakier, frozen — that motion
@@ -36,9 +38,13 @@ metadata:
    `check_sync.py` checks the rendered result against the real timeline. Neither
    is optional.
 9. **Picture matches the spoken noun.** Show the structure VO names; labels on the correct side (inputs↔classes). Questions move referents; named objects pop then settle in a **baked audio pause** (`tts_chunk` split + `pause_after`); causal pairs move both sides; procedures staged. Never put prose on a live graph.
-10. **Math develops on screen.** Formula beats: spoken meaning for each piece + `MathTex` morph stages (BUILD_UP) — not a one-shot final equation. After questions / heavy morphs, bake long `pause_after` (questions 0.9–1.3s).
-11. **Use project scripts** under this skill’s `scripts/` — no ad-hoc TTS/mux paths. Run `lint_script.py` before TTS.
-12. **Feedback → abstract skill law.** User craft corrections update [references/craft-laws.md](references/craft-laws.md) as *general* rules (plus related refs/templates), not only the current demo. Regen TTS when pauses/wording are wrong; visual-only only when VO is already correct.
+10. **Evidence serves understanding.** Ordinary explainers do not narrate exact
+    experiment scores, run/configuration IDs, sample counts, or benchmark tables.
+    Explain the trend, contrast, or reversal; keep exact values in source notes.
+    Use `precision_mode: audit` only when the user asks for exact reporting.
+11. **Math develops on screen.** Formula beats: spoken meaning for each piece + `MathTex` morph stages (BUILD_UP) — not a one-shot final equation. After questions / heavy morphs, bake long `pause_after` (questions 0.9–1.3s).
+12. **Use project scripts** under this skill’s `scripts/` — no ad-hoc TTS/mux paths. Run `lint_script.py --strict` before TTS.
+13. **Feedback → abstract skill law.** User craft corrections update [references/craft-laws.md](references/craft-laws.md) as *general* rules (plus related refs/templates), not only the current demo. Regen TTS when pauses/wording are wrong; visual-only only when VO is already correct.
 
 **Read first:** [references/craft-laws.md](references/craft-laws.md)
 
@@ -57,16 +63,22 @@ use `MANIM_EXPLAIN_ROOT`, or `scripts/skill_paths.py` from Python.
 ## Workflow checklist
 
 ```
-- [ ] 1. Concept brief + narrative pattern (Wrong→Right, etc.)
-- [ ] 2. Write demos/<slug>/script.yaml (beats, say, show, bookmarks, tts_chunk)
-- [ ] 3. Self-review script against craft laws + sources (no approval gate — keep going)
-- [ ] 4. Encode any new craft notes into references/craft-laws.md (abstracted)
-- [ ] 5. `python scripts/lint_script.py demos/<slug>/script.yaml` (pauses, formula BUILD_UP)
-- [ ] 6. TTS: python scripts/tts_openrouter.py demos/<slug>/script.yaml
-- [ ] 7. Align: python scripts/align_words.py demos/<slug>
-- [ ] 8. Implement Manim (morphs, formula BUILD_UP, soft idle, ask_about, LayoutBoard, `play_before`)
+- [ ] 1. Concept brief + `viewer_contract` (starting point, central question,
+      initial intuition, recurring anchor, ending insight)
+- [ ] 2. Outline the causal spine with `narrative_role`, `bridge`, and
+      `viewer_knows_after` for every beat
+- [ ] 3. Write demos/<slug>/script.yaml (say, show, bookmarks, tts_chunk)
+- [ ] 4. Read only the `say:` fields as a cold viewer: orient before jargon;
+      intuition → failure → mechanism; no results dump; ending resolves opening
+- [ ] 5. Self-review against craft laws + sources (no approval gate — keep going)
+- [ ] 6. Encode any new craft notes into references/craft-laws.md (abstracted)
+- [ ] 7. `python scripts/lint_script.py demos/<slug>/script.yaml --strict`
+      (story structure, evidence load, pauses, formula BUILD_UP, visual verbs)
+- [ ] 8. TTS: python scripts/tts_openrouter.py demos/<slug>/script.yaml
+- [ ] 9. Align: python scripts/align_words.py demos/<slug>
+- [ ] 10. Implement Manim (morphs, formula BUILD_UP, soft idle, ask_about, LayoutBoard, `play_before`)
        — first two lines of `construct`: `tn.attach(self)` then `watch_layout(self, DEMO_DIR)`
-- [ ] 9. **Static gate — costs a second, run it after every edit:**
+- [ ] 11. **Static gate — costs a second, run it after every edit:**
        `python scripts/check_names.py demos/<slug>/scenes/<f>.py`
        → undefined names, and calls that do not match their callee's signature.
        `from manim import *` blinds ruff's F821, so a helper used but never
@@ -79,7 +91,7 @@ use `MANIM_EXPLAIN_ROOT`, or `scripts/skill_paths.py` from Python.
        design (closing recaps are meant to survive); it is a checklist to hold
        beside the contact sheet, not a verdict.
 
-- [ ] 10. **Geometry pass — the whole scene, no movie:**
+- [ ] 12. **Geometry pass — the whole scene, no movie:**
        `python "$MANIM_EXPLAIN_ROOT/scripts/geometry_pass.py" demos/<slug> scenes/<f>.py <Class>`
        Interpolates every play, samples AABBs ~10 Hz, writes occupancy /
        leftovers / overlap intervals, and Cairo-rasterizes only cue / play-end /
@@ -87,26 +99,26 @@ use `MANIM_EXPLAIN_ROOT`, or `scripts/skill_paths.py` from Python.
        every frame and only skips FFmpeg, so it costs about as much as `-ql`.
        **Never `-n 0,1`:** measured, it stops after animation 1 and *exits 0*.
 
-- [ ] 10b. **Survey instead of grinding.** `assert_clear` raises on the *first*
+- [ ] 12b. **Survey instead of grinding.** `assert_clear` raises on the *first*
        failure, so a scene with five bad placements costs five cycles. Add
        `MANIM_LAYOUT_COLLECT=1` and every failing site is recorded with its line
        number and printed at exit. Run it on the geometry pass. Fix the whole
        list, then walk again — a collecting render is a survey, never a pass.
        Clearance minimum is **0.17**; leave 0.25.
 
-- [ ] 11. The geometry pass **is** the occupancy / timeline / stills gate.
+- [ ] 13. The geometry pass **is** the occupancy / timeline / stills gate.
        A full `-ql` movie is not required for QA. `-qm` is the delivery encode,
        once, behind `review_gate.py`.
 
-- [ ] 12. **Motion audit:** `python scripts/check_sync.py demos/<slug>`
+- [ ] 14. **Motion audit:** `python scripts/check_sync.py demos/<slug>`
        → every silent cue is a beat the VO narrated and the picture ignored.
-- [ ] 12b. **Layout audit:** `python scripts/check_layout.py demos/<slug>`
+- [ ] 14b. **Layout audit:** `python scripts/check_layout.py demos/<slug>`
        → collisions that only exist mid-motion. Text-over-text always blocks;
        `box-cuts-text` is surfaced for the review to judge.
        Also read `out/occupancy.json` leftovers: figures present before 0.35×
        duration and still on stage after 0.90×.
 
-- [ ] 12c. **THE REVIEW LOOP — repeat until the frames are right.** This is the
+- [ ] 14c. **THE REVIEW LOOP — repeat until the frames are right.** This is the
        centre of the process, not a final check. See references/review-loop.md.
          a. `qa_frames.py demos/<slug>` tiles `out/keyframes/` (already captured).
          b. **Read the contact sheet with your own eyes**, then the full frames
@@ -118,11 +130,11 @@ use `MANIM_EXPLAIN_ROOT`, or `scripts/skill_paths.py` from Python.
          d. Any doubt → fix the scene → re-run the geometry pass → **look again**.
          e. Only when a whole pass is clean, record it:
             `review_gate.py demos/<slug> --record pass --frames N --notes '...'`
-- [ ] 12d. `-qm` is **blocked** until that record exists and matches the current
+- [ ] 14d. `-qm` is **blocked** until that record exists and matches the current
        scene. `scripts/deliver_video.sh` enforces it; editing the scene after a
        pass reopens the gate, because the review described the old frames.
-- [ ] 13. On craft feedback: update craft-laws (+ refs/templates) BEFORE or WITH the demo fix
-- [ ] 14. Deliver (only past the gate in 12d): `output_videos/<series>/<slug>.mp4` + script, scenes, audio/, timing.json, one-line thesis
+- [ ] 15. On craft feedback: update craft-laws (+ refs/templates) BEFORE or WITH the demo fix
+- [ ] 16. Deliver (only past the gate in 14d): `output_videos/<series>/<slug>.mp4` + script, scenes, audio/, timing.json, one-line thesis
 ```
 
 ### The three audits (required after every render)
@@ -150,7 +162,7 @@ python "$MANIM_EXPLAIN_ROOT/scripts/qa_frames.py"    demos/<slug>    # tile capt
 
 The audits are the *cheap* gate, not the real one. They are mechanical, so they
 cannot see the two things that matter most: whether anything is obscured, and
-whether the frame means what the voice is saying over it. That is why step 12 is
+whether the frame means what the voice is saying over it. That is why step 14c is
 a loop you stay in until the pictures are right, and why `-qm` is blocked behind
 `review_gate.py`. Never ship on code review and green audits alone.
 
@@ -172,6 +184,7 @@ output_videos/<series>/<slug>.mp4  # the delivery — one finished MP4 per demo,
 
 demos/<slug>/                 # working tree: everything else
   script.yaml
+  SOURCE_NOTES.txt            # citations, exact results, run IDs, and provenance
   audio/narration.mp3
   timing.json
   scenes/*.py
@@ -193,9 +206,13 @@ else is copied there — stills, audio and timelines stay in the working tree.
 
 ## Script contract
 
+Each script begins with `viewer_contract`: `starting_point`, `central_question`,
+`initial_intuition`, `anchor_example`, and `ending_insight`.
+
 Each beat:
 
-- `id`, `say` (spoken, **no LaTeX**), `bookmarks`, `show`, optional `latex`
+- `id`, `narrative_role`, `bridge`, `viewer_knows_after`
+- `say` (spoken, **no LaTeX**), `bookmarks`, `show`, optional `latex`
 - `emotional_beat`: curiosity | productive_confusion | partial_clarity | aha | settle
 - `tts_chunk`: letter/id grouping beats into one TTS request (fewer prosody seams)
 - `show:` must describe **staged motion** that matches spoken nouns (not static end-states)
@@ -209,7 +226,7 @@ Template: [assets/script_template.yaml](assets/script_template.yaml)
 |-----|------|
 | [craft-laws.md](references/craft-laws.md) | Always — accumulated production laws |
 | [build-loop.md](references/build-loop.md) | Always — the four gates, cheapest first, and how to read a stalled render |
-| [narrative-patterns.md](references/narrative-patterns.md) | Arc + hooks |
+| [narrative-patterns.md](references/narrative-patterns.md) | **Always — viewer contract, causal spine, and explainer flow** |
 | [layout-craft.md](references/layout-craft.md) | Bands, morph rule, LayoutBoard |
 | [review-loop.md](references/review-loop.md) | **The look-at-the-frames loop + the -qm gate** |
 | [sync-pipeline.md](references/sync-pipeline.md) | Timing / bookmarks |
@@ -223,7 +240,7 @@ Template: [assets/script_template.yaml](assets/script_template.yaml)
 |--------|------|
 | `scripts/tts_openrouter.py` | The VO path — Grok Voice `leo`, `chunk_by: tts_chunk` |
 | `scripts/align_words.py` | Whisper word timestamps (`--remap` re-maps cues with no STT call) |
-| `scripts/lint_script.py` | Pre-TTS checks: question pauses, formula BUILD_UP, **spoken change-words vs `show:`** |
+| `scripts/lint_script.py` | Pre-TTS checks: story contract, causal metadata, experimental-number load, question pauses, formula BUILD_UP, **spoken change-words vs `show:`** |
 | `scripts/layout_check.py` | AABB overlap / safe frame |
 | `scripts/geometry_pass.py` | Inner loop: interpolate `construct`, occupancy + sparse stills, no movie |
 | `scripts/render_stills.py` | Cairo-rasterize named times / plays / violation midpoints into `out/stills/` |

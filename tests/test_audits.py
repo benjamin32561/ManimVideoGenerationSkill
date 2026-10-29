@@ -38,7 +38,11 @@ sys.path.insert(0, str(_skill_scripts()))
 
 from check_sync import analyse, motion_in_window  # noqa: E402
 from layout_watch import _overlap_fraction  # noqa: E402
-from lint_script import visual_coverage  # noqa: E402
+from lint_script import (  # noqa: E402
+    evidence_load_warnings,
+    story_structure_warnings,
+    visual_coverage,
+)
 
 
 # ── layout geometry ──────────────────────────────────────────────────────────
@@ -120,3 +124,92 @@ def test_synonyms_are_accepted_so_the_check_is_not_noise():
         say="You chop the energy into equal elements.",
         show="STAGED: the bar is sliced into equal elements.",
     ) == []
+
+
+# ── explanatory story structure ──────────────────────────────────────────────
+
+def test_missing_viewer_contract_is_flagged():
+    warnings = story_structure_warnings(
+        {
+            "beats": [
+                {
+                    "id": "hook",
+                    "narrative_role": "orient",
+                    "viewer_knows_after": "The goal.",
+                }
+            ]
+        }
+    )
+    assert any("viewer_contract is missing" in warning for warning in warnings)
+
+
+def test_complete_causal_story_contract_passes():
+    data = {
+        "viewer_contract": {
+            "starting_point": "The viewer recognizes a noisy image.",
+            "central_question": "Why can averaging blur it?",
+            "initial_intuition": "More samples should help.",
+            "anchor_example": "One moving letter.",
+            "ending_insight": "Only matched samples are shared evidence.",
+        },
+        "beats": [
+            {
+                "id": "orient",
+                "narrative_role": "orient",
+                "viewer_knows_after": "The restoration goal.",
+            },
+            {
+                "id": "question",
+                "narrative_role": "question",
+                "viewer_knows_after": "The surprising failure.",
+                "bridge": "But the moving case breaks the easy result.",
+            },
+            {
+                "id": "resolve",
+                "narrative_role": "resolve",
+                "viewer_knows_after": "The missing condition.",
+                "bridge": "Therefore the opening failure has an explanation.",
+            },
+        ],
+    }
+    assert story_structure_warnings(data) == []
+
+
+def test_exact_experimental_results_are_flagged_in_story_mode():
+    beat = {
+        "id": "results",
+        "say": "Run P thirteen scored thirty-five point two decibels on validation.",
+        "show": "REVEAL a benchmark table with three rows.",
+    }
+    warnings = evidence_load_warnings(beat, "story")
+    assert any("project/run identifier" in warning for warning in warnings)
+    assert any("experimental quantities" in warning for warning in warnings)
+    assert any("results table" in warning for warning in warnings)
+
+
+def test_small_teaching_number_is_not_treated_as_results_dump():
+    beat = {
+        "id": "toy",
+        "say": "Place three blocks on each side and pair them one by one.",
+        "show": "STAGED: grow three blocks and connect each pair.",
+    }
+    assert evidence_load_warnings(beat, "story") == []
+
+
+def test_exact_result_readout_in_main_visual_is_flagged():
+    beat = {
+        "id": "evidence",
+        "say": "The harder evaluation reverses the ordering.",
+        "show": "Grow two bars labelled 35.2 and 31.0 on the P13 basis.",
+    }
+    warnings = evidence_load_warnings(beat, "story")
+    assert any("main visual foregrounds exact" in warning for warning in warnings)
+
+
+def test_audit_mode_allows_requested_exact_results():
+    beat = {
+        "id": "results",
+        "say": "Run P thirteen scored thirty-five point two decibels on validation.",
+        "show": "REVEAL a benchmark table with three rows.",
+    }
+    assert evidence_load_warnings(beat, "audit") == []

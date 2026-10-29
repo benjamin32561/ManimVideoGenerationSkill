@@ -20,67 +20,95 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
 
 ## Narrative
 
-1. **Lead with a question / situation**, never “let’s start… / today we will…”.
-   Pattern: situation → stake → question → first tool.
-   **Independent series open on their own question.** Never open video 01 of a
-   new course with “you already know / you already own / as an engineer you
-   have…” from another course or from the viewer’s résumé. Each topic is a
-   self-contained argument. Inherit-and-hand-off applies *within* a series
-   (video n opens on n−1’s close). Video 01 has no previous video in *this*
-   series. Domain analogies (RC, filter, table) may appear *inside* a beat when
-   they are the picture for a mechanism this course is teaching — never as the
-   hook that assumes a previous series.
-2. **Tone split:** hooks and story beats = **curious**; definitions and formulas =
-   **documentary** (clear, steady, fewer flourishes).
-3. **Concrete only for the intro.** After the hook, stay abstract unless a tiny toy
-   is needed to read a number. Do not drag the concrete props through the whole video.
-4. **Length follows teaching**, not a minute target. Cut fluff; keep clarity.
-   **Depth sets length: a hard topic earns more beats.** Count the genuinely
-   separate conceptual steps the viewer must take (why this object, why this form,
-   why this constraint, each algebraic move) and give each one its own beat with
-   its own visual. Never compress a derivation or a historical argument to keep a
-   video near the length of the last one — a five-minute topic told in three
-   minutes is not concise, it is a summary of an explanation.
-5. **Name the object correctly.** Prefer precise domain nouns in VO and captions
-   (e.g. “distribution” over a vague “profile”). Wrong names teach the wrong concept.
-6. **One question per visual.** Each representation answers one question; morph to a
-   new representation when the question changes.
-7. **No empty explanations.** Every definition / formula beat must *say what each
-   piece means* (numerator, centering matrix, normalization…) while the matching
-   part lights or morphs on screen. Naming a symbol without developing it feels
-   hollow — prefer one extra documentary sentence over a bare label flash.
-8. **Motivate → compute → name.** Before introducing formal notation (Frobenius,
-   HSIC, CKA, …), first explain *what is being measured* in plain language and
-   *how the arithmetic does that* (even briefly: “multiply matching cells, add
-   them up — that scores agreement”). Only then morph into the named formula.
-   Do **not** lead with “we use the Frobenius product” and hope the name teaches.
-9. **No unmotivated posits.** When the story introduces an assumption, definition
-   or constant the viewer could not have predicted, the beat *before* it must
-   answer "where did this come from?": what was already known, what was tried,
-   what failed, and what pinned this particular form. A fix that simply appears
-   — "his move was to assume X" — reads as authorial fiat and teaches nothing,
-   however elegant the consequences.
-   **When the honest answer is "it was a guess", say so.** Explain what the guess
-   was fitted to and which independent constraint fixed its form; naming a
-   hypothesis as a hypothesis is part of the explanation, not a gap in it. The
-   viewer should leave able to say both *why anyone would try this* and *what was
-   still unjustified at the time*.
-10. **Spoken numerals are load-bearing.** Any count, delta or value the VO states
-   ("five more cross", "about a quarter", "nine of twenty") is a contract with the
-   picture. Derive it from the scene's data constants — compute the count in the
-   scene module and let the script quote it — or tune the constant until the
-   spoken number is literally true. A narrated number the viewer can recount on
-   screen and find wrong destroys trust in everything else in the frame.
-   **The same holds for on-screen readouts**: a chip reading "≈ 0" beside a
-   picture showing a third of the maximum is a lie the viewer can measure. Compute
-   readout values with the same function that draws the figure
-   (`f"{mean_energy(ratio):.2f}"`), never by hand — then the number and the
-   picture cannot drift apart.
-11. **Mathematical progress is visible.** When the story advances A → A′ → B in
-   math, the on-screen `MathTex` must **morph through those forms** (part-by-part
-   `TransformMatchingTex` / staged `ReplacementTransform`), not jump to the final
-   equation. Viewers should *see* the derivation, not only hear it.
-   Prefer: concrete sum / picture → compact operator → named quantity.
+1. **Orient before teaching.** A hook is not permission to skip the introduction.
+   Begin with an understandable situation, establish what someone is trying to
+   accomplish, let the obstacle become visible, and only then ask the central
+   question. A cold viewer must be able to describe the problem without using
+   terminology learned from the source material. Never lead with a benchmark,
+   experiment label, formal metric, acronym, or conclusion.
+2. **Every video makes a viewer contract before the beats are written.** State in
+   `script.yaml`: what the viewer can already be assumed to know, the one central
+   question, the initial intuition worth testing, the concrete anchor, and the
+   insight the viewer should be able to explain afterward. “Graduate” is not a
+   license to omit the local setup; expertise in a field does not imply knowledge
+   of this project, dataset, notation, or experiment history.
+3. **Make each video locally self-contained.** A series handoff may provide
+   continuity, but the opening still gives a new viewer a one-sentence orientation.
+   Never rely on the viewer's résumé or memory of a previous course. Domain
+   analogies may appear when they clarify the mechanism, after the actual problem
+   has been established.
+4. **Keep one concrete anchor alive.** The opening example is the spine of the
+   explanation, not a prop to discard after the hook. Return to it whenever a new
+   mechanism, term, equation, or limitation appears. Move from anchor → idea →
+   anchor before adding another abstraction. Use a second example only to test
+   whether the new model generalizes.
+5. **Build a causal chain, not a topic list.** Each beat must answer the current
+   question or create the next necessary question. Its place in the sequence
+   should be justified by “because,” “but,” or “therefore”; if two neighboring
+   beats can be swapped without changing the argument, the script is probably
+   listing facts rather than explaining. Transitions briefly reconnect the new
+   beat to the anchor and to what the viewer just learned.
+6. **Let the viewer attempt the problem.** After orientation, show the tempting
+   intuition, prediction, or method and give it room to feel reasonable. Then
+   reveal the observation it cannot explain. This productive failure creates a
+   need for the mechanism; do not announce the correct explanation before the
+   viewer has encountered the gap it resolves.
+7. **Meaning before names.** Show what an object does in ordinary language before
+   giving its technical name, acronym, experiment code, or notation. Define a new
+   term at first use and keep the same visible avatar for it. Project-internal
+   labels such as run IDs, ladder codes, and validation-basis names belong in
+   source notes, not in narration. Prefer precise domain nouns only after their
+   meaning has been earned on screen.
+8. **Tone split:** hooks and investigation beats are curious; definitions and
+   formulas are documentary (clear, steady, fewer flourishes). Curiosity comes
+   from an unresolved causal question, not from withholding basic context.
+9. **Length follows the viewer's learning path**, not a minute target. Count the
+   separate conceptual steps the viewer must take: orientation, intuition,
+   contradiction, mechanism, formalization, test, and limitation. Give each
+   necessary step its own beat. A hard topic compressed into a results summary is
+   still unexplained, however concise it sounds.
+10. **One question per visual.** Each representation answers one question; morph
+    it when the question changes. Across those visuals, keep returning to the same
+    central question so the story feels like one investigation.
+11. **No empty explanations.** Every definition or formula beat says what each
+    piece means while the matching part lights or morphs on screen. Naming a
+    symbol without developing it is a label, not an explanation. Prefer one extra
+    documentary sentence over a bare formula flash.
+12. **Motivate → manipulate → name.** First establish what needs to be measured or
+    predicted. Then perform the intuitive operation on the anchor (match, group,
+    average, compare). Only afterward compress it into formal notation and give
+    the operation its standard name. The viewer should feel that the formula is a
+    shorter description of something they already understand.
+13. **No unmotivated posits.** Before an assumption, definition, or fix that the
+    viewer could not predict, explain what was known, what failed, and what
+    constrained this particular move. If it began as a guess, say so and explain
+    what the guess was fitted to and what remained unjustified.
+14. **Evidence answers the story question; it does not reproduce the lab notebook.**
+    By default, do not narrate or foreground exact experimental scores, run IDs,
+    configuration IDs, sample counts, multi-row benchmark tables, or clusters of
+    decimals. Translate evidence into the relationship the viewer needs: one
+    method improved steadily, another plateaued, the ordering reversed under
+    motion, or the effect survived a harder test. Keep exact values and provenance
+    in `SOURCE_NOTES.txt` or other supporting material.
+
+    A number may enter the main story only when its magnitude changes the concept:
+    a small toy count the viewer can manipulate, an order of magnitude, a physical
+    constant, or a decision threshold. Prefer a rounded, interpretable quantity,
+    explain what it means immediately, and avoid asking the viewer to remember it
+    across beats. Exact-result narration is appropriate only when the user asks
+    for a benchmark, audit, or report walkthrough.
+15. **Any allowed spoken numeral is load-bearing.** Derive it from the scene's data
+    constants or tune the visual until the spoken number is literally true. The
+    same holds for on-screen readouts: compute the value with the same function
+    that draws the figure so the picture and number cannot drift apart.
+16. **Mathematical progress is visible.** When the story advances A → A′ → B, the
+    on-screen `MathTex` morphs through those forms part by part. Prefer concrete
+    operation → compact operator → named quantity. The equation arrives after the
+    visual mechanism, never as the mechanism's introduction.
+17. **Resolve by returning to the opening.** Apply the new mental model to the
+    original anchor, show why the initial intuition failed or where it remains
+    valid, and state one transferable insight. Do not end with a list of metrics,
+    tools, or caveats the viewer has to memorize.
 
 ## Voice / TTS
 
@@ -347,9 +375,11 @@ one dataset, one toy chart) as the *rule* rather than as an *example*, rewrite i
 1. **`qa_frames.py` defaults to every bookmark in `timing.json`.** Do not hard-code
    cue lists from a previous demo — sparse or wrong-topic cues miss caption-near-figure
    beats. Pass `--bookmarks` only to narrow intentionally.
-2. **`lint_script.py` before TTS.** Warns on questions without a long `pause_after`,
-   formula beats whose `show:` lacks BUILD_UP/MORPH, and missing `latex` on math beats.
-   Prefer scripts that show sum/product stages before named operators (Frobenius, HSIC).
+2. **`lint_script.py --strict` before TTS.** Checks the viewer contract, causal
+   beat metadata, technical openings, result-number load, questions without a
+   long `pause_after`, formula beats whose `show:` lacks BUILD_UP/MORPH, and
+   missing `latex` on math beats. Prefer scripts that show sum/product stages
+   before named operators (Frobenius, HSIC).
 3. **`TimedNarration.play_before`.** Prefer over bare `play` when a morph must land
    before the next bookmark.
 4. **Never read a colour off a `Text`.** `Text` is a `VGroup` of glyphs and its

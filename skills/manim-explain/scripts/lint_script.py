@@ -2,6 +2,13 @@
 """Pre-TTS lint for manim-explain script.yaml craft laws.
 
 Checks (warnings by default; --strict → exit 1):
+  - A viewer contract defines the starting point, central question, initial
+    intuition, recurring anchor, and ending insight
+  - Beats carry narrative roles, causal bridges, and ``viewer_knows_after``
+    so the outline forms a knowledge ladder rather than a topic list
+  - The opening orients and poses an understandable question before formalism
+  - Ordinary explainers keep run IDs and exact experimental result dumps out
+    of narration and main visuals (``precision_mode: audit`` opts out)
   - Question beats need pause_after ≥ 0.9
   - Beats with latex / formula show need BUILD_UP or MORPH in show
   - After-name / after-morph pause hints when pause_after is very short
@@ -32,6 +39,41 @@ MATH_HINT_RE = re.compile(
     r"\b(formula|MathTex|equation|HSIC|CKA|kernel|Gram|\\\\mathrm|\\\\frac)\b",
     re.I,
 )
+
+NUMBER_WORD = (
+    r"zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|"
+    r"twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|"
+    r"nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|"
+    r"hundred|thousand|million"
+)
+NUMBER_TOKEN_RE = re.compile(rf"\b(?:\d+(?:\.\d+)?|{NUMBER_WORD})\b", re.I)
+PRECISE_NUMBER_RE = re.compile(
+    rf"\b(?:\d+\.\d+|(?:{NUMBER_WORD})\s+point\s+(?:{NUMBER_WORD}))\b",
+    re.I,
+)
+RUN_ID_RE = re.compile(
+    rf"\bP\s*(?:\d+|{NUMBER_WORD})\b|"
+    r"\b(?:run|trial|experiment)\s+[A-Z]?\s*\d+\b",
+    re.I,
+)
+RESULT_CONTEXT_RE = re.compile(
+    r"\b(reached|scored|measured|achieved|reported|validation|evaluation|"
+    r"benchmark|experiment|decibels?|percent(?:age)?|improvement|result)\b",
+    re.I,
+)
+RESULT_TABLE_RE = re.compile(r"\b(table|rows?|scorecards?|benchmark)\b", re.I)
+SPELLED_INITIALISM_RE = re.compile(r"\b(?:[A-Z]\s+){1,}[A-Z]\b")
+
+CONTRACT_FIELDS = (
+    "starting_point",
+    "central_question",
+    "initial_intuition",
+    "anchor_example",
+    "ending_insight",
+)
+ORIENT_ROLES = {"orient", "orientation", "setup", "hook"}
+QUESTION_ROLES = {"question", "mystery", "contradiction"}
+RESOLVE_ROLES = {"resolve", "resolution", "settle", "payoff"}
 
 # Words that promise the viewer something changes on screen. Spoken in `say`,
 # each one is a contract: the matching motion must be described in `show:` (and
@@ -169,10 +211,140 @@ def _words(text: str) -> set[str]:
     return {w.lower() for w in re.findall(r"[A-Za-z0-9']+", text or "")}
 
 
+def evidence_load_warnings(beat: dict, precision_mode: str = "story") -> list[str]:
+    """Flag lab-report detail that obscures an ordinary explanation.
+
+    The check deliberately targets experimental reporting, not small teaching
+    examples or integers used to develop a mathematical operation. Exact values
+    remain available through ``precision_mode: audit`` when the user explicitly
+    asks for a benchmark or report walkthrough.
+    """
+    if precision_mode.lower() in {"audit", "benchmark", "report", "report_walkthrough"}:
+        return []
+
+    bid = str(beat.get("id", "?"))
+    say = str(beat.get("say") or "")
+    show = str(beat.get("show") or "")
+    out: list[str] = []
+
+    if RUN_ID_RE.search(say):
+        out.append(
+            f"{bid}: narration includes a project/run identifier — keep run IDs "
+            "in SOURCE_NOTES.txt and describe the experimental condition plainly"
+        )
+
+    has_result_number = bool(NUMBER_TOKEN_RE.search(say) and RESULT_CONTEXT_RE.search(say))
+    if has_result_number:
+        out.append(
+            f"{bid}: narration reads out experimental quantities — show the "
+            "qualitative relationship or one rounded, interpreted magnitude; "
+            "keep exact scores and sample counts in SOURCE_NOTES.txt"
+        )
+
+    evidence_named = bool(
+        RESULT_CONTEXT_RE.search(say)
+        or re.search(r"(?:result|evidence|measurement|benchmark)", bid, re.I)
+    )
+    if evidence_named and RESULT_TABLE_RE.search(show):
+        out.append(
+            f"{bid}: main visual is a results table — replace it with the one "
+            "comparison, trend, or reversal that advances the central question"
+        )
+    elif evidence_named and (
+        re.search(r"\d", show) or PRECISE_NUMBER_RE.search(show) or RUN_ID_RE.search(show)
+    ):
+        out.append(
+            f"{bid}: main visual foregrounds exact experimental labels or values — "
+            "show the interpretable relationship and move the exact data to SOURCE_NOTES.txt"
+        )
+    return out
+
+
+def story_structure_warnings(data: dict) -> list[str]:
+    """Check that the outline declares and follows a viewer-centered story."""
+    out: list[str] = []
+    contract = data.get("viewer_contract") or {}
+    missing_contract = [field for field in CONTRACT_FIELDS if not contract.get(field)]
+    if missing_contract:
+        out.append(
+            "story: viewer_contract is missing " + ", ".join(missing_contract)
+            + " — define the cold-viewer starting point and learning journey before beats"
+        )
+
+    beats = data.get("beats") or []
+    missing_roles = [str(b.get("id", "?")) for b in beats if not b.get("narrative_role")]
+    if missing_roles:
+        out.append(
+            "story: beats missing narrative_role: " + ", ".join(missing_roles)
+            + " — roles expose whether the outline investigates or only lists topics"
+        )
+
+    missing_knowledge = [
+        str(b.get("id", "?")) for b in beats if not b.get("viewer_knows_after")
+    ]
+    if missing_knowledge:
+        out.append(
+            "story: beats missing viewer_knows_after: " + ", ".join(missing_knowledge)
+            + " — write the knowledge ladder before narration"
+        )
+
+    missing_bridges = [
+        str(b.get("id", "?")) for b in beats[1:] if not b.get("bridge")
+    ]
+    if missing_bridges:
+        out.append(
+            "story: beats missing causal bridge: " + ", ".join(missing_bridges)
+            + " — justify each transition with because, but, or therefore"
+        )
+
+    roles = [str(b.get("narrative_role", "")).lower() for b in beats]
+    orient_at = next((i for i, role in enumerate(roles) if role in ORIENT_ROLES), None)
+    question_at = next((i for i, role in enumerate(roles) if role in QUESTION_ROLES), None)
+    if roles and orient_at is None:
+        out.append("story: no beat orients a cold viewer")
+    if roles and question_at is None:
+        out.append("story: no beat establishes the central question")
+    if orient_at is not None and question_at is not None and question_at <= orient_at:
+        out.append("story: central question arrives before the viewer is oriented")
+    formal_at = next(
+        (i for i, role in enumerate(roles) if role in {"formalize", "definition", "evidence"}),
+        None,
+    )
+    if question_at is not None and formal_at is not None and formal_at < question_at:
+        out.append("story: formalism or evidence arrives before the central question")
+    if roles and roles[-1] and roles[-1] not in RESOLVE_ROLES:
+        out.append("story: final beat does not return to and resolve the opening question")
+
+    for beat in beats[:2]:
+        bid = str(beat.get("id", "?"))
+        say = str(beat.get("say") or "")
+        initialisms = SPELLED_INITIALISM_RE.findall(say)
+        if initialisms or RUN_ID_RE.search(say):
+            out.append(
+                f"{bid}: opening uses an acronym or project identifier before "
+                "orientation — rewrite the problem in ordinary language first"
+            )
+
+    evidence_flags = [
+        bool(
+            RESULT_CONTEXT_RE.search(str(b.get("say") or ""))
+            or re.search(r"(?:result|evidence|measurement|benchmark)", str(b.get("id", "")), re.I)
+        )
+        for b in beats
+    ]
+    if any(a and b for a, b in zip(evidence_flags, evidence_flags[1:])):
+        out.append(
+            "story: consecutive evidence/result beats read as a lab report — keep "
+            "only the comparison needed to choose between the competing explanations"
+        )
+    return out
+
+
 def lint(path: Path) -> list[str]:
     data = yaml.safe_load(path.read_text())
     beats = data.get("beats") or []
-    warnings: list[str] = []
+    warnings: list[str] = story_structure_warnings(data)
+    precision_mode = str(data.get("precision_mode") or "story")
 
     for beat in beats:
         bid = beat.get("id", "?")
@@ -181,6 +353,8 @@ def lint(path: Path) -> list[str]:
         latex = beat.get("latex")
         pause = beat.get("pause_after")
         bookmarks = beat.get("bookmarks") or []
+
+        warnings.extend(evidence_load_warnings(beat, precision_mode))
 
         # Questions need a long baked pause
         if QUESTION_RE.search(say):

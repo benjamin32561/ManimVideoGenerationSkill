@@ -65,7 +65,7 @@ and it runs the whole pipeline. Or drive the scripts directly:
 
 ```bash
 source skills/manim-explain/scripts/env.sh
-python "$MANIM_EXPLAIN_ROOT/scripts/lint_script.py"     demos/<slug>/script.yaml
+python "$MANIM_EXPLAIN_ROOT/scripts/lint_script.py"     demos/<slug>/script.yaml --strict
 python "$MANIM_EXPLAIN_ROOT/scripts/tts_openrouter.py"  demos/<slug>/script.yaml
 python "$MANIM_EXPLAIN_ROOT/scripts/align_words.py"     demos/<slug>
 "$MANIM_EXPLAIN_ROOT/scripts/render_and_mux.sh"         demos/<slug>/scenes/scene.py SceneName -qm
@@ -78,6 +78,10 @@ The skill carries [`references/craft-laws.md`](skills/manim-explain/references/c
 — production laws accumulated from watching real output and fixing what was wrong:
 
 - **Morph, don't respawn** — related A→B transforms in place; first appearance moves.
+- **Orient before teaching** — define the cold viewer, central question, recurring
+  anchor, and knowledge ladder before writing narration.
+- **Evidence advances the idea** — exact run IDs and result tables stay in source
+  notes unless the user asks for an audit or benchmark walkthrough.
 - **The picture matches the spoken noun** — name a whole system, draw the whole system.
 - **A question moves its referent** — while the VO asks about X, X animates.
 - **Math develops on screen** — derived formulas morph term by term, never flash finished.

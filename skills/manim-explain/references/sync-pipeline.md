@@ -25,7 +25,8 @@ When the viewer needs a beat after a name / grouping / **question** / finished m
    before the next bookmark (`TimedNarration.play_before`)
 
 `scripts/tts_chunking.py` builds the plan; TTS concat and align must use the same gaps.
-Run `scripts/lint_script.py` before TTS to catch short question pauses and empty formula beats.
+Run `scripts/lint_script.py --strict` before TTS to catch story-structure,
+evidence-load, short-question-pause, and empty-formula problems.
 
 ### Visual-only iteration
 
