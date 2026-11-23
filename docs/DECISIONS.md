@@ -28,7 +28,7 @@ Updated: 2026-11-22 (multi-style redesign). The evidence behind each decision is
 | Welch font | Source Sans 3 (free stand-in for Myriad Pro); rendering fails if missing [6] |
 | Welch reference | `vendor/welch-labs-videos/`, a gitignored read-only clone (MIT) [7] |
 | Delivery path | `<project>/output_videos/<series>/<slug>.mp4`; the series is the folder the video sits in |
-| Skill scope | Published Agent Skill: `skills/manim-explain/` (spec: agentskills.io). `.cursor/` is the real agent folder; `.claude` and `.opencode` are symlinks to it, as in UniversalGUI. `.cursor/skills/manim-explain` is a dogfooding symlink to `skills/manim-explain`; the other `.cursor/skills/*` and `.cursor/rules/asking-questions.mdc` are dev tooling imported from UniversalGUI, not part of the published skill (2026-11-21) |
+| Skill scope | Published Agent Skill: `skills/manim-explain/` (spec: agentskills.io). Local agent folders (`.cursor/`, `.claude`, `.opencode`) are gitignored and are not part of the repo (2026-11-23) |
 | Distribution | Claude Code plugin marketplace (`.claude-plugin/`), or symlink/copy the skill dir into any agent's skills folder. The skill never hard-codes an install path: `explain/paths.py` resolves it from its own location |
 | Inspiration | 3Blue1Brown, Welch Labs (helpers ported under MIT), and [3brown1blue](https://github.com/AmitSubhash/3brown1blue), referenced by URL, never vendored |
 | License | MIT |

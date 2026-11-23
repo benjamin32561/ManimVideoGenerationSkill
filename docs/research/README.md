@@ -47,7 +47,7 @@ Order of work:
 | 21 | Rule ownership | The core keeps only rules that hold for every style. Style-dependent rules move into the style pack, which sets its own values. |
 | 22 | Browser renderer | HyperFrames (my call: open licence, plain HTML/CSS, built-in checks for dead stretches and unreadable or overlapping text). Remotion dropped. |
 | 23 | Current output quality | Ben: placement is poor, there's barely any text animation, the TTS is mid. So the engine comparison renders a newly designed segment (layout plan, text animation, best voice) in each engine, not a port of the old scene. TTS and motion typography researched first (2026-11-21). |
-| 24 | Imported dev skills | `.cursor/skills/*` (except `manim-explain`) and `.cursor/settings.json` are gitignored |
+| 24 | Imported dev skills | Local agent folders (`.cursor/`, `.claude`, `.opencode`) stay out of git |
 | 25 | Video length | Length follows the content, aiming for at least 2–3 full units per video (roughly 6–12 min). Short neighbouring topics in a series are merged into one video. Replaces "no preset length" in `docs/DECISIONS.md` once the redesign lands. |
 | 26 | Narration voice | Gemini 3.8 Flash TTS, voice Charon, with a brisk-pace instruction (sample `27`) through OpenRouter. Whisper stays for word timestamps: a provider that returns its own timings would be better, but Whisper is good enough. The "OpenRouter only" rule stands. |
 | 27 | Local TTS weights | Only the two local models Ben liked are kept: Kokoro-82M (`61`) and Qwen3-TTS 1.7B CustomVoice (`64`) (4.6 GB of weights, plus their env). Everything else was deleted (35 GB → 4.6 GB). |

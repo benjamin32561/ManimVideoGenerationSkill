@@ -18,12 +18,10 @@ vendor/welch-labs-videos/
 # Research working data (transcripts, frames, analysis scripts): copyrighted media stays local
 research_cache/
 
-# Dev-tooling skills, plans, rules and settings (not part of the published skill)
-.cursor/skills/*
-!.cursor/skills/manim-explain
-.cursor/settings.json
-.cursor/plans/
-.cursor/rules/
+# Local agent folders. Not part of the published skill. .claude-plugin/ stays.
+.cursor/
+.claude
+.opencode
 
 # Python
 __pycache__/
