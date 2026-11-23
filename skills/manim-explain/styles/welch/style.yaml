@@ -1,0 +1,90 @@
+# Welch Labs style pack. Every number is measured in docs/research/ (welch-labs.md,
+# narrative-pattern.md §7.3, motion-typography.md §2.2 and §3.8) unless marked as a choice.
+title: Welch Labs
+
+voice:
+  model: google/gemini-3.8-flash-tts
+  voice: Charon
+  instructions: >-
+    Narrate as a measured documentary science narrator in the style of Welch Labs: precise,
+    understated and unhurried, saying "we" as you walk through the work, at about 155 words per
+    minute, with short pauses at clause and sentence ends and quiet emphasis on numbers and key terms.
+  sample_rate: 24000
+  max_chars: 4500          # choice: longer scripts are voiced in unit-sized requests
+  # Gemini speaks faster than asked: 155 asked measured 182 wpm on the memory-hierarchy proof.
+
+speaker:                   # [min, max]; the lint warns outside these (Welch A-G)
+  wpm: [150, 185]
+  long_pauses_per_min: [0.1, 4.8]   # silences of 1 s or more
+  sentence_words_mean: [18, 29]
+  questions_per_min: [0.0, 0.7]
+  you_per_1k: [0, 4]
+  we_per_1k: [15, 75]
+  i_per_1k: [0, 9]
+  contractions_per_1k: [0, 30]      # not measured for Welch; kept wide
+
+narrative:
+  intro_max_s: 75
+  hook_required: true       # a real artifact, a historical moment, or a provocation
+  turns_per_10min: [1.2, 2.5]
+  tension_s: [10, 120]
+  work_min: 0.40
+  cashout_min: 0.15
+  causal_min: 0.85
+  max_depth: 3
+  climax_range: [0.35, 0.80]
+  wall_subtypes: [cost, fail, contra]
+  jumps: none
+  revelation_questions_max: 0
+  open_questions_ending: true
+
+canvas: {width: 1920, height: 1080, fps: 30, background: "#000000"}
+
+colors:                    # custom_gx/welch_style.py, one colour per entity for the whole video
+  black: "#000000"
+  white: "#FFFFFF"
+  tan: "#dfd0b9"           # primary line art, body labels
+  brown: "#948979"         # axes, ticks, connectors, captions, de-emphasised text
+  yellow: "#ffd35a"        # the one thing to look at
+  blue: "#65c8d0"
+  cyan: "#00ffff"          # signed / paired quantities
+  magenta: "#ff00ff"
+  green: "#00a14b"
+  green_chill: "#6c946f"
+  blue_chill: "#3d5c6f"    # shaded group panels
+  yellow_fade: "#7f6a2d"
+  slate: "#2b2b2b"         # infographic boards
+
+text:
+  families:
+    default: {family: Source Sans 3, dir: ~/.local/share/fonts/source-sans-3}   # free stand-in for Myriad Pro
+    serif: {family: CMU Serif, dir: ~/.local/share/fonts/cmu}                   # example sentences, italic
+  roles: {title: 44, label: 36, caption: 32, dims: 28, tick: 28, math: 48}       # titles by caps, not size
+  min_px: 28
+  max_words: {title: 6, label: 4, caption: 8, dims: 2, tick: 1, default: 6}
+  backstroke_px: 6          # Welch keeps text off busy areas; use only when unavoidable
+  uppercase_roles: [title, label]
+
+motion:
+  start_offset: 0.05
+  sync_window: [0.0, 0.6]   # changes land per clause, not per word
+  write: [0.8, 2.0]
+  write_mode: letters       # caps labels type on letter by letter
+  letters_per_s: 11
+  draw: [0.8, 2.0]
+  grow: [0.3, 1.0]
+  fade_in: 0.6              # prose fades in
+  fade_out: 0.4
+  morph: 0.8
+  copy: 1.4                 # labels re-park in about 1.4 s
+  dim: 0.5
+  change: [0.8, 3.0]        # long smooth moves do the layout
+  flash_peak: 0.3
+  flash_pad_px: 10
+
+emphasis:
+  banned_actions: [flash]   # Welch emphasises by dimming the rest, an outline box, a yellow arrow
+
+rules:
+  exact_numbers: true       # real dimensions and measured payoffs are part of the voice
+  narrated_dialogue: false

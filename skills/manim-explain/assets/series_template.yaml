@@ -1,0 +1,3 @@
+# Series file: demos/<series>/series.yaml. Every video in the series uses its style.
+title: From Molecule to Neuron
+style: 3b1b            # a pack under skills/manim-explain/styles/: 3b1b or welch

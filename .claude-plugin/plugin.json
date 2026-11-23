@@ -1,7 +1,7 @@
 {
   "name": "manim-explain",
-  "description": "Turns a concept into a narrated 3b1b-style Manim explainer MP4: narrative script, OpenRouter TTS, word-timestamp sync, timed Manim scenes, pixel QA.",
-  "version": "0.1.0",
+  "description": "Narrated educational explainer videos in a chosen style (3Blue1Brown or Welch Labs): narrative-grammar scripts, OpenRouter voice with word timings, pixel layout plans, phrase-bound motion, parallel manimgx rendering, checks and a frame-review gate.",
+  "version": "0.2.0",
   "author": {
     "name": "Ben Akhovan"
   },

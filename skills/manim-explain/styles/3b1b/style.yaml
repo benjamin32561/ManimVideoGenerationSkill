@@ -1,0 +1,92 @@
+# 3Blue1Brown style pack. Every number is measured in docs/research/ (3blue1brown.md,
+# narrative-pattern.md §7.3, motion-typography.md §3) unless marked as a choice.
+title: 3Blue1Brown
+
+voice:
+  model: google/gemini-3.8-flash-tts
+  voice: Charon
+  instructions: >-
+    Narrate as a calm, intelligent science explainer in the style of 3Blue1Brown: a thoughtful
+    teacher talking one-on-one, conversational rather than announcer-like, at a brisk, flowing
+    pace of about 180 words per minute, with short natural pauses only at sentence ends and light
+    emphasis on key terms.
+  sample_rate: 24000
+  max_chars: 4500          # choice: longer scripts are voiced in unit-sized requests
+
+speaker:                   # [min, max]; the lint warns outside these (3b1b V1-V8)
+  wpm: [170, 205]
+  long_pauses_per_min: [0.3, 2.0]   # silences of 1 s or more
+  sentence_words_mean: [18, 32]
+  questions_per_min: [0.0, 0.9]
+  you_per_1k: [15, 32]
+  we_per_1k: [5, 20]
+  i_per_1k: [5, 16]
+  contractions_per_1k: [12, 28]
+
+narrative:
+  intro_max_s: 90
+  hook_required: true
+  turns_per_10min: [2.5, 4.0]
+  tension_s: [6, 40]
+  work_min: 0.30
+  cashout_min: 0.15
+  causal_min: 0.60
+  max_depth: 2
+  climax_range: [0.20, 0.95]
+  wall_subtypes: [gap, cost, fail, contra]
+  jumps: roadmap_only       # a jump between units needs a preceding roadmap bridge
+  revelation_questions_max: 0
+  open_questions_ending: false
+
+canvas: {width: 1920, height: 1080, fps: 30, background: "#000000"}
+
+colors:                    # ManimGL's named colours, not Manim CE's (CE YELLOW_C is #F7D96F)
+  white: "#FFFFFF"
+  black: "#000000"
+  text: "#DDDDDD"
+  yellow: "#FFFF00"
+  blue: "#58C4DD"
+  teal: "#5CD0B3"
+  green: "#83C167"
+  red: "#FC6255"
+  pink: "#D147BD"
+  gold: "#F0AC5F"
+  purple: "#9A72AC"
+  blue_dark: "#1C758A"
+  grey_light: "#BBBBBB"
+  grey: "#888888"
+  grey_dark: "#444444"
+  grey_deep: "#222222"
+
+text:
+  families:
+    default: {family: CMU Serif, dir: ~/.local/share/fonts/cmu}   # matches LaTeX's Computer Modern
+  roles: {title: 64, heading: 48, body: 40, label: 34, small: 30, tick: 28, math: 52}
+  min_px: 28                # manimgx inspect flags glyphs under 20 px; a 28 px em gives about 20 px digits
+  max_words: {title: 6, heading: 6, body: 14, label: 3, small: 4, tick: 1, default: 6}
+  backstroke_px: 6          # only on text marked `backstroke: true` (text over busy content)
+  uppercase_roles: []
+
+motion:
+  start_offset: 0.05
+  sync_window: [0.0, 0.25]  # picture follows the voice by 0-0.3 s
+  write: [1.0, 2.0]         # manimgl Write: 1 s under 15 glyphs, else 2 s
+  write_mode: glyph
+  letters_per_s: 12
+  draw: [0.6, 1.5]
+  grow: [0.3, 1.0]
+  fade_in: 1.0
+  fade_out: 0.5
+  morph: 0.8
+  copy: 1.0
+  dim: 0.5
+  change: [0.6, 2.0]
+  flash_peak: 0.35
+  flash_pad_px: 10
+
+emphasis:
+  banned_actions: []        # Indicate/Wiggle are not in the vocabulary at all
+
+rules:
+  exact_numbers: false      # toy numbers yes; exact results and run ids stay in SOURCE_NOTES
+  narrated_dialogue: false

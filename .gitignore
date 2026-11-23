@@ -3,31 +3,32 @@
 .env.*
 !.env.example
 
-# Optional 3brown1blue clone for reading (see docs/DECISIONS.md)
-vendor/3brown1blue/
-
-# Manim Community is tracked on purpose at vendor/manim (our fork).
-
-# Locally unpacked dvisvgm / ghostscript (scripts/setup_dvisvgm_local.sh)
-.local/
-
-# Manim render output
-media/
-demos/**/media/
-
-# Demos are local working output of the skill, not part of the published skill
+# Videos in progress: demos/<series>/<slug>/ (scripts, audio, plans, renders, review frames)
 demos/
 
-# Delivered videos (render_and_mux.sh) — your output, not part of the skill
+# Delivered videos: output_videos/<series>/<slug>.mp4
 output_videos/
+
+# Built GPU-selection layer (skills/manim-explain/vulkan)
+skills/manim-explain/vulkan/build/
+
+# Welch Labs reference code (MIT), read-only clone for the welch style pack (docs/DECISIONS.md)
+vendor/welch-labs-videos/
+
+# Research working data (transcripts, frames, analysis scripts): copyrighted media stays local
+research_cache/
+
+# Dev-tooling skills, plans, rules and settings (not part of the published skill)
+.cursor/skills/*
+!.cursor/skills/manim-explain
+.cursor/settings.json
+.cursor/plans/
+.cursor/rules/
 
 # Python
 __pycache__/
 *.pyc
 .pytest_cache/
-*.egg-info/
-.venv/
-.tts311/
 
 # OS / editor
 .DS_Store

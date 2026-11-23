@@ -1,263 +1,145 @@
 ---
 name: manim-explain
 description: >-
-  Creates 3Blue1Brown-style Manim explainer videos with synced voiceover.
-  Use when the user asks for an explainer video, 3b1b-style animation, Manim
-  with narration, teaching a concept visually with voiceover, or producing a
-  timed lesson MP4. Mandates a cold-viewer contract and causal story before
-  Manim code, OpenRouter TTS with word-timestamp sync, LaTeX on-screen with spoken-math
-  narration, morph-not-respawn motion, and craft-laws updates from user feedback.
+  Creates narrated educational explainer videos in a chosen style (3Blue1Brown or Welch Labs)
+  from course material or a topic. Use when the user asks for an explainer video, a
+  3b1b-style or Welch-Labs-style animation, a narrated lesson, or teaching a concept visually
+  with voiceover. Writes a script as a chain of question → wall → revelation units under one
+  central question, voices it through OpenRouter, plans every frame in pixels, binds each
+  change to the phrase that describes it, renders beats in parallel with manimgx, and gates
+  delivery on mechanical checks plus a frame review.
 license: MIT
 metadata:
   author: Ben Akhovan
-  version: "0.1.0"
+  version: "0.2.0"
   repository: https://github.com/benjamin32561/ManimVideoGenerationSkill
 ---
 
-# Manim Explainer (3b1b + voiceover)
+# Explainer videos in a chosen style
 
 ## Hard rules
 
-1. **Plan before code.** Write the `viewer_contract` and causal story spine, then
-   `script.yaml` (beats with roles, bridges, cues, and knowledge gains) — then
-   TTS/align — then Manim. See [references/narrative-patterns.md](references/narrative-patterns.md).
-   **Run end to end without approval gates.** Do not stop to ask whether the arc is OK;
-   self-review against the craft laws, ship the MP4, then iterate on feedback.
-2. **Audio-first sync.** Never stretch audio to fit a pre-timed video as the primary mode.
-3. **LaTeX on screen** (`MathTex` / `Tex`). Classic dark 3b1b look.
-4. **TTS never gets raw LaTeX.** Narration uses spoken math only. See [references/spoken-math.md](references/spoken-math.md).
-5. **Tone split:** curious hooks / story; documentary explanations. Let an
-   understandable situation create the central question; never open with “let’s start…”.
-6. **Orient, investigate, resolve.** Establish the situation and desired outcome
-   before the central question. Keep one concrete anchor through intuition →
-   contradiction → mechanism → formalization → test → resolution. One idea per beat.
-7. **Morph, don’t respawn.** Related A→B transforms in place. First charts must animate, then soft-idle.
-8. **Every spoken change has a visible one.** If the VO gives an object a verb or
-   an adjective — grows, spreads, cancels, crowds, peakier, frozen — that motion
-   plays *on that word*. `lint_script.py` checks this against `show:` before TTS;
-   `check_sync.py` checks the rendered result against the real timeline. Neither
-   is optional.
-9. **Picture matches the spoken noun.** Show the structure VO names; labels on the correct side (inputs↔classes). Questions move referents; named objects pop then settle in a **baked audio pause** (`tts_chunk` split + `pause_after`); causal pairs move both sides; procedures staged. Never put prose on a live graph.
-10. **Evidence serves understanding.** Ordinary explainers do not narrate exact
-    experiment scores, run/configuration IDs, sample counts, or benchmark tables.
-    Explain the trend, contrast, or reversal; keep exact values in source notes.
-    Use `precision_mode: audit` only when the user asks for exact reporting.
-11. **Math develops on screen.** Formula beats: spoken meaning for each piece + `MathTex` morph stages (BUILD_UP) — not a one-shot final equation. After questions / heavy morphs, bake long `pause_after` (questions 0.9–1.3s).
-12. **Use project scripts** under this skill’s `scripts/` — no ad-hoc TTS/mux paths. Run `lint_script.py --strict` before TTS.
-13. **Feedback → abstract skill law.** User craft corrections update [references/craft-laws.md](references/craft-laws.md) as *general* rules (plus related refs/templates), not only the current demo. Regen TTS when pauses/wording are wrong; visual-only only when VO is already correct.
+1. **Research and plan before code.** Research the topic into `SOURCE_NOTES.md` (and align
+   with the user when style, scope or background are open), then write the script (narrative
+   grammar), then voice, then a pixel layout plan and phrase-bound events, then render. The
+   runtime builds exactly the plan; never place things freehand in code.
+2. **The series' style governs.** `demos/<series>/series.yaml` names the style; every video
+   in the series uses it. Read `styles/<style>/STYLE.md` before writing.
+3. **One central question, a chain of units, one climax, a payoff that returns to the
+   opening** (`references/narrative.md`). Videos are 6–12 minutes with at least 2–3 full
+   units. Merge short neighbouring topics rather than make thin videos.
+4. **Every visual change runs across the phrase that describes it.** Between events the frame
+   holds still; there is no idle motion.
+5. **No narrated dialogue, no LaTeX in narration.** The narrator voices the viewer's intuition
+   ("you might expect..."). Write math as spoken words (`references/spoken-math.md`).
+6. **Gates are not optional.** Each step refuses to run until the previous check passed for
+   the current files: lint → voice → plan check → render, render check → review → deliver.
+7. **Look at the frames.** Mechanical checks cannot judge meaning. Read every contact sheet
+   and judge each frame: is anything covered or left over, and does the picture say what the
+   voice says?
+8. **Feedback becomes a law** in `references/craft-laws.md` (every style) or in the style pack
+   (one style), written as an abstract rule, before the video is patched.
 
-**Read first:** [references/craft-laws.md](references/craft-laws.md)
-
-## Environment
+## Setup
 
 ```bash
-source "$MANIM_EXPLAIN_ROOT/scripts/env.sh"   # or <skill-dir>/scripts/env.sh
+source "$MANIM_EXPLAIN_ROOT/scripts/env.sh"    # or <skill>/scripts/env.sh
 ```
 
-`env.sh` resolves the skill from its own location, finds the project root (git
-root, else cwd), and loads `OPENROUTER_API_KEY` from the project `.env` — TTS
-*and* STT both go through it. Set `MANIM_ENV=/path/to/env` in that `.env` when
-Manim lives in a dedicated interpreter. Never hard-code install paths in a demo:
-use `MANIM_EXPLAIN_ROOT`, or `scripts/skill_paths.py` from Python.
+It loads the project's `.env`, which needs:
 
-## Workflow checklist
+- `OPENROUTER_API_KEY`: voice and word timings;
+- `MANIM_ENV`: a Python 3.13 environment with `manimgx`, `requests`, `pyyaml` and `pillow`.
 
-```
-- [ ] 1. Concept brief + `viewer_contract` (starting point, central question,
-      initial intuition, recurring anchor, ending insight)
-- [ ] 2. Outline the causal spine with `narrative_role`, `bridge`, and
-      `viewer_knows_after` for every beat
-- [ ] 3. Write demos/<slug>/script.yaml (say, show, bookmarks, tts_chunk)
-- [ ] 4. Read only the `say:` fields as a cold viewer: orient before jargon;
-      intuition → failure → mechanism; no results dump; ending resolves opening
-- [ ] 5. Self-review against craft laws + sources (no approval gate — keep going)
-- [ ] 6. Encode any new craft notes into references/craft-laws.md (abstracted)
-- [ ] 7. `python scripts/lint_script.py demos/<slug>/script.yaml --strict`
-      (story structure, evidence load, pauses, formula BUILD_UP, visual verbs)
-- [ ] 8. TTS: python scripts/tts_openrouter.py demos/<slug>/script.yaml
-- [ ] 9. Align: python scripts/align_words.py demos/<slug>
-- [ ] 10. Implement Manim (morphs, formula BUILD_UP, soft idle, ask_about, LayoutBoard, `play_before`)
-       — first two lines of `construct`: `tn.attach(self)` then `watch_layout(self, DEMO_DIR)`
-- [ ] 11. **Static gate — costs a second, run it after every edit:**
-       `python scripts/check_names.py demos/<slug>/scenes/<f>.py`
-       → undefined names, and calls that do not match their callee's signature.
-       `from manim import *` blinds ruff's F821, so a helper used but never
-       imported lints clean and only raises mid-render. On one series this found
-       **20 latent crashes** across three scenes — 18 `note()` calls missing a
-       required argument, plus two undefined names — each of which the render
-       loop was otherwise discovering one per cycle.
-       Also: `python scripts/find_leftovers.py demos/<slug>/scenes/<f>.py`
-       → figures built in `construct` that never reach a disposal. Over-eager by
-       design (closing recaps are meant to survive); it is a checklist to hold
-       beside the contact sheet, not a verdict.
+It also puts that environment first on PATH.
 
-- [ ] 12. **Geometry pass — the whole scene, no movie:**
-       `python "$MANIM_EXPLAIN_ROOT/scripts/geometry_pass.py" demos/<slug> scenes/<f>.py <Class>`
-       Interpolates every play, samples AABBs ~10 Hz, writes occupancy /
-       leftovers / overlap intervals, and Cairo-rasterizes only cue / play-end /
-       overlap stills. **Do not use `--dry_run`:** it still Cairo-rasterizes
-       every frame and only skips FFmpeg, so it costs about as much as `-ql`.
-       **Never `-n 0,1`:** measured, it stops after animation 1 and *exits 0*.
+Fonts are checked at render time, and rendering fails without them:
 
-- [ ] 12b. **Survey instead of grinding.** `assert_clear` raises on the *first*
-       failure, so a scene with five bad placements costs five cycles. Add
-       `MANIM_LAYOUT_COLLECT=1` and every failing site is recorded with its line
-       number and printed at exit. Run it on the geometry pass. Fix the whole
-       list, then walk again — a collecting render is a survey, never a pass.
-       Clearance minimum is **0.17**; leave 0.25.
+- CMU Serif in `~/.local/share/fonts/cmu` (both styles);
+- Source Sans 3 in `~/.local/share/fonts/source-sans-3` (Welch).
 
-- [ ] 13. The geometry pass **is** the occupancy / timeline / stills gate.
-       A full `-ql` movie is not required for QA. `-qm` is the delivery encode,
-       once, behind `review_gate.py`.
-
-- [ ] 14. **Motion audit:** `python scripts/check_sync.py demos/<slug>`
-       → every silent cue is a beat the VO narrated and the picture ignored.
-- [ ] 14b. **Layout audit:** `python scripts/check_layout.py demos/<slug>`
-       → collisions that only exist mid-motion. Text-over-text always blocks;
-       `box-cuts-text` is surfaced for the review to judge.
-       Also read `out/occupancy.json` leftovers: figures present before 0.35×
-       duration and still on stage after 0.90×.
-
-- [ ] 14c. **THE REVIEW LOOP — repeat until the frames are right.** This is the
-       centre of the process, not a final check. See references/review-loop.md.
-         a. `qa_frames.py demos/<slug>` tiles `out/keyframes/` (already captured).
-         b. **Read the contact sheet with your own eyes**, then the full frames
-            for every beat you are not certain about. You have vision; use it.
-            A thumbnail can only raise a doubt. Only a full frame settles it.
-         c. Judge each frame twice: is anything obscured, clipped, invisible or
-            left over — and does the picture actually say what the narration says
-            at that moment?
-         d. Any doubt → fix the scene → re-run the geometry pass → **look again**.
-         e. Only when a whole pass is clean, record it:
-            `review_gate.py demos/<slug> --record pass --frames N --notes '...'`
-- [ ] 14d. `-qm` is **blocked** until that record exists and matches the current
-       scene. `scripts/deliver_video.sh` enforces it; editing the scene after a
-       pass reopens the gate, because the review described the old frames.
-- [ ] 15. On craft feedback: update craft-laws (+ refs/templates) BEFORE or WITH the demo fix
-- [ ] 16. Deliver (only past the gate in 14d): `output_videos/<series>/<slug>.mp4` + script, scenes, audio/, timing.json, one-line thesis
-```
-
-### The three audits (required after every render)
-
-Reading a contact sheet of bookmark stills is not enough: it samples the moments
-*you* chose, and both classic failures happen elsewhere — a described change that
-never animates, and text that collides only while something is moving or at full
-size. The render instruments itself, so all three are mechanical:
-
-```bash
-python "$MANIM_EXPLAIN_ROOT/scripts/check_sync.py"   demos/<slug>   # silent cues
-python "$MANIM_EXPLAIN_ROOT/scripts/check_layout.py" demos/<slug>   # live collisions
-python "$MANIM_EXPLAIN_ROOT/scripts/qa_frames.py"    demos/<slug>    # tile captured stills
-```
-
-* **check_sync** — cue windows with no animation. A cue marks a visual event by
-  definition, so a silent window is a beat where the narration moved and the
-  picture did not. Also flags *thin* windows (a token pulse standing in for a
-  described change) and long frozen stretches.
-* **check_layout** — every text-vs-text overlap the renderer actually produced,
-  with the interval it lasted. Requires `watch_layout(self, DEMO_DIR)` in the
-  scene; it samples the live frame, so it sees collisions no snapshot can.
-* **qa_frames** — tiles the stills the geometry pass already captured at
-  motion ends, cues, and overlap openings. It does not seek an MP4.
-
-The audits are the *cheap* gate, not the real one. They are mechanical, so they
-cannot see the two things that matter most: whether anything is obscured, and
-whether the frame means what the voice is saying over it. That is why step 14c is
-a loop you stay in until the pictures are right, and why `-qm` is blocked behind
-`review_gate.py`. Never ship on code review and green audits alone.
-
-### Visual-only pass (no new audio)
-
-When the user asks to improve visuals and VO is fine:
+## Workflow
 
 ```
-- [ ] Edit scenes / style only
-- [ ] Keep timing.json + narration.mp3 unchanged
-- [ ] Re-render with scripts/render_and_mux.sh … -qm
-- [ ] Still encode any new craft lesson into craft-laws.md
+demos/<series>/series.yaml            title + style        (assets/series_template.yaml)
+demos/<series>/<slug>/script.yaml     the narrated script  (assets/script_template.yaml)
 ```
 
-## Artifacts per demo
+1. **Research & brief (`references/research.md`).**
+   - With course material: read it thoroughly, group neighbouring topics into 6–12 minute
+     videos, extract exact notation, values and misconceptions into
+     `demos/<series>/<slug>/SOURCE_NOTES.md`, and research only genuine gaps.
+   - With a bare topic: read primary sources first until you understand the mechanism, exact
+     numbers and real failure modes, write `SOURCE_NOTES.md`, and ask brief alignment
+     questions for anything open (style/series, scope/arc, assumed viewer background).
+   - Pick the series style in `demos/<series>/series.yaml`.
+2. **Script.** Write the viewer contract, then the unit chain (`references/narrative.md`),
+   then `say` and `show` for every beat.
+   `python scripts/lint_script.py demos/<series>/<slug>`: fix every error, and judge the
+   warnings.
+3. **Voice.** `python scripts/voice.py demos/<series>/<slug>` writes the narration and
+   `audio/words.json`. Re-run the lint: it now measures real pace and pauses.
+4. **Plan.** Turn each beat's `show` into `plan/layout.json` and `plan/events.yaml`
+   (`references/plan.md`). Anchors are phrases from `audio/words.json`.
+   `python scripts/plan_check.py demos/<series>/<slug>`: fix errors in the plan and re-run
+   until clean.
+5. **Render.** `python scripts/render.py demos/<series>/<slug>` renders beats in parallel on
+   the CPU and writes `out/video.mp4`. It never touches a GPU unless you name one
+   (`--gpus 3`), and only when the user allows it.
+6. **Check.** `python scripts/check_render.py demos/<series>/<slug>` checks sync to the
+   voice, and writes review frames and contact sheets to `out/review/`.
+7. **Review.** Read every sheet, and the full frames for anything unclear
+   (`references/review.md`). Fix problems in the plan and loop back to step 4. Fix rounds are
+   cheap: steps 4–6 redo only the windows and beats your fix changed, and the check names
+   the sheets with new frames, so read those. When a pass is clean:
+   `python scripts/review.py record demos/<series>/<slug> --notes "..."`
+8. **Deliver.** `python scripts/review.py deliver demos/<series>/<slug>` copies the video to
+   `output_videos/<series>/<slug>.mp4`.
+
+Optional checkpoint (decision 13, off by default): if the user asks, stop after the first
+render check and show them the script and the first contact sheet.
+
+## Files per video
 
 ```
-output_videos/<series>/<slug>.mp4  # the delivery — one finished MP4 per demo, grouped by series
-
-demos/<slug>/                 # working tree: everything else
-  script.yaml
-  SOURCE_NOTES.txt            # citations, exact results, run IDs, and provenance
-  audio/narration.mp3
-  timing.json
-  scenes/*.py
-  utils/style.py
-  utils/layout_snapshots.py   # overlap tests
-  out/timeline.json           # what moved, when (written by TimedNarration)
-  out/layout_violations.json  # live text collisions (written by layout_watch)
-  out/occupancy.json          # AABB samples + leftover checklist
-  out/keyframes/              # sparse Cairo stills + contact sheet
-  out/stills/                 # named-time QA PNGs (render_stills.py; snapshots if present)
-  out/snapshots/              # compact mobject dumps; stills without re-construct
-  out/wireframe.png           # labelled boxes, no Cairo
+demos/<series>/<slug>/
+  script.yaml            narrative beats (say, show, roles)
+  SOURCE_NOTES.md        sources, exact values, provenance
+  audio/                 narration.wav, narration.mp3, words.json, voice.json
+  plan/                  layout.json, events.yaml, events.json (resolved by plan_check)
+  custom.py              optional components for this video (`custom:<name>`)
+  out/                   lint.json, plan_check.json, probe/, inspect.*, beats/, video.mp4,
+                         render.json, render_check.json, review/, review.json
+output_videos/<series>/<slug>.mp4   the delivered video
 ```
 
-`render_and_mux.sh` writes the finished video to
-`$MANIM_EXPLAIN_PROJECT/output_videos/<series>/<slug>.mp4` and nowhere else, so the
-deliverables of a project sit together and are named after their demo. Nothing
-else is copied there — stills, audio and timelines stay in the working tree.
+## Styles
 
-## Script contract
+| Style | Voice | Look | Narrative |
+|---|---|---|---|
+| `3b1b` | conversational, 170–205 wpm | black, ManimGL colours, CMU Serif, labels next to objects | 2.5–4 turns per 10 min, toy numbers, ends on a principle or puzzle |
+| `welch` | measured documentary "we", 150–185 wpm | black, tan/brown/yellow, Source Sans 3 caps labels in fixed slots | 1.2–2.5 turns per 10 min, real numbers, no jumps, ends on open questions |
 
-Each script begins with `viewer_contract`: `starting_point`, `central_question`,
-`initial_intuition`, `anchor_example`, and `ending_insight`.
+## References
 
-Each beat:
+| Doc | Read when |
+|---|---|
+| `references/research.md` | first: researching a topic or course material, writing `SOURCE_NOTES.md`, aligning with the user |
+| `references/narrative.md` | writing or fixing a script |
+| `references/plan.md` | writing the layout plan and events |
+| `references/voice.md` | voicing; writing anchors |
+| `references/review.md` | rendering, checking, reviewing, delivering |
+| `references/craft-laws.md` | always: laws for every style |
+| `references/spoken-math.md` | any math in the narration |
+| `styles/<style>/STYLE.md` | before writing anything for a series in that style |
 
-- `id`, `narrative_role`, `bridge`, `viewer_knows_after`
-- `say` (spoken, **no LaTeX**), `bookmarks`, `show`, optional `latex`
-- `emotional_beat`: curiosity | productive_confusion | partial_clarity | aha | settle
-- `tts_chunk`: letter/id grouping beats into one TTS request (fewer prosody seams)
-- `show:` must describe **staged motion** that matches spoken nouns (not static end-states)
-- Length follows teaching after TTS — no preset duration
+## Scripts
 
-Template: [assets/script_template.yaml](assets/script_template.yaml)
-
-## References (read before coding)
-
-| Doc | When |
-|-----|------|
-| [craft-laws.md](references/craft-laws.md) | Always — accumulated production laws |
-| [build-loop.md](references/build-loop.md) | Always — the four gates, cheapest first, and how to read a stalled render |
-| [narrative-patterns.md](references/narrative-patterns.md) | **Always — viewer contract, causal spine, and explainer flow** |
-| [layout-craft.md](references/layout-craft.md) | Bands, morph rule, LayoutBoard |
-| [review-loop.md](references/review-loop.md) | **The look-at-the-frames loop + the -qm gate** |
-| [sync-pipeline.md](references/sync-pipeline.md) | Timing / bookmarks |
-| [tts-stt.md](references/tts-stt.md) | Models |
-| [vo-tips.md](references/vo-tips.md) | Less-dead VO |
-| [spoken-math.md](references/spoken-math.md) | Pronunciation |
-
-## Utility scripts
-
-| Script | Role |
-|--------|------|
-| `scripts/tts_openrouter.py` | The VO path — Grok Voice `leo`, `chunk_by: tts_chunk` |
-| `scripts/align_words.py` | Whisper word timestamps (`--remap` re-maps cues with no STT call) |
-| `scripts/lint_script.py` | Pre-TTS checks: story contract, causal metadata, experimental-number load, question pauses, formula BUILD_UP, **spoken change-words vs `show:`** |
-| `scripts/layout_check.py` | AABB overlap / safe frame |
-| `scripts/geometry_pass.py` | Inner loop: interpolate `construct`, occupancy + sparse stills, no movie |
-| `scripts/render_stills.py` | Cairo-rasterize named times / plays / violation midpoints into `out/stills/` |
-| `scripts/qa_frames.py` | Tile captured stills — `--from-timeline` is not an MP4 seek |
-| `scripts/render_and_mux.sh` | Default `-qm` (30fps) — only after the review gate |
-| `scripts/review_gate.py` | Records the frame review; `--check` blocks `-qm` without one |
-| `scripts/find_leftovers.py` | Static list of figures built in `construct` that never reach a disposal |
-| `scripts/check_names.py` | Undefined names + bad call signatures, resolving through `import *` |
-| `scripts/finish_video.sh` | Carries a video to review-ready, then **stops** |
-| `scripts/deliver_video.sh` | `-qm` + deliver; refuses without a current review |
-| `scripts/layout_watch.py` | `watch_layout(scene, demo_dir)` — records live text collisions |
-| `scripts/check_sync.py` | Silent / thin cues from the rendered timeline |
-| `scripts/check_layout.py` | Verdict on the recorded collisions |
-| `scripts/cue_doctor.py` | Why a cue did not survive STT, with replacement candidates from the same beat |
-| `scripts/cue_repair.py` | Re-cue unresolved bookmarks automatically and re-map for free |
-| `scripts/skill_paths.py` | Locate the skill / project from any install path |
-
-## Inspiration (do not copy runtime)
-
-[AmitSubhash/3brown1blue](https://github.com/AmitSubhash/3brown1blue) (`pip install 3brown1blue`, MIT) — pedagogy, Designing Math, teaching TTS rewrites. This skill replaces its Kokoro/atempo sync with the word-timestamp pipeline; no runtime dependency on it.
+| Script | Does |
+|---|---|
+| `scripts/lint_script.py` | narrative grammar N1–N15, narration rules, speaker profile → `out/lint.json` |
+| `scripts/voice.py` | TTS (style voice) + Whisper word times, dropped-speech check → `audio/` |
+| `scripts/plan_check.py` | resolve anchors, validate the plan, geometry at every frame, `manimgx inspect` → `out/plan_check.json` |
+| `scripts/render.py` | parallel per-beat render on the CPU (changed beats only), frame-exact join, narration mux → `out/video.mp4` |
+| `scripts/check_render.py` | frame count, sync to the voice, review frames and sheets → `out/render_check.json` |
+| `scripts/review.py` | `record` the frame review; `deliver` the reviewed video |

@@ -1,196 +1,75 @@
-# Illustrative template: preserve the narrative fields and replace the example.
-# Read references/narrative-patterns.md before writing the beats.
-# Exact experimental results and run IDs stay in SOURCE_NOTES.txt by default.
-# Run: python scripts/lint_script.py demos/<slug>/script.yaml --strict before TTS.
-slug: example-slug
-title: "Short human title"
-thesis: "One sentence describing the mental model the viewer will gain."
-pattern: "Wrong → Less Wrong → Right"
-audience: undergrad  # high-school | undergrad | graduate | industry
-domain: video-restoration
-tone: curious_hook_documentary_explain
-precision_mode: story  # story | audit; use audit only when the user requests exact results
-
+# Script template: demos/<series>/<slug>/script.yaml. Replace the example, keep the structure.
+# Read references/narrative.md first. Lint with: scripts/lint_script.py demos/<series>/<slug>
+#
+# One central question (Q0, a `question` beat in unit u0) is held open; units chain under it.
+# Each unit: question -> work (setup/dig/attempt) -> turn (wall + revelation, attempt +
+# refuting revelation, or a plain answer) -> cash-out (consolidate) -> link to the next.
+# Exactly one beat is the climax: the revelation or answer that resolves Q0.
+#
+# say:  spoken text only. No LaTeX. Numbers as spoken words or digits.
+# show: what the picture does, in words. The storyboard turns it into plan/layout.json and
+#       plan/events.yaml after the narration is voiced.
+title: Why ice floats
 viewer_contract:
-  starting_point: >-
-    The viewer knows that repeated noisy pictures can be combined, but does not
-    know the project's metrics, experiment names, or motion terminology.
-  central_question: >-
-    Why can adding more noisy frames erase detail instead of recovering it?
-  initial_intuition: >-
-    More observations should always improve the estimate because random noise cancels.
-  anchor_example: >-
-    A dim street sign that is first still and then moves between frames.
-  ending_insight: >-
-    Extra frames help only when they show the same visible scene point; motion
-    and occlusion can turn observations into mismatched evidence.
+  starting_point: Solids are usually denser than their liquids.
+  central_question: Why does frozen water float on liquid water?
+  initial_intuition: Cold packs molecules closer, so ice should sink.
+  anchor_example: A glass of water with an ice cube, and a few molecules drawn large.
+  ending_insight: Hydrogen bonds lock water into an open lattice that takes more room than the liquid.
 
 beats:
-  - id: orient
-    narrative_role: orient
-    viewer_knows_after: "The goal is to reveal one noisy but recognizable sign."
-    bridge: null
-    emotional_beat: curiosity
-    tts_chunk: A0
-    pause_after: 0.7
-    say: >-
-      Imagine filming a dim street sign. The letters are present in every frame,
-      but a different pattern of speckles hides them each time. Combine several
-      views, and those random speckles begin to cancel.
-    bookmarks: [letters, cancel]
-    show: >-
-      STAGED: reveal one dim sign, overlay changing speckles, then grow a short
-      frame stack and visibly cancel part of the noise while the same sign remains.
-    latex: null
+  - id: hook
+    narrative_role: hook
+    unit: u0
+    say: Drop a cube of almost any frozen liquid into its own melt, and it sinks. Drop ice into water, and it bobs right back up.
+    show: Two glasses side by side; a wax cube sinks in molten wax, an ice cube floats in water.
 
-  - id: central_question
+  - id: q0
     narrative_role: question
-    viewer_knows_after: "The paradox is that more frames can make the sign less readable."
-    bridge: "But the successful still case makes the moving failure surprising."
-    emotional_beat: productive_confusion
-    tts_chunk: A1
-    pause_after: 1.1
-    say: >-
-      Now let the sign move. Adding more frames makes the letter edges softer.
-      Why would extra evidence erase the detail we wanted?
-    bookmarks: [softer, erase]
-    show: >-
-      STAGED: slide the sign across the frame stack, add observations, and morph
-      the crisp letter edge into a soft ramp while asking about the edge.
-    latex: null
+    unit: u0
+    say: So what is it about water that makes its solid lighter than its liquid?
+    show: The floating cube stays; the wax glass dims.
 
-  - id: intuitive_method
-    narrative_role: intuition
-    viewer_knows_after: "Coordinate-wise averaging works when the scene is still."
-    bridge: "Because noise canceled in the opening, inspect the operation that succeeded."
-    emotional_beat: partial_clarity
-    tts_chunk: B0
-    pause_after: 0.8
-    say: >-
-      The obvious method averages the pixels at each fixed location. When the
-      scene is still, every location refers to the same piece of the same letter.
-      The signal agrees, the random noise cancels, and the edge stays sharp.
-    bookmarks: [fixed, agrees, sharp]
-    show: >-
-      BUILD_UP: align one column of pixels, average it, cancel opposite noise
-      deviations, and retain the original sharp edge in the anchor sign.
-    latex: null
+  - id: setup_density
+    narrative_role: setup
+    unit: u1
+    parent: u0
+    say: Floating is a density contest. Whatever packs more mass into the same space sinks below whatever packs less.
+    show: A unit box fills with molecules; a mass readout counts up beside it.
 
-  - id: contradiction
-    narrative_role: contradiction
-    viewer_knows_after: "After motion, equal pixel coordinates can describe different content."
-    bridge: "But motion breaks the hidden assumption that a coordinate keeps its identity."
-    emotional_beat: productive_confusion
-    tts_chunk: B1
-    pause_after: 0.9
-    say: >-
-      Once the sign moves, one fixed location no longer follows one piece of a
-      letter. In one frame it sees the bright stroke; in another it sees the dark
-      background. Averaging mixes the two and smears the boundary.
-    bookmarks: [stroke, mixes]
-    show: >-
-      STAGED: slide the letter through one fixed pixel marker, alternate bright
-      and dark samples there, then merge them into a visibly smeared boundary.
-    latex: null
+  - id: attempt_cold
+    narrative_role: attempt
+    unit: u1
+    say: You might expect cold to win that contest. Slower molecules jostle less, so they should settle closer together.
+    show: Molecules in the box slow down and drift closer; the readout climbs.
 
-  - id: mechanism
-    narrative_role: mechanism
-    viewer_knows_after: "Samples must be matched by scene point before they are combined."
-    bridge: "Therefore the method must follow the letter rather than the image coordinate."
-    emotional_beat: aha
-    tts_chunk: C0
-    pause_after: 0.85
-    say: >-
-      So follow the letter edge from frame to frame first. Shift each observation
-      until the same part of the stroke lines up, and only then combine them.
-      The signal agrees again, so noise can cancel without erasing the edge.
-    bookmarks: [follow, lines, again]
-    show: >-
-      STAGED: track the edge, shift each frame along its path, snap matching
-      strokes into alignment, combine them, and cancel noise around a sharp edge.
-    latex: null
+  - id: wall_ice
+    narrative_role: wall
+    role_sub: contra
+    unit: u1
+    obstruction: ice is about nine percent less dense than water
+    against: attempt_cold
+    say: But measure ice and it goes the other way. The same mass takes up about nine percent more room once it freezes.
+    show: The box freezes and expands past its outline; the readout drops.
 
-  - id: formalize
-    narrative_role: formalize
-    viewer_knows_after: "Correspondence is the match between the same scene point across frames."
-    bridge: "Because the visual matching operation is clear, it can now be named and compressed."
-    emotional_beat: partial_clarity
-    tts_chunk: C1
-    pause_after: 0.9
-    say: >-
-      This match between the same scene point across time is called correspondence.
-      For one output location, gather only the observations mapped back to that
-      point, weight the reliable ones, and divide by their total weight.
-    bookmarks: [correspondence, reliable]
-    show: >-
-      POP the tracked point and name it correspondence. BUILD_UP the formula by
-      gathering matched samples, then adding weights, then the normalizing
-      denominator; indicate each part as its visible operation is spoken.
-    latex: >-
-      \hat{x}(p)=\frac{\sum_t w_t(p)\,y_t(q_t)}{\sum_t w_t(p)}
+  - id: reveal_lattice
+    narrative_role: revelation
+    unit: u1
+    resolves: wall_ice
+    link: causal
+    climax: true
+    say: The answer is in how water molecules hold hands. Each one hydrogen bonds to four neighbours, and that bond only works at a fixed angle, so frozen water locks into an open hexagonal cage.
+    show: One molecule bonds to four neighbours; the pattern repeats into a hexagonal lattice with visible empty space.
 
-  - id: test_occlusion
-    narrative_role: test
-    viewer_knows_after: "A geometrically aligned sample can still be invalid when the point is hidden."
-    bridge: "But matching position is insufficient if the tracked point is not visible."
-    emotional_beat: productive_confusion
-    tts_chunk: D0
-    pause_after: 0.9
-    say: >-
-      Now let a passing car hide the sign in one frame. There is no matching
-      letter sample there at all. A reliable combiner must lower that frame's
-      weight instead of treating the car as another observation of the sign.
-    bookmarks: [passing, lower]
-    show: >-
-      STAGED: pass an occluder over the tracked letter, mark that sample invalid,
-      lower its weight bar, and combine only the visible matching strokes.
-    latex: null
+  - id: name_bond
+    narrative_role: consolidate
+    role_sub: name
+    unit: u1
+    say: That empty space inside the cage is the whole effect. Liquid water keeps breaking and remaking those bonds, so its molecules can fill the gaps.
+    show: Liquid molecules slide into the cage's holes; the two boxes' readouts compare.
 
-  - id: boundary
-    narrative_role: boundary
-    viewer_knows_after: "Alignment cannot recover information absent from every frame."
-    bridge: "Therefore matching improves usable evidence but cannot manufacture a missing view."
-    emotional_beat: partial_clarity
-    tts_chunk: D1
-    pause_after: 0.8
-    say: >-
-      This still has a limit. If every frame hides the same part of the letter,
-      alignment has nothing trustworthy to gather. It can preserve evidence that
-      was captured somewhere; it cannot create a detail that no frame observed.
-    bookmarks: [limit, captured]
-    show: >-
-      STAGED: cover the same letter region in the whole stack, gather the aligned
-      candidates, leave the missing region visibly unresolved, and hold the boundary.
-    latex: null
-
-  - id: resolve
-    narrative_role: resolve
-    viewer_knows_after: "Frame count helps only through valid matched observations."
-    bridge: "The opening paradox now resolves by separating frame count from usable evidence."
-    emotional_beat: settle
-    tts_chunk: E0
-    pause_after: 0.75
-    say: >-
-      Return to the moving sign. More frames help when they contribute matched,
-      visible observations of the same detail. When they show different surfaces,
-      adding them is not adding evidence. The useful question is not how many
-      frames we have, but how many trustworthy views each detail has.
-    bookmarks: [Return, useful]
-    show: >-
-      MORPH back to the opening sign; on useful, sort the stack into matched
-      visible views and mismatches, recover the sharp edge from the valid group,
-      and settle on a simple trustworthy-views visual.
-    latex: null
-
-tts:
-  provider: openrouter
-  model: x-ai/grok-voice-tts-1.0
-  voice: leo
-  chunk_by: tts_chunk
-  speed: 0.95
-  head_silence: 1.5
-  inter_chunk_silence: 0.45
-  response_format: mp3
-
-stt:
-  model: openai/whisper-large-v3
+  - id: payoff
+    narrative_role: payoff
+    unit: u0
+    say: So ice floats because water, uniquely, builds a solid that is mostly empty space, held open by the very bonds that make water water.
+    show: Back to the floating cube; the lattice overlays it and fades.

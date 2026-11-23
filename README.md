@@ -1,123 +1,118 @@
 # manim-explain
 
-An [Agent Skill](https://agentskills.io/specification) that turns a concept into a
-**3Blue1Brown-style Manim explainer video with word-synced voiceover** — narrative
-script first, then TTS, then animation timed to the actual spoken words.
+An [Agent Skill](https://agentskills.io/specification) that turns course material or a topic
+into a **narrated explainer video in a chosen style**: 3Blue1Brown or Welch Labs.
 
 ```
-concept → script.yaml → OpenRouter TTS (Grok Voice)
-        → Whisper word timestamps → timed Manim (LaTeX on screen)
-        → pixel QA → MP4
+idea / course material
+  → research   primary sources + exact values in SOURCE_NOTES.md; align on style/scope if open
+  → script     a chain of question → wall → revelation units under one central question
+  → voice      OpenRouter TTS in the style's voice, Whisper word timings
+  → plan       every object placed in pixels, every change bound to the phrase that describes it
+  → render     one beat per worker, in parallel on the CPU (manimgx), joined frame-exactly
+  → checks     lint, plan geometry at every frame, sync to the voice, then a frame review
+  → MP4
 ```
 
-The agent does not stop for approval between those stages: it writes the script,
-records the voice, animates against the real word times, reads the rendered frames,
-fixes what it sees, and hands you a finished MP4.
+Each step refuses to run until the check before it passed for the current files, and
+delivery waits for a recorded frame review. After a fix, plan check, render and render check
+redo only the stretches of the video the fix changed.
+
+## Styles
+
+| | 3Blue1Brown (`3b1b`) | Welch Labs (`welch`) |
+|---|---|---|
+| Narrative | 2.5–4 turns per 10 min; toy numbers; ends on a principle or puzzle | 1.2–2.5 turns per 10 min; real numbers; causal chain; ends on open questions |
+| Voice | conversational, 170–205 wpm | measured documentary "we", 150–185 wpm |
+| Look | black, ManimGL colours, CMU Serif, labels next to their objects | black, tan / brown / yellow, Source Sans 3 caps labels in fixed slots |
+| Motion | write-ons, term-by-term equations, holds while explaining | letter-by-letter caps labels, long smooth moves, dim the rest |
+
+Every number in the packs is measured from the channels' videos and code; see
+`docs/research/`.
 
 ## Install
 
-**Claude Code — as a plugin (recommended):**
+**Claude Code, as a plugin:**
 
 ```
 /plugin marketplace add benjamin32561/ManimVideoGenerationSkill
 /plugin install manim-explain@manim-video-generation
 ```
 
-**Claude Code / Cursor / any agent that reads `SKILL.md`** — copy or symlink the
-skill folder into a skills directory:
-
-```bash
-git clone https://github.com/benjamin32561/ManimVideoGenerationSkill.git
-ln -s "$PWD/ManimVideoGenerationSkill/skills/manim-explain" ~/.claude/skills/manim-explain
-# Cursor: ~/.cursor/skills/manim-explain   ·   project-scoped: .claude/skills/ or .cursor/skills/
-```
-
-The skill locates itself from wherever it is installed, so a project that uses it
-can live anywhere on disk.
+**Any agent that reads `SKILL.md`:** symlink `skills/manim-explain` into its skills folder
+(for example `~/.claude/skills/manim-explain`). The skill locates itself, so projects can live
+anywhere.
 
 ## Requirements
 
-| Need | Why |
-|------|-----|
-| Vendored [Manim Community](https://docs.manim.community/) + ffmpeg | rendering and mux — source is `vendor/manim` |
-| LaTeX with `dvisvgm` | `MathTex` on screen (classic 3b1b look) |
-| Python `requests`, `PyYAML` | pipeline scripts |
-| `OPENROUTER_API_KEY` | TTS **and** word alignment both go through OpenRouter |
+Linux. The default renderer is the CPU, through the lavapipe build bundled with manimgx, so
+a GPU is not required. `render.py --gpus` is the Linux NVIDIA path: it needs `nvidia-smi`,
+`gcc`, and the Vulkan headers.
 
-Copy [`.env.example`](.env.example) to `.env` in *your* project and fill in the key.
-Set `MANIM_ENV=/path/to/env` there if Manim lives in a dedicated interpreter.
-After clone, install the in-tree engine (not the PyPI wheel):
+| Need | Why |
+|---|---|
+| Python 3.13 and the packages in [`requirements.txt`](requirements.txt) | rendering and pipeline scripts |
+| ffmpeg | encoding and the narration mux |
+| CMU Serif in `~/.local/share/fonts/cmu` | both styles; rendering fails without it |
+| Source Sans 3 in `~/.local/share/fonts/source-sans-3` | Welch labels; rendering fails without it |
+| `OPENROUTER_API_KEY` | voice and word timings |
 
 ```bash
-git submodule update --init --recursive
-pip install -e vendor/manim
+python -m pip install -r requirements.txt
+mkdir -p ~/.local/share/fonts/cmu ~/.local/share/fonts/source-sans-3
+# Computer Modern Unicode (OFL): https://sourceforge.net/projects/cm-unicode/
+# Source Sans 3 (OFL): https://github.com/adobe-fonts/source-sans/releases
+# Put the CMU .otf files in ~/.local/share/fonts/cmu
+# and the Source Sans 3 .otf files in ~/.local/share/fonts/source-sans-3
 ```
 
-Patches go in `vendor/manim`. Pull community updates with
-[`scripts/sync_manim_upstream.sh`](scripts/sync_manim_upstream.sh).
-No sudo for `dvisvgm`? [`scripts/setup_dvisvgm_local.sh`](scripts/setup_dvisvgm_local.sh)
-unpacks it under `.local/` (Debian/Ubuntu).
+Copy [`.env.example`](.env.example) to `.env` in your project, set the key and `MANIM_ENV`
+(the Python environment whose `bin/` holds `manimgx`), then
+`source skills/manim-explain/scripts/env.sh`.
 
 ## Use it
 
-Ask the agent for an explainer video — "make me a 3b1b-style video explaining X" —
-and it runs the whole pipeline. Or drive the scripts directly:
+Ask the agent for an explainer video ("a Welch Labs-style video on caches from my course
+notes"), or run the steps:
 
 ```bash
-source skills/manim-explain/scripts/env.sh
-python "$MANIM_EXPLAIN_ROOT/scripts/lint_script.py"     demos/<slug>/script.yaml --strict
-python "$MANIM_EXPLAIN_ROOT/scripts/tts_openrouter.py"  demos/<slug>/script.yaml
-python "$MANIM_EXPLAIN_ROOT/scripts/align_words.py"     demos/<slug>
-"$MANIM_EXPLAIN_ROOT/scripts/render_and_mux.sh"         demos/<slug>/scenes/scene.py SceneName -qm
-python "$MANIM_EXPLAIN_ROOT/scripts/qa_frames.py"       demos/<slug> --contact-sheet
+python skills/manim-explain/scripts/lint_script.py  demos/<series>/<slug>
+python skills/manim-explain/scripts/voice.py        demos/<series>/<slug>
+python skills/manim-explain/scripts/plan_check.py   demos/<series>/<slug>
+python skills/manim-explain/scripts/render.py       demos/<series>/<slug>
+python skills/manim-explain/scripts/check_render.py demos/<series>/<slug>
+python skills/manim-explain/scripts/review.py record  demos/<series>/<slug> --notes "..."
+python skills/manim-explain/scripts/review.py deliver demos/<series>/<slug>
 ```
 
-## What makes it not look generated
-
-The skill carries [`references/craft-laws.md`](skills/manim-explain/references/craft-laws.md)
-— production laws accumulated from watching real output and fixing what was wrong:
-
-- **Morph, don't respawn** — related A→B transforms in place; first appearance moves.
-- **Orient before teaching** — define the cold viewer, central question, recurring
-  anchor, and knowledge ladder before writing narration.
-- **Evidence advances the idea** — exact run IDs and result tables stay in source
-  notes unless the user asks for an audit or benchmark walkthrough.
-- **The picture matches the spoken noun** — name a whole system, draw the whole system.
-- **A question moves its referent** — while the VO asks about X, X animates.
-- **Math develops on screen** — derived formulas morph term by term, never flash finished.
-- **The VO breathes** — pauses are baked into the audio as real silence, not faked with `wait()`.
-- **Spoken numerals are a contract** — if the narration says "five more", five more must move.
-- **Pixel QA is mandatory** — the agent reads rendered frames before calling a render done.
-
-Every law is written to apply to *any* topic. When you correct a video, the correction
-goes into the laws first and the demo second, so the next video inherits the fix.
+Videos are worked on in `demos/<series>/<slug>/` and delivered to
+`output_videos/<series>/<slug>.mp4`. Both folders are gitignored.
 
 ## Repository layout
 
 ```
-skills/manim-explain/     the skill (this is what you install)
-├── SKILL.md              entrypoint: hard rules + workflow
-├── references/           craft laws, narrative patterns, layout, sync, TTS
-├── scripts/              TTS, alignment, layout checks, QA stills, render
-└── assets/               script + scene + style templates
-vendor/manim/             our fork of Manim Community (editable install)
-docs/                     locked decisions and research notes
-tests/                    layout overlap tests
-.claude-plugin/           plugin + marketplace manifests
+skills/manim-explain/      the skill (this is what you install)
+├── SKILL.md               entry point: hard rules and workflow
+├── explain/               pipeline package: plan, timing, scene runtime, checks, rendering
+├── scripts/               the pipeline steps
+├── styles/3b1b, welch/    style packs: style.yaml, components.py, STYLE.md
+├── references/            research, narrative grammar, plan format, voice, review, craft laws
+├── vulkan/                GPU-selection layer, for rendering on named GPUs
+└── assets/                script and series templates
+docs/                      decisions and research
+vendor/welch-labs-videos/  gitignored reference clone (MIT)
+.claude-plugin/            plugin and marketplace manifests
 ```
-
-The pipeline works inside `demos/<slug>/` (script, audio, `timing.json`, scenes,
-renders, QA stills) and delivers the finished video to `output_videos/<series>/<slug>.mp4`
-at your project root. Both directories are gitignored — they are your working
-output and your deliverables, not part of the skill — so the layout tests skip
-any demo that is not present.
 
 ## Credits
 
-Pedagogy distilled from Grant Sanderson's [3Blue1Brown](https://www.3blue1brown.com/)
-and from [AmitSubhash/3brown1blue](https://github.com/AmitSubhash/3brown1blue)
-(`pip install 3brown1blue`, MIT). This skill keeps the storytelling rules and replaces
-audio-stretch syncing with real word timestamps. No runtime dependency on either.
+- Pedagogy and look from Grant Sanderson's [3Blue1Brown](https://www.3blue1brown.com/) and
+  Stephen Welch's [Welch Labs](https://www.youtube.com/@WelchLabs).
+- The Welch pack ports helpers from
+  [stephencwelch/manim_videos](https://github.com/stephencwelch/manim_videos) (MIT).
+- Rendering by [manimgx](https://github.com/academa-labs/manimgx).
+- Early inspiration from [AmitSubhash/3brown1blue](https://github.com/AmitSubhash/3brown1blue)
+  (MIT).
 
 ## License
 
