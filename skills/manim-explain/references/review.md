@@ -50,6 +50,9 @@ unsure of. Judge each frame twice:
 1. **Is anything clipped, covered, unreadable, or left over** from an earlier idea?
 2. **Does the picture say what the voice says at that moment?** Check that the noun spoken is
    the thing shown, the emphasis is on it, and the formula matches the words.
+3. **Does the frame advance the logic**, rather than showing an unmotivated formula or a wall
+   of numbers? If a beat is mostly text or tables while explaining a mechanism, redesign the
+   visual around the anchor diagram or thought experiment.
 
 Fix problems in the plan (or the script), then re-run plan check → render → check. When a
 whole pass is clean:

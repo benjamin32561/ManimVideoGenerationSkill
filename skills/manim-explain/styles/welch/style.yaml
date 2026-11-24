@@ -17,7 +17,7 @@ speaker:                   # [min, max]; the lint warns outside these (Welch A-G
   wpm: [150, 185]
   long_pauses_per_min: [0.1, 4.8]   # silences of 1 s or more
   sentence_words_mean: [18, 29]
-  questions_per_min: [0.0, 0.7]
+  questions_per_min: [0.0, 1.5]     # Welch A-G ran 0-0.7; widened to allow guiding "why / what if" derivation questions
   you_per_1k: [0, 4]
   we_per_1k: [15, 75]
   i_per_1k: [0, 9]
@@ -32,7 +32,7 @@ narrative:
   cashout_min: 0.15
   causal_min: 0.85
   max_depth: 3
-  climax_range: [0.35, 0.80]
+  climax_range: [0.35, 0.85]  # Welch C/E/F ran 35-77%; 0.85 gives deep 2-unit derivations room before payoff
   wall_subtypes: [cost, fail, contra]
   jumps: none
   revelation_questions_max: 0
@@ -86,5 +86,8 @@ emphasis:
   banned_actions: [flash]   # Welch emphasises by dimming the rest, an outline box, a yellow arrow
 
 rules:
-  exact_numbers: true       # real dimensions and measured payoffs are part of the voice
+  exact_numbers: true       # real dimensions and payoffs earn their seat, never as a spec-sheet dump
+  max_numbers_per_1k: 35    # Welch A-H measured 9.0-32.8 (median 18.5, JEPA 11.0)
+  max_exact_specs_per_1k: 12  # Welch A-H decimals / % / 3+-digit specs measured 2.1-11.3 (median 4.3, JEPA 2.5)
+  max_beat_numbers: 8       # per-beat burst guard (also requires >= 8 numbers per 100 words)
   narrated_dialogue: false

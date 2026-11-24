@@ -26,8 +26,38 @@ TURN_MARKERS = ("but", "however", "problem", "doesn't", "can't", "cannot", "not 
                 "isn't", "never", "wait", "breaks", "stuck", "impossible")
 EVALUATIVE = ("remarkable", "beautiful", "elegant", "clever", "amazing", "stunning", "brilliant", "magical")
 DIALOGUE = re.compile(r"\b(?:[A-Z][a-z]+|he|she) (?:says|said|asks|asked|replies|replied)\b|\bI'm like\b|\bI say\b")
+CLARIFYING_I_SAY = re.compile(r"\b(?:when|what|as)\s+I say\b", re.IGNORECASE)
 LATEX = re.compile(r"[\\^_$]")
 EXACT_NUMBER = re.compile(r"\b\d+\.\d+\b|\b(?!1[89]\d\d\b|20\d\d\b)\d{4,}\b")
+_NUM_WORDS = (
+    r"zero|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|"
+    r"thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|"
+    r"twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|"
+    r"hundred|thousand|million|billion|trillion"
+)
+_FRAC_WORDS = (
+    r"half|halves|third|thirds|quarter|quarters|"
+    r"fourth|fourths|fifth|fifths|eighth|eighths|tenth|tenths|sixteenth|sixteenths"
+)
+_NUM_TAIL = rf"{_NUM_WORDS}|one|point|percent|{_FRAC_WORDS}"
+NON_QUANTITY = re.compile(r"\b[A-Za-z][A-Za-z0-9]*-\d+\b|\bbase[\s-]+(?:two|ten|2|10)\b", re.IGNORECASE)
+NUMBER_MENTION = re.compile(
+    rf"(?:\b(?!1[89]\d\d\b|20\d\d\b)\d+(?:,\d{{3}})*(?:\.\d+)?%?(?:\s*(?:percent|million|billion|thousand|hundred))?\b"
+    rf"|\b(?:(?:minus|negative|plus)\s+(?:one|{_NUM_WORDS})"
+    rf"|(?:{_NUM_WORDS})"
+    rf"|one[\s-]+(?:and[\s-]+(?:a[\s-]+)?(?:{_FRAC_WORDS}|{_NUM_WORDS})|hundred|thousand|million|billion|trillion|percent|point|{_FRAC_WORDS})"
+    rf"|(?:a|an)\s+(?:{_FRAC_WORDS}))"
+    rf"(?:[\s-]+(?:and\s+)?(?:a\s+)?(?:{_NUM_TAIL}))*"
+    rf"(?:\s*percent)?\b)",
+    re.IGNORECASE,
+)
+EXACT_SPEC = re.compile(
+    r"\b\d+(?:\.\d+)?\s*(?:%|percent)\b|\b\d+\.\d+\b"
+    r"|\b(?!1[89]\d\d\b|20\d\d\b)\d{1,3}(?:,\d{3})+\b"
+    r"|\b(?!1[89]\d\d\b|20\d\d\b)\d{3,}\b",
+    re.IGNORECASE,
+)
+BEAT_NUMBER_RATE_MIN = 8.0
 CONTRACTION = re.compile(r"\b\w+'(?:s|re|ve|ll|d|t|m)\b", re.IGNORECASE)
 RUN_ON_NUMBER = re.compile(r"\b(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)[\s,]+"
                            r"(?:too|to|two|for|four|ate|won)\b", re.IGNORECASE)
@@ -366,7 +396,7 @@ def wording_problems(beats: list[ScriptBeat], style: Style) -> list[Problem]:
     for b in beats:
         if LATEX.search(b.say):
             problems.append(Problem("latex_in_narration", "error", b.id, detail="TTS reads it literally; write spoken math"))
-        if not style.rules["narrated_dialogue"] and DIALOGUE.search(b.say):
+        if not style.rules["narrated_dialogue"] and DIALOGUE.search(CLARIFYING_I_SAY.sub("", b.say)):
             problems.append(Problem("narrated_dialogue", "error", b.id, detail="no characters talking; voice the intuition yourself"))
         if not style.rules["exact_numbers"] and EXACT_NUMBER.search(b.say):
             problems.append(Problem("exact_number", "warning", b.id, detail="this style keeps exact results in SOURCE_NOTES"))
@@ -403,9 +433,9 @@ def speaker_problems(beats: list[ScriptBeat], total: float, style: Style,
     profile = {
         "sentence_words_mean": len(words) / max(len(sent), 1),
         "questions_per_min": sum(s.endswith("?") for s in sent) / minutes,
-        "you_per_1k": sum(w in ("you", "your", "you're", "yourself") for w in words) * per_1k,
-        "we_per_1k": sum(w in ("we", "us", "our", "let's", "we're", "we've") for w in words) * per_1k,
-        "i_per_1k": sum(w in ("i", "me", "my", "i'm", "i've") for w in words) * per_1k,
+        "you_per_1k": sum(w in ("you", "your", "you're", "you've", "you'll", "you'd", "yourself") for w in words) * per_1k,
+        "we_per_1k": sum(w in ("we", "us", "our", "let's", "we're", "we've", "we'll", "we'd") for w in words) * per_1k,
+        "i_per_1k": sum(w in ("i", "me", "my", "i'm", "i've", "i'll", "i'd") for w in words) * per_1k,
         "contractions_per_1k": len(CONTRACTION.findall(text)) * per_1k,
     }
     if transcript is not None:
@@ -446,6 +476,80 @@ def misheard_numbers(script: Script, transcript: Transcript) -> list[Problem]:
     return problems
 
 
+def count_number_mentions(text: str) -> int:
+    """Count contiguous spoken numeric mentions (digits, words, or fractions), skipping years,
+    bare 'one', model identifiers like 'GPT-2', and logarithm bases like 'base-two'.
+
+    Args:
+        text: Spoken narration.
+
+    Returns:
+        Number of numeric mentions.
+    """
+    return len(NUMBER_MENTION.findall(NON_QUANTITY.sub(" ", text)))
+
+
+def count_exact_specs(text: str) -> int:
+    """Count exact decimals, percentages and 3+-digit non-year specs in spoken narration.
+
+    Args:
+        text: Spoken narration.
+
+    Returns:
+        Number of exact-spec mentions.
+    """
+    return len(EXACT_SPEC.findall(text))
+
+
+def number_problems(beats: list[ScriptBeat], style: Style) -> tuple[list[Problem], dict[str, float]]:
+    """Guard against number-dumping and spec overload, calibrated to 24 reference videos.
+
+    Evidence: ``docs/research/intuitive-derivation.md``.
+
+    Args:
+        beats: All beats.
+        style: The series' style (reads optional ceilings from ``style.rules``).
+
+    Returns:
+        Warnings found, plus ``numbers_per_1k`` and ``exact_specs_per_1k`` metrics.
+    """
+    full_text = " ".join(b.say for b in beats)
+    total_words = max(len(tokenize(full_text)), 1)
+    per_1k = 1000 / total_words
+    nums_per_1k = count_number_mentions(full_text) * per_1k
+    specs_per_1k = count_exact_specs(full_text) * per_1k
+    problems: list[Problem] = []
+
+    max_nums = style.rules.get("max_numbers_per_1k")
+    if max_nums is not None and nums_per_1k > float(max_nums):
+        problems.append(Problem(
+            "number_density", "warning", "script",
+            detail=f"{nums_per_1k:.1f} numbers per 1k words, style wants <= {float(max_nums):g}; "
+                   "keep secondary specs in SOURCE_NOTES and spend narration on the logic",
+        ))
+
+    max_specs = style.rules.get("max_exact_specs_per_1k")
+    if max_specs is not None and specs_per_1k > float(max_specs):
+        problems.append(Problem(
+            "spec_overload", "warning", "script",
+            detail=f"{specs_per_1k:.1f} exact specs per 1k words, style wants <= {float(max_specs):g}; "
+                   "reserve exact benchmarks for the wall and payoff",
+        ))
+
+    beat_limit = style.rules.get("max_beat_numbers")
+    if beat_limit is not None:
+        for b in beats:
+            n_words = max(len(tokenize(b.say)), 1)
+            n_nums = count_number_mentions(b.say)
+            if n_nums >= int(beat_limit) and (n_nums / n_words * 100) >= BEAT_NUMBER_RATE_MIN:
+                problems.append(Problem(
+                    "number_dump", "warning", b.id,
+                    detail=f"{n_nums} numbers in {n_words} words; derive the idea first and keep lookup tables in SOURCE_NOTES",
+                ))
+
+    return problems, {"numbers_per_1k": round(nums_per_1k, 1), "exact_specs_per_1k": round(specs_per_1k, 1)}
+
+
 def lint(script: Script, style: Style, transcript: Transcript | None) -> tuple[list[Problem], dict]:
     """Run every script rule.
 
@@ -458,9 +562,13 @@ def lint(script: Script, style: Style, transcript: Transcript | None) -> tuple[l
         The problems and a summary (length, beats, measured profile).
     """
     timed, total = place_beats(script, style, transcript)
-    problems = grammar_problems(timed, total, style) + wording_problems(list(script.beats), style)
+    beats = list(script.beats)
+    problems = grammar_problems(timed, total, style) + wording_problems(beats, style)
+    num_problems, num_metrics = number_problems(beats, style)
+    problems += num_problems
     if transcript is not None:
         problems += misheard_numbers(script, transcript)
-    speaker, profile = speaker_problems(list(script.beats), total, style, transcript)
+    speaker, profile = speaker_problems(beats, total, style, transcript)
+    profile.update(num_metrics)
     return problems + speaker, {"seconds": round(total, 1), "voiced": transcript is not None,
                                 "beats": len(script.beats), "profile": profile}

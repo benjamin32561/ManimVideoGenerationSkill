@@ -1,10 +1,11 @@
 """Lint a script against the narrative grammar and the style: ``lint_script.py demos/<series>/<slug>``.
 
 Checks the chain of units under one central question (rules N1–N15 of
-``docs/research/narrative-pattern.md``), the narration rules (no LaTeX, no narrated
-dialogue, exact numbers per style) and the style's speaker profile. Before the narration is
-voiced, beat times are estimated from word counts; once ``audio/words.json`` exists, real
-times are used and pace and pauses are measured too.
+``docs/research/narrative-pattern.md``), the narration and number-density rules (no LaTeX,
+no narrated dialogue, exact numbers and number-dump ceilings per style, grounded in
+``docs/research/intuitive-derivation.md``) and the style's speaker profile. Before the
+narration is voiced, beat times are estimated from word counts; once ``audio/words.json``
+exists, real times are used and pace and pauses are measured too.
 
 Writes ``out/lint.json`` and exits 1 on errors. ``voice.py`` refuses to run without a
 passing lint of the current script.

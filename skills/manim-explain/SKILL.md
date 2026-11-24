@@ -4,14 +4,16 @@ description: >-
   Creates narrated educational explainer videos in a chosen style (3Blue1Brown or Welch Labs)
   from course material or a topic. Use when the user asks for an explainer video, a
   3b1b-style or Welch-Labs-style animation, a narrated lesson, or teaching a concept visually
-  with voiceover. Writes a script as a chain of question → wall → revelation units under one
-  central question, voices it through OpenRouter, plans every frame in pixels, binds each
-  change to the phrase that describes it, renders beats in parallel with manimgx, and gates
-  delivery on mechanical checks plus a frame review.
+  with voiceover. Leads with ideas, thought process and step-by-step intuitive derivation (so
+  math and exact numbers earn their seat rather than taking over), writes a script as a chain
+  of question → wall → revelation units under one central question, voices it through
+  OpenRouter, plans every frame in pixels, binds each change to the phrase that describes it,
+  renders beats in parallel with manimgx, and gates delivery on mechanical checks plus a frame
+  review.
 license: MIT
 metadata:
   author: Ben Akhovan
-  version: "0.2.0"
+  version: "0.3.0"
   repository: https://github.com/benjamin32561/ManimVideoGenerationSkill
 ---
 
@@ -19,8 +21,9 @@ metadata:
 
 ## Hard rules
 
-1. **Research and plan before code.** Research the topic into `SOURCE_NOTES.md` (and align
-   with the user when style, scope or background are open), then write the script (narrative
+1. **Research and plan before code.** Research the topic into `SOURCE_NOTES.md` (thinking
+   process, bedrock premise, derivation steps, misconceptions, and verified values; align with
+   the user when style, scope or background are open), then write the script (narrative
    grammar), then voice, then a pixel layout plan and phrase-bound events, then render. The
    runtime builds exactly the plan; never place things freehand in code.
 2. **The series' style governs.** `demos/<series>/series.yaml` names the style; every video
@@ -28,16 +31,27 @@ metadata:
 3. **One central question, a chain of units, one climax, a payoff that returns to the
    opening** (`references/narrative.md`). Videos are 6–12 minutes with at least 2–3 full
    units. Merge short neighbouring topics rather than make thin videos.
-4. **Every visual change runs across the phrase that describes it.** Between events the frame
+4. **Logic and intuitive derivation first; math and numbers earn their seat.** Never explain
+   something by reciting a formula, a benchmark table, or a law's name. Start from the
+   simplest premise, simplify to an easier case before generalizing, test plausible repairs
+   and `"why / why not / what if"` objections, and state in plain words what the missing move
+   must do before introducing it. Package the logic into an equation only once the viewer sees
+   why each piece must be there — let the voice explain *what each step does* while the screen
+   shows the algebra, never reading multi-term equations or repeated arithmetic aloud in prose
+   — then play with 2–3 revealing cases, or say plainly when a step is qualitative. Keep
+   spoken numbers to the few that do logical work; secondary specs, ablations and constants
+   stay in `SOURCE_NOTES.md`.
+5. **Every visual change runs across the phrase that describes it.** Between events the frame
    holds still; there is no idle motion.
-5. **No narrated dialogue, no LaTeX in narration.** The narrator voices the viewer's intuition
-   ("you might expect..."). Write math as spoken words (`references/spoken-math.md`).
-6. **Gates are not optional.** Each step refuses to run until the previous check passed for
+6. **No narrated dialogue, no LaTeX in narration.** The narrator voices the viewer's intuition
+   ("you might expect...", or "we might expect..." in documentary styles like Welch). Write
+   math as spoken words (`references/spoken-math.md`).
+7. **Gates are not optional.** Each step refuses to run until the previous check passed for
    the current files: lint → voice → plan check → render, render check → review → deliver.
-7. **Look at the frames.** Mechanical checks cannot judge meaning. Read every contact sheet
-   and judge each frame: is anything covered or left over, and does the picture say what the
-   voice says?
-8. **Feedback becomes a law** in `references/craft-laws.md` (every style) or in the style pack
+8. **Look at the frames.** Mechanical checks cannot judge meaning. Read every contact sheet
+   and judge each frame: is anything covered or left over, does the picture say what the
+   voice says, and does it show the reasoning step rather than a wall of numbers?
+9. **Feedback becomes a law** in `references/craft-laws.md` (every style) or in the style pack
    (one style), written as an abstract rule, before the video is patched.
 
 ## Setup
@@ -67,16 +81,19 @@ demos/<series>/<slug>/script.yaml     the narrated script  (assets/script_templa
 
 1. **Research & brief (`references/research.md`).**
    - With course material: read it thoroughly, group neighbouring topics into 6–12 minute
-     videos, extract exact notation, values and misconceptions into
-     `demos/<series>/<slug>/SOURCE_NOTES.md`, and research only genuine gaps.
-   - With a bare topic: read primary sources first until you understand the mechanism, exact
-     numbers and real failure modes, write `SOURCE_NOTES.md`, and ask brief alignment
+     videos, extract the thinking-process outcome, bedrock premise, intuitive derivation
+     steps, genuine misconceptions, and verified values into
+     `demos/<series>/<slug>/SOURCE_NOTES.md` (keeping secondary specs reference-only), and
+     research only genuine gaps.
+   - With a bare topic: read primary sources first until you can derive the core mechanism
+     from scratch in plain words, write `SOURCE_NOTES.md` (separating the few spoken numbers
+     that do logical work from the reference-only fact-check ledger), and ask brief alignment
      questions for anything open (style/series, scope/arc, assumed viewer background).
    - Pick the series style in `demos/<series>/series.yaml`.
-2. **Script.** Write the viewer contract, then the unit chain (`references/narrative.md`),
-   then `say` and `show` for every beat.
+2. **Script.** Write the viewer contract (including bedrock premise and reasoning spine), then
+   the unit chain (`references/narrative.md`), then `say` and `show` for every beat.
    `python scripts/lint_script.py demos/<series>/<slug>`: fix every error, and judge the
-   warnings.
+   warnings (including `number_density`, `spec_overload` and `number_dump`).
 3. **Voice.** `python scripts/voice.py demos/<series>/<slug>` writes the narration and
    `audio/words.json`. Re-run the lint: it now measures real pace and pauses.
 4. **Plan.** Turn each beat's `show` into `plan/layout.json` and `plan/events.yaml`
@@ -117,8 +134,8 @@ output_videos/<series>/<slug>.mp4   the delivered video
 
 | Style | Voice | Look | Narrative |
 |---|---|---|---|
-| `3b1b` | conversational, 170–205 wpm | black, ManimGL colours, CMU Serif, labels next to objects | 2.5–4 turns per 10 min, toy numbers, ends on a principle or puzzle |
-| `welch` | measured documentary "we", 150–185 wpm | black, tan/brown/yellow, Source Sans 3 caps labels in fixed slots | 1.2–2.5 turns per 10 min, real numbers, no jumps, ends on open questions |
+| `3b1b` | conversational, 170–205 wpm | black, ManimGL colours, CMU Serif, labels next to objects | 2.5–4 turns per 10 min, effortless toy numbers, geometric/logical derivation, ends on a principle or puzzle |
+| `welch` | measured documentary "we", 150–185 wpm | black, tan/brown/yellow, Source Sans 3 caps labels in fixed slots | 1.2–2.5 turns per 10 min, logical mechanism first + real numbers where they prove a wall or payoff (not spec dumps), no jumps, ends on open questions |
 
 ## References
 
@@ -137,7 +154,7 @@ output_videos/<series>/<slug>.mp4   the delivered video
 
 | Script | Does |
 |---|---|
-| `scripts/lint_script.py` | narrative grammar N1–N15, narration rules, speaker profile → `out/lint.json` |
+| `scripts/lint_script.py` | narrative grammar N1–N15, narration & number-density rules, speaker profile → `out/lint.json` |
 | `scripts/voice.py` | TTS (style voice) + Whisper word times, dropped-speech check → `audio/` |
 | `scripts/plan_check.py` | resolve anchors, validate the plan, geometry at every frame, `manimgx inspect` → `out/plan_check.json` |
 | `scripts/render.py` | parallel per-beat render on the CPU (changed beats only), frame-exact join, narration mux → `out/video.mp4` |

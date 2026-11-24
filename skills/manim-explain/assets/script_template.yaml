@@ -6,6 +6,10 @@
 # refuting revelation, or a plain answer) -> cash-out (consolidate) -> link to the next.
 # Exactly one beat is the climax: the revelation or answer that resolves Q0.
 #
+# Lead with ideas, thought process and intuitive derivation: start from the bedrock premise,
+# simplify before generalizing, state the logical constraint before a mathematical move, and
+# keep spoken numbers to the few that do logical work (secondary specs stay in SOURCE_NOTES.md).
+#
 # say:  spoken text only. No LaTeX. Numbers as spoken words or digits.
 # show: what the picture does, in words. The storyboard turns it into plan/layout.json and
 #       plan/events.yaml after the narration is voiced.
@@ -13,8 +17,10 @@ title: Why ice floats
 viewer_contract:
   starting_point: Solids are usually denser than their liquids.
   central_question: Why does frozen water float on liquid water?
+  bedrock_premise: A water molecule is V-shaped with slightly positive hydrogen tips and a slightly negative oxygen corner, so opposites attract along fixed directions.
   initial_intuition: Cold packs molecules closer, so ice should sink.
   anchor_example: A glass of water with an ice cube, and a few molecules drawn large.
+  reasoning_spine: Floating is a density contest -> slower molecules should pack tighter -> yet ice expands by about 9% -> something must hold frozen water molecules apart -> directional attraction locks each molecule to four neighbours at fixed angles -> freezing builds an open cage while liquid molecules break bonds and fill the gaps.
   ending_insight: Hydrogen bonds lock water into an open lattice that takes more room than the liquid.
 
 beats:

@@ -2,6 +2,8 @@
 
 Phase 1 (understand the style). Researched 2026-11-21. "float heads physics" resolves to the YouTube channel **FloatHeadPhysics** (handle `@Mahesh_Shenoy`, channel id `UCGfFUc6eWxfbtjYeun6r9xg`). No other channel came close. The handle is the creator's name, the channel tags are `Float head, Floating head, Physics, Physix`, and the creator explains the name himself (see Snapshot). [verified: yt-dlp channel metadata; 2VvG2p2nFLQ 30:21]
 
+*Follow-up (2026-11-24):* see [../intuitive-derivation.md](../intuitive-derivation.md) for a deeper analysis of his logical-derivation craft (bedrock premises, staged failure ladders, constraint-before-move, equation play, and number rationing) distilled into core rules for `manim-explain` without the dead-scientist dialogue device.
+
 Evidence tags: **[verified: source]** means a primary source states it or I measured it directly. **[inferred: from what]** means it is my reading of the evidence. Timestamps are `mm:ss` in the cited video. Measurements come from scripts in `research_cache/floatheads/scripts/` (gitignored).
 
 **Sample (6 videos, 2022→2026, five topic areas)**

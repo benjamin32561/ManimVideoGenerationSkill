@@ -5,12 +5,12 @@ into a **narrated explainer video in a chosen style**: 3Blue1Brown or Welch Labs
 
 ```
 idea / course material
-  → research   primary sources + exact values in SOURCE_NOTES.md; align on style/scope if open
-  → script     a chain of question → wall → revelation units under one central question
+  → research   primary sources, thinking-process spine + verified values in SOURCE_NOTES.md; align if open
+  → script     logic-first intuitive derivation in question → wall → revelation units under one central question
   → voice      OpenRouter TTS in the style's voice, Whisper word timings
   → plan       every object placed in pixels, every change bound to the phrase that describes it
   → render     one beat per worker, in parallel on the CPU (manimgx), joined frame-exactly
-  → checks     lint, plan geometry at every frame, sync to the voice, then a frame review
+  → checks     lint (grammar + number-density guards), plan geometry at every frame, sync, frame review
   → MP4
 ```
 
@@ -22,7 +22,7 @@ redo only the stretches of the video the fix changed.
 
 | | 3Blue1Brown (`3b1b`) | Welch Labs (`welch`) |
 |---|---|---|
-| Narrative | 2.5–4 turns per 10 min; toy numbers; ends on a principle or puzzle | 1.2–2.5 turns per 10 min; real numbers; causal chain; ends on open questions |
+| Narrative | 2.5–4 turns per 10 min; effortless toy numbers; geometric/logical derivation; ends on a principle or puzzle | 1.2–2.5 turns per 10 min; mechanism first + real numbers where they prove a wall or payoff; causal chain; ends on open questions |
 | Voice | conversational, 170–205 wpm | measured documentary "we", 150–185 wpm |
 | Look | black, ManimGL colours, CMU Serif, labels next to their objects | black, tan / brown / yellow, Source Sans 3 caps labels in fixed slots |
 | Motion | write-ons, term-by-term equations, holds while explaining | letter-by-letter caps labels, long smooth moves, dim the rest |
@@ -107,7 +107,8 @@ vendor/welch-labs-videos/  gitignored reference clone (MIT)
 ## Credits
 
 - Pedagogy and look from Grant Sanderson's [3Blue1Brown](https://www.3blue1brown.com/) and
-  Stephen Welch's [Welch Labs](https://www.youtube.com/@WelchLabs).
+  Stephen Welch's [Welch Labs](https://www.youtube.com/@WelchLabs), with intuitive-derivation
+  principles distilled from Mahesh Shenoy's [FloatHeadPhysics](https://www.youtube.com/@Mahesh_Shenoy).
 - The Welch pack ports helpers from
   [stephencwelch/manim_videos](https://github.com/stephencwelch/manim_videos) (MIT).
 - Rendering by [manimgx](https://github.com/academa-labs/manimgx).

@@ -19,6 +19,7 @@ import pytest
 import yaml
 
 from explain.device import NO_DRIVER, Device, device_env
+from explain.narrative import count_exact_specs, count_number_mentions, number_problems, wording_problems
 from explain.paths import Video
 from explain.plan import Event, Layout, Timeline, narration_digest, plan_digest
 from explain.probe import Sample, load_samples, save_samples
@@ -211,4 +212,52 @@ def test_cpu_device_hides_every_gpu() -> None:
     assert env["VK_ICD_FILENAMES"] == str(NO_DRIVER) and not NO_DRIVER.exists()
     assert env["LP_NUM_THREADS"] == "4" and env["EXPLAIN_DEVICE"] == "cpu"
     assert not {"VK_INSTANCE_LAYERS", "EXPLAIN_VK_PCI_BUS", "CUDA_VISIBLE_DEVICES"} & set(env)
+
+
+def test_number_counting_skips_years_and_bare_one() -> None:
+    """Calendar years, pronoun 'one', model names and 'base-two' do not inflate counts; fractions do."""
+    text = ("In 1995 and 2022, GPT-2 used a base-two log, while one crystal had minus seventy "
+            "inside and one hundred and forty outside, 150,528 values dropped by 77.2 percent, "
+            "and a half plus one and three quarters left a quarter.")
+    assert count_number_mentions(text) == 7
+    assert count_exact_specs(text) == 2
+
+
+def test_dialogue_check_allows_clarifying_when_i_say() -> None:
+    """Normal first-person clarifications pass; narrated mentor dialogue is still rejected."""
+    style = load_style("3b1b")
+    ok = [ScriptBeat("b1", "dig", None, "u1", "u0", None, None, None, None, False,
+                     "When I say surprise, I mean how many halvings it takes.", "bar")]
+    bad = [ScriptBeat("b2", "dig", None, "u1", "u0", None, None, None, None, False,
+                      "Einstein says imagine a clock, and I say wait a second.", "clock")]
+    assert not any(p.kind == "narrated_dialogue" for p in wording_problems(ok, style))
+    assert any(p.kind == "narrated_dialogue" for p in wording_problems(bad, style))
+
+
+def test_number_problems_flag_spec_dumps_and_pass_intuitive_scripts() -> None:
+    """Rationed derivations pass cleanly; spec-sheet dumps trigger density, spec and beat warnings."""
+    clean = [ScriptBeat("b1", "dig", None, "u1", "u0", None, None, None, None, False,
+                        "Imagine a crystal that conducts horizontally but blocks flow vertically. "
+                        "If you rotate the axes so the field tilts, one push along x produces flow "
+                        "along both directions, forcing two numbers instead of one.", "crystal")]
+    welch = load_style("welch")
+    probs, metrics = number_problems(clean, welch)
+    assert probs == [] and metrics["numbers_per_1k"] < welch.rules["max_numbers_per_1k"]
+
+    dump = [ScriptBeat("scale_dump", "consolidate", "scale", "u2", None, None, None, None, None, False,
+                       "MAE trains for 1,600 epochs to reach 77.2 percent, while I-JEPA hits 79.3 percent "
+                       "in 300 epochs and 81.1 percent at 448 resolution using 1,200 GPU hours across "
+                       "16 A100s in 72 hours, scoring 72.4 percent vs 53.4 percent.", "table")]
+    probs, _ = number_problems(dump, welch)
+    kinds = {p.kind for p in probs}
+    assert {"number_density", "spec_overload", "number_dump"} <= kinds
+
+    spelled = [ScriptBeat("c_arith", "consolidate", "formal", "u2", None, None, None, None, None, False,
+                          "At minus seventy, potassium is twenty away with thirteen doors, so thirteen "
+                          "times twenty is two hundred and sixty, matching two times one hundred and thirty "
+                          "for sodium from plus sixty down to minus seventy.", "eq")]
+    probs3, _ = number_problems(spelled, load_style("3b1b"))
+    kinds3 = {p.kind for p in probs3}
+    assert {"number_density", "number_dump"} <= kinds3
+
 

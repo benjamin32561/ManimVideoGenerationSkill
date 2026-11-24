@@ -47,6 +47,9 @@ Every object takes `z` (draw order; higher on top). Colours are palette tokens f
 - **Lone signs are `symbol` objects.** A `+`, `−`, `×` or `=` set as text is a hairline at
   any label size; the plan check rejects it.
 - **One primary figure, large.** Fill the frame with the idea, not with empty space.
+- **Visualize the reasoning step, not a spec sheet.** Use the canvas for thought experiments
+  (easier case first, side-by-side predictions with `×` vs `✓`, testing an extreme value on
+  the anchor) rather than filling frames with static equations or dense benchmark tables.
 - **One colour per concept** across the figure, its labels and every formula part.
 - **Backstroke only over busy content**: it draws a dark halo on coloured fills.
 

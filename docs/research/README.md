@@ -54,6 +54,7 @@ Order of work:
 | 28 | Engine | manimgx. It's 3–7× faster than Manim CE end to end and has the same Python API, so switching back stays cheap. Chosen by Ben after watching the engine spike (2026-11-22). |
 | 29 | Render device | The CPU by default, through manimgx's bundled lavapipe: the GPUs are shared with other people's jobs. A 23 s beat (695 frames) rendered in 24 s on one CPU worker. GPUs only when named (`--gpus`). Ben, 2026-11-22. |
 | 30 | Fix rounds | Only what a fix changed is re-checked, re-rendered and re-measured, keyed by window and beat digests. A video took ~1.5–2 h, mostly 4–7 full check/render rounds of 10–15 min each. Ben, 2026-11-22. |
+| 31 | Intuitive derivation | Ideas, thought process and step-by-step logical derivation come before equations and exact numbers in every style. Distilled from FloatHeadPhysics (without the dead-scientist dialogue device) into core craft laws, research/script templates, and measured number-density lint guardrails (`intuitive-derivation.md`). Ben, 2026-11-24. |
 
 ## Method
 
@@ -96,6 +97,7 @@ $Y --js-runtimes node -f 'bv*[height<=360]' URL
 |-----|--------|--------|
 | [styles/veritasium.md](styles/veritasium.md) | Veritasium, same sections as the other style docs, with the wall → revelation cycle explicit | done 2026-11-21. A web search confirms Gregor Čavlović is on the team and presents on camera. |
 | [narrative-pattern.md](narrative-pattern.md) | Tests Ben's wall → revelation hypothesis across 3b1b, Welch and Veritasium; beat codebook, timelines, measurements, a template a script stage can follow and a lint can check | done 2026-11-21. 10 videos + 6 of our scripts hand-labelled, one labeller. |
+| [intuitive-derivation.md](intuitive-derivation.md) | Follow-up study of FloatHeadPhysics's logical-derivation craft and number discipline across 24 reference videos (8 FHP, 8 3b1b, 8 Welch) and our 3 demos; translates the 8 transferable derivation moves into core rules and lint checks | done 2026-11-24. Measured on cached transcripts; catches all 3 overloaded demos with 0 false positives across the 24 reference videos. |
 | [tts.md](tts.md) | Better narration voice: hosted and open TTS options, native timestamps, cost; samples in `research_cache/tts-samples/` | done 2026-11-21. 37 voices × 2 texts (74 files), $0.70 on OpenRouter. Ranking from arena Elo + measurements; nobody has listened yet, so Ben's ears decide. |
 | [motion-typography.md](motion-typography.md) | Text animation and layout craft, motion rules as numbers, engine capabilities, showcase links to watch | done 2026-11-21. Checked: `manim_env` has manimpango 0.6.1; `mn-07-nernst` scenes contain no `MathTex` and no `Write`. |
 | [engine-spike.md](engine-spike.md) | Engine comparison: the same 58 s segment in Manim CE, manimgl, manimgx and HyperFrames. Videos in `output_videos/engine-spike/`; the spike code was promoted into the skill and removed (2026-11-22) | done 2026-11-21. Render times re-measured by me. Ben chose manimgx (decision 28). |

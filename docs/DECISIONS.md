@@ -1,6 +1,6 @@
 # Locked product decisions
 
-Updated: 2026-11-22 (multi-style redesign). The evidence behind each decision is in
+Updated: 2026-11-24 (intuitive-derivation and logic-first upgrade). The evidence behind each decision is in
 `docs/research/`. The numbers in brackets refer to the decision table in
 `docs/research/README.md`.
 
@@ -11,6 +11,7 @@ Updated: 2026-11-22 (multi-style redesign). The evidence behind each decision is
 | Style scope | Chosen per series in `demos/<series>/series.yaml`; every video in a series shares it [14] |
 | Core vs style rules | Core laws (`references/craft-laws.md`) hold for every style; anything style-dependent lives in the pack [21] |
 | Narrative | Hook → central question → chain of units (question → work → turn → cash-out → link) → payoff; one climax; lint rules N1–N15 [15, 16] |
+| Intuitive derivation | Logic, ideas and thought process come before equations and exact numbers in every style (distilled from FloatHeadPhysics, without narrated dialogue): start from a bedrock premise, simplify before generalizing, state the logical constraint before a mathematical move, test plausible repairs and "why / why not / what if" objections, package derived logic into equations and play with 2–3 revealing cases (or admit the qualitative boundary), and ration spoken numbers (`number_density`, `spec_overload`, `number_dump` lint checks) [31] |
 | No dialogue | No narrated dialogue with characters; the narrator voices the viewer's intuition [15] |
 | Video length | Follows the content, at least 2–3 full units (roughly 6–12 min); short neighbouring topics merge [25] |
 | Inputs | Course material, a bare topic the agent researches from primary sources, or both; always distilled into `SOURCE_NOTES.md` before scripting (`references/research.md`) [10] |

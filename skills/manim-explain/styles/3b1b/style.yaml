@@ -17,7 +17,7 @@ speaker:                   # [min, max]; the lint warns outside these (3b1b V1-V
   wpm: [170, 205]
   long_pauses_per_min: [0.3, 2.0]   # silences of 1 s or more
   sentence_words_mean: [18, 32]
-  questions_per_min: [0.0, 0.9]
+  questions_per_min: [0.0, 1.8]     # 3b1b V1-V8 ran 0-0.75; widened to allow guiding "why / what if" derivation questions
   you_per_1k: [15, 32]
   we_per_1k: [5, 20]
   i_per_1k: [5, 16]
@@ -26,7 +26,7 @@ speaker:                   # [min, max]; the lint warns outside these (3b1b V1-V
 narrative:
   intro_max_s: 90
   hook_required: true
-  turns_per_10min: [2.5, 4.0]
+  turns_per_10min: [2.0, 4.0]  # 3b1b V2/V4/V7 ran 2.5-4.0; 2.0 floor gives 3 deep derivation units room to breathe
   tension_s: [6, 40]
   work_min: 0.30
   cashout_min: 0.15
@@ -88,5 +88,7 @@ emphasis:
   banned_actions: []        # Indicate/Wiggle are not in the vocabulary at all
 
 rules:
-  exact_numbers: false      # toy numbers yes; exact results and run ids stay in SOURCE_NOTES
+  exact_numbers: false      # effortless toy numbers yes; exact results and run ids stay in SOURCE_NOTES
+  max_numbers_per_1k: 31    # 3b1b V1-V8 measured 7.9-30.3 (median 15.5); FHP measured 3.0-24.9 (median 10.6)
+  max_beat_numbers: 7       # per-beat burst guard (also requires >= 8 numbers per 100 words)
   narrated_dialogue: false

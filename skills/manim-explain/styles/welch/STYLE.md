@@ -1,9 +1,10 @@
 # Welch Labs style
 
-A measured documentary that works through real mechanisms, one running example, with real
-numbers. Numbers in `style.yaml` are measured; the evidence is
-`docs/research/styles/welch-labs.md` and `docs/research/narrative-pattern.md`. Reference code
-(MIT) is in `vendor/welch-labs-videos/`: a gitignored clone of
+A measured documentary that works through real mechanisms, one running example, and real
+numbers **where they prove a contradiction or land a payoff** — never as a spec-sheet dump.
+Numbers in `style.yaml` are measured; the evidence is `docs/research/styles/welch-labs.md`,
+`docs/research/narrative-pattern.md`, and `docs/research/intuitive-derivation.md`. Reference
+code (MIT) is in `vendor/welch-labs-videos/`: a gitignored clone of
 github.com/stephencwelch/manim_videos.
 
 ## Flow
@@ -12,13 +13,23 @@ github.com/stephencwelch/manim_videos.
   exactly" or "why" question by about 75 s. A short historical prologue can itself be the
   first unit.
 - **One running example from start to end.** A real input through a real mechanism, never an
-  abstract x. Every symbol is tied to a real dimension.
-- **1.2–2.5 turns per 10 minutes, mostly walls.** Walls are a cost or a failure ("this
+  abstract x. Every symbol shown on screen is tied to a real object or dimension.
+- **1.2–2.5 turns per 10 minutes, mostly walls.** Two deep units fit cleanly in 8–12
+  minutes (three units belong in a 12+ minute video). Walls are a cost or a failure ("this
   shortcut comes at a cost"). The fix's cost becomes the next wall: links are causal, never
   jumps.
-- **Work before every turn.** At least 40% of the video is setup, digging and attempts.
-- **Scale up to real numbers** after the toy works, and land a measured payoff ("a 57×
-  reduction") as the climax, between 35% and 80% of the runtime.
+- **Work before every turn — derive the mechanism before quoting specs.** At least 40% of the
+  video is setup, digging and attempts. Explain *why* a failure forces each architectural
+  piece (test a plausible repair, state the constraint the fix must satisfy, walk through the
+  easier case) before writing a loss formula or quoting a benchmark. Use one sharp contrast
+  to prove a wall rather than chaining intermediate byte or arithmetic calculations in prose,
+  and voice attempts as "we might expect…" (since "you" stays rare in Welch).
+- **Scale up selectively after the logic clicks.** Real measurements are precision
+  instruments: in Welch's own videos, spoken numbers average ~18 per 1,000 words (and only
+  ~11/1k in his JEPA video, with ~2.5 exact specs/1k). Use a handful of sharp numbers to
+  prove the wall and land the climax payoff ("a 57× reduction"), between 35% and 80% of the
+  runtime; leave ablation tables, secondary benchmarks and hyperparameter lists in
+  `SOURCE_NOTES.md`.
 - **End on open questions, a hedged take, and a callback to the opening.**
 
 ## Voice
@@ -26,8 +37,11 @@ github.com/stephencwelch/manim_videos.
 - Documentary "we" (15–75 per 1,000 words); "you" is rare.
 - 150–185 wpm.
 - Sentences around 20 words.
-- Few questions, placed at turning points.
-- Exact numbers are part of the voice.
+- Guiding questions sit at turning points and key `"why / what if"` derivation steps (up to
+  ~1.5/min).
+- Exact numbers earn their seat: keep total spoken numbers under ~35/1k and exact decimals,
+  percentages or 3+-digit specs under ~12/1k — save them for the moments that actually prove a
+  point.
 
 ## Look
 

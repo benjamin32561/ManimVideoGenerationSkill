@@ -37,10 +37,12 @@ example, is not abstract yet.
 
 1. **Orient before teaching.** Show an understandable situation, establish what someone wants,
    let the obstacle appear, then ask the central question. Never open on a definition, a
-   benchmark, an acronym or a conclusion.
-2. **The viewer contract comes first.** State what the viewer already knows, the central
-   question, the intuition worth testing, the anchor example and the ending insight. Domain
-   expertise does not imply knowing this material's notation or history.
+   benchmark, an acronym, a conclusion, or a formula/law recited as if it explained "why".
+2. **The viewer contract comes first — built around the thinking process.** State what the
+   viewer already knows, the central question, the simplest bedrock premise the argument
+   derives from, the intuition worth testing, the anchor example and the ending insight (the
+   reasoning chain they can reconstruct, not a list of facts). Domain expertise does not imply
+   knowing this material's notation or history.
 3. **Each video stands alone.** A series may build up, but a new viewer still gets a
    one-sentence orientation.
 4. **Keep one concrete anchor alive.** Return to it whenever a new term, equation or limit
@@ -48,19 +50,40 @@ example, is not abstract yet.
 5. **A causal chain, not a topic list.** Each beat answers the current question or creates
    the next one, and is joined by "because", "but" or "therefore". If two neighbouring beats
    could be swapped, it is a list.
-6. **Let the viewer attempt it.** Show the tempting intuition, give it room to seem right,
-   then show what it cannot explain. Never announce the answer before the viewer has met the
-   gap it fills.
-7. **Meaning before names.** Show what something does before naming it. Define a term at
-   first use and keep its colour and picture. Project-internal labels stay in source notes.
-8. **Motivate → manipulate → name.** Do the operation on the anchor first, then compress it
-   into notation and give it its standard name.
-9. **No unmotivated posits.** Before a move the viewer could not predict, say what was known,
-   what failed, and what constrained the move.
-10. **Every spoken number is true on screen.** Compute readouts with the same values that
-    draw the figure. If the voice says "five more", five more appear.
+6. **Stress-test the logic, not just one strawman.** Show the tempting intuition, give it room
+   to seem right, then show what it cannot explain. Where a smart learner would try a
+   plausible repair, test that repair too and expose the hidden assumption where it breaks.
+   Voice the sharp `"why / why not / what if"` objections and case-checks as live thinking
+   ("Wait — what if the next block's max is smaller? Does rescaling break it?"), not a flat
+   declarative list. Never announce the answer before the viewer has met the gap it fills.
+7. **Meaning before names, and ration new names.** Show what something does before naming it.
+   Keep the new-jargon list short: if a technical label is not needed again to reason forward,
+   describe what it does in plain words instead of naming it. Define every kept term at first
+   use and keep its colour and picture. Project-internal labels stay in source notes.
+8. **Derive before packaging — or admit the boundary.** Before introducing a mathematical
+   trick, equation or design piece, state in plain words the logical constraint the missing
+   move must satisfy, and when the full problem is hard, solve an easier special case first
+   and lift one restriction at a time. Never hand down a formula or mechanism by authority
+   ("equation X tells you…", "method Y uses…"). If an exact derivation sits outside the
+   video's scope, say plainly what is qualitative and what is skipped.
+9. **Equations are packaged logic: voice the concept, let the screen carry the algebra.**
+   Establish the qualitative mechanism first; compress it into notation only once the viewer
+   sees why each term and operation must be there. Never narrate multi-term equations or
+   step-by-step fraction arithmetic aloud in prose ("the old sum times e to the gap plus the
+   block's sum…") or double-verify the same arithmetic in two consecutive beats: let the voice
+   say what the step *does* conceptually while the animation morphs the symbols. Then test the
+   result on 2–3 revealing cases (a boundary, doubling one input, or an extreme) so the math
+   feeds intuition back into the idea.
+10. **Every number must earn its seat — and match the screen.** Spoken numbers belong only
+    where they expose a contradiction, reveal a pattern, make a mechanism concrete, or land a
+    payoff. Use one sharp contrast instead of chaining intermediate byte or arithmetic
+    calculations in prose; use effortless toy numbers during derivations so arithmetic never
+    crowds out reasoning; leave secondary benchmarks, hyperparameters and lookup tables in
+    `SOURCE_NOTES.md`. Every number spoken is still computed from the same values that draw
+    the figure: if the voice says "five more", five more appear.
 11. **Resolve by returning to the opening.** Apply the new model to the original anchor and
-    leave one transferable insight. Never end on a list to memorize.
+    leave one transferable insight (how the whole chain collapses to one root cause or
+    principle). Never end on a list to memorize.
 
 ## Picture
 

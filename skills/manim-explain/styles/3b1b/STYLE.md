@@ -9,14 +9,20 @@ invented it. Numbers in `style.yaml` are measured; the evidence is
 - **Cold open, then the central question.** Open on something concrete: a digit, a dice roll,
   a surprising fact. The central question lands by 90 s at the latest. Never open with
   "let's start" or a definition.
-- **2.5–4 turns per 10 minutes.** Mostly wall → revelation, some "you might expect X, but…",
+- **2–4 turns per 10 minutes.** Mostly wall → revelation, some "you might expect X, but…",
   a quarter plain builds. Walls take 6–40 s to resolve; a sub-unit can carry a longer one.
 - **Work before every turn.** Operate on the running example before naming anything. Name
   second: "this number is called the prior". Names are scarce.
-- **Cash out every revelation.** Name it, write the formula from the picture, test it on a
-  new case. Then the next question follows from what just happened.
-- **The viewer's objection, voiced by the narrator.** "You might be wondering…". No
-  characters talking.
+- **Derive intuitively before writing symbols.** Start from the simplest premise, solve an
+  easier case when the general problem is hard, state in plain words what the missing move
+  must do, and test plausible repairs before revealing the mechanism. Never hand down a named
+  formula from authority ("equation X tells you…"); build each term from the geometry, then
+  play with 2–3 revealing cases or extremes — or state plainly what is qualitative.
+- **Cash out every revelation.** Name it, package the logic into a formula only once every
+  term is earned, test it on a new case. Then the next question follows from what just
+  happened.
+- **The viewer's objection, voiced by the narrator.** "You might be wondering…", plus sharp
+  `"why / why not / what if"` checks on your own model. No characters talking.
 - **End by returning to the opening** with a portable principle, an open puzzle, or a tease
   of the next video. Never a recap list.
 
@@ -26,8 +32,9 @@ invented it. Numbers in `style.yaml` are measured; the evidence is
 - 170–205 wpm with few long pauses (0.3–2 per minute). Long, flowing sentences (18–32 words
   on average) and contractions.
 - Mostly "you", some "we" and "I".
-- Questions are rare (under 1 per minute) and sit at turning points.
-- Toy numbers are fine; exact results and run ids stay in `SOURCE_NOTES`.
+- Questions sit at turning points and key `"why / what if"` derivation steps (up to ~1.8/min).
+- Effortless toy numbers only (keep total spoken numbers well under ~30 per 1,000 words);
+  exact results, constants and run ids stay in `SOURCE_NOTES`.
 
 ## Look
 
